@@ -10,12 +10,8 @@ public class BagTest extends TestCase {
     void pesca() {
         Bag bag = new Bag();
 
-        for (int i = 0; i< bag.NUMBEROFCARDS * Cards.values().length; i++) {
-            /*for (Cards c : Cards.values()) {
-                System.out.println("Rimanenti per il tipo " + c + ": "+ bag.getNumberOf(c));
-            }*/
+        for (int i = 0; i < bag.NUMBEROFCARDS * Cards.values().length; i++) {
             System.out.println("Pesco il tipo " + bag.getCard());
-
         }
 
         for (Cards c : Cards.values()) {
@@ -23,6 +19,5 @@ public class BagTest extends TestCase {
         }
 
     }
-
 
 }

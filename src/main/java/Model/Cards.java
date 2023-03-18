@@ -2,16 +2,16 @@ package Model;
 
 public enum Cards {
 
-	CAT,
+	CATS,
 
-	BOOKS,
+	BOOK,
 
-	GAMES,
+	GAME,
 
-	FRAMES,
+	FRAM,
 
-	TROPHIES,
+	TROP,
 
-	PLANTS;
+	PLAN;
 
 }

@@ -50,7 +50,6 @@ public class Table {
 	public Table(int playerNum) {
 		dashboard = new Cards[DASHBOARDDIM][DASHBOARDDIM];
 		taps = new boolean[DASHBOARDDIM][DASHBOARDDIM];
-		int[] tappi;
 
 		switch (playerNum) {
 			case 3:
@@ -84,6 +83,7 @@ public class Table {
 	public Cards checkout(int x, int y) {
 		return dashboard[x][y];
 	}
+
 	private Cards take(int x, int y) {
 		Cards c = dashboard[x][y];
 		dashboard[x][y] = null;
