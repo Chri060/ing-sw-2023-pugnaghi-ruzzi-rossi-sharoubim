@@ -1,19 +1,52 @@
 package Model;
 
+import Exceptions.ColumFullException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Library {
 
-	private Cards library;
+	final int LIBRARYCOLUMNS = 5;
+	final int LIBRARYROWS = 6;
 
-	private Library() {
+	private Cards[][] library;
 
+	public Library() {
+		library = new Cards[LIBRARYROWS][LIBRARYCOLUMNS];
 	}
 
-	public Cards getAsMatrix() {
-		return null;
+	public Library(Library l) {
+		Library t = new Library();
+		for (int i = 0; i < LIBRARYROWS; i++) {
+			for (int j = 0; j < LIBRARYCOLUMNS; j++) {
+				t.library[i][j] =  l.library[i][j];
+			}
+		}
 	}
 
-	public void insert(int param1, int param2) {
+	public Cards[][] getAsMatrix() {
+		Cards[][] result = new Cards[LIBRARYROWS][LIBRARYCOLUMNS];
+		for (int i = 0; i < LIBRARYROWS; i++) {
+			for (int j = 0; j < LIBRARYCOLUMNS; j++) {
+				result[i][j] = library[i][j];
+			}
+		}
+		return result;
+	}
 
+	public void insert(List<Cards> cardsList, int col) throws ColumFullException {
+		int row = 0;
+		if (canInsertIn(cardsList.size(), col)) {
+			while (library[row][col] != null) {
+				row++;
+			}
+			for (int i = 0; i < cardsList.size(); i++) {
+				library[row + i][col] = cardsList.get(i);
+			}
+		}
+		else { throw new ColumFullException(col);
+		}
 	}
 
 	public boolean isFull() {
@@ -24,8 +57,15 @@ public class Library {
 		return 0;
 	}
 
-	public int canInsertIn(int nCards) {
-		return 0;
+	public boolean  canInsertIn(int nCards, int col) {
+		int row = 0;
+
+		while (row < LIBRARYROWS && library[row][col] != null) {
+			row++;
+		}
+
+		return (row + nCards <= LIBRARYROWS);
+
 	}
 
 }

@@ -16,7 +16,7 @@ public class Match {
 
 	private Turn turn;
 
-	private Match() {
+	public Match() {
 
 	}
 

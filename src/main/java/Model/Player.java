@@ -15,15 +15,15 @@ public class Player {
 	}
 
 	public String getName() {
-		return null;
+		return name;
 	}
 
 	public int getPoints() {
-		return 0;
+		return points;
 	}
 
 	public Library getLibrary() {
-		return null;
+		return new Library(this.library);
 	}
 
 	public int personalObjPoints() {

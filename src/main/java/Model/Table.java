@@ -9,7 +9,7 @@ public class Table {
 	private Cards[][] dashboard;
 	private boolean[][] taps;
 
-	static int[] TwoPlayers = new int[] {
+	final int[] TwoPlayers = new int[] {
 			0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 1, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 1, 1, 0, 0, 0,
@@ -22,7 +22,7 @@ public class Table {
 	};
 
 
-	static int[] ThreePlayers = new int[] {
+	final int[] ThreePlayers = new int[] {
 			0, 0, 0, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 1, 1, 0, 0, 0, 0,
 			0, 0, 1, 1, 1, 1, 1, 0, 0,
@@ -35,7 +35,7 @@ public class Table {
 	};
 
 
-	static int[] FourPlayers = new int[] {
+	final int[] FourPlayers = new int[] {
 			0, 0, 0, 1, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 1, 1, 0, 0, 0,
 			0, 0, 1, 1, 1, 1, 1, 0, 0,

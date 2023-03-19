@@ -4,18 +4,20 @@ public class Turn {
 
 	private String currentPlayer;
 
-	private Action curretnAction;
+	private Action currentAction;
 
-	private Turn() {
-
+	private Turn(String firstPlayer) {
+		currentPlayer = firstPlayer;
+				currentAction = Action.WITHDRAW;
 	}
 
-	public void changePlayer(Player next) {
-
+	public void changePlayer(String next) {
+		currentPlayer = next;
+		currentAction = Action.WITHDRAW;
 	}
 
 	public void nextAction() {
-
+		currentAction = Action.INSERT;
 	}
 
 }
