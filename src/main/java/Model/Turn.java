@@ -8,7 +8,7 @@ public class Turn {
 
 	private Turn(String firstPlayer) {
 		currentPlayer = firstPlayer;
-				currentAction = Action.WITHDRAW;
+		currentAction = Action.WITHDRAW;
 	}
 
 	public void changePlayer(String next) {

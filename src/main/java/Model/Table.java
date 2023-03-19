@@ -87,6 +87,8 @@ public class Table {
 		return dashboard[row][col];
 	}
 
+
+	//TODO: deve essere private
 	public Cards getCard(int row, int col) {
 		Cards c = dashboard[row][col];
 		dashboard[row][col] = null;
