@@ -50,11 +50,34 @@ public class Library {
 	}
 
 	public boolean isFull() {
+		for (int i = 0; i < LIBRARYCOLUMNS; i++) {
+			if (library[LIBRARYROWS - 1][i] == null) { return false; }
+			if (i == (LIBRARYCOLUMNS - 1)) { return true; }
+		}
 		return false;
 	}
 
-	public int maxFreeSpace() {
-		return 0;
+	public List<Integer> maxFreeSpace() {
+		int row = 0;
+		int col = 0;
+		int space = 0;
+
+		for (int i = 0; i < LIBRARYCOLUMNS; i++) {
+			row = 0;
+			while (row < LIBRARYROWS && library[row][i] != null ) {
+				row++;
+			}
+			if (space < LIBRARYROWS - row) {
+				space = LIBRARYROWS - row;
+				col = i;
+			}
+
+		}
+		List<Integer> spaceColumn = new ArrayList<>();
+		spaceColumn.add(space);
+		spaceColumn.add(col);
+
+		return spaceColumn;
 	}
 
 	public boolean  canInsertIn(int nCards, int col) {
