@@ -12,6 +12,6 @@ public enum Cards {
 
 	TROP,
 
-	PLAN;
+	PLAN
 
 }
