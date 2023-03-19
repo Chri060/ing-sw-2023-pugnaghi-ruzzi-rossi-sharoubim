@@ -85,9 +85,6 @@ public class LibraryTest extends TestCase {
         Random rand = new Random();
         int x;
 
-
-
-
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 6; j++) {
                 cards.clear();

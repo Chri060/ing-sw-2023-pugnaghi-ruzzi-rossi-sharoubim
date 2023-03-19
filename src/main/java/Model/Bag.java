@@ -7,6 +7,7 @@ public class Bag {
 	final int NUMBEROFCARDS = 22;
 	private HashMap<Cards, Integer> cardsLeft;
 	private Random rand;
+
 	public Bag() {
 		cardsLeft = new HashMap<Cards, Integer>();
 		for (Cards c : Cards.values()) {
