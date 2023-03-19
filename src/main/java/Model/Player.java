@@ -1,17 +1,17 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
-
 	private String name;
-
 	private int points;
-
-	private PrivateObjective[] privateObj;
-
+	private List<PrivateObjective> privateObj = new ArrayList<>();
 	private Library library;
-
-	private Player() {
-
+	private Player(String name, PrivateObjective obj) {
+		this.name = name;
+		privateObj.add(obj);
+		library = new Library();
 	}
 
 	public String getName() {
@@ -27,11 +27,20 @@ public class Player {
 	}
 
 	public int personalObjPoints() {
-		return 0;
+		int res = 0;
+		for(int i = 0; i < privateObj.size(); i++) {
+			res += privateObj.get(i).verify(library);
+		}
+		return res;
 	}
 
-	public Cards getObjPattern() {
-		return null;
+	public List <Cards[][]> getObjPattern() {
+		List <Cards[][]> l = new ArrayList<>();
+		for(int i = 0; i < privateObj.size(); i++) {
+			l.add(privateObj.get(i).getPattern());
+		}
+		return l;
+
 	}
 
 }
