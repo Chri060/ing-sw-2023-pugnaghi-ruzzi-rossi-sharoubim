@@ -39,12 +39,11 @@ public class Bag {
 		while (containsSomething()) {
 			j = rand.nextInt(Cards.values().length);
 			card = Cards.values()[j];
-			if (this.getNumberOf(card)>0) {
+			if (this.getNumberOf(card) > 0) {
 				remove(card);
 				return card;
 			}
 		}
-		//TODO: add exception for empty bag
 		return null;
 	}
 
