@@ -134,9 +134,9 @@ public class Table {
 
 			if (checkout(row, col) != null) {
 				if (col > 0 && checkout(row, col - 1) != null) { return false;}
-				if (col < DASHBOARDDIM - 1 && checkout(row, col + 1) != null)  { return false;}
-				if (row > 0 && checkout(row - 1, col) != null)  { return false;}
-				if (row < DASHBOARDDIM - 1 && checkout(row +1, col) != null)  { return false;}
+				else if (col < DASHBOARDDIM - 1 && checkout(row, col + 1) != null)  { return false;}
+				else if (row > 0 && checkout(row - 1, col) != null)  { return false;}
+				else if (row < DASHBOARDDIM - 1 && checkout(row +1, col) != null)  { return false;}
 			}
 		}
 		return true;

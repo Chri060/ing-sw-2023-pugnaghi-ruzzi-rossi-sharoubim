@@ -1,0 +1,73 @@
+[
+  {
+    "IdPrivateObj": "one",
+    "objectiveCoordinates":  [ 5 ,0, 5, 2, 4, 4, 3, 3, 2, 1, 0, 2 ],
+    "objectiveItems": [ "PLAN", "FRAM" , "CATS", "BOOK", "GAME", "TROP" ]
+  },
+
+  {
+    "IdPrivateObj": "two",
+    "objectiveCoordinates":  [ 4, 1, 3, 0, 3, 2, 2, 4, 1, 3, 0, 4 ],
+    "objectiveItems": [ "PLAN" , "CATS" , "GAME", "BOOK", "TROP", "FRAM" ]
+  },
+
+  {
+    "IdPrivateObj": "three",
+    "objectiveCoordinates":  [ 4, 0, 4, 3, 3, 2, 2, 1, 2, 4, 0, 0 ],
+    "objectiveItems": [ "FRAM", "GAME", "PLAN", "CATS", "TROP", "BOOK" ]
+  },
+
+  {
+    "IdPrivateObj": "four",
+    "objectiveCoordinates":  [ 5, 4, 3, 0, 3, 2, 2, 3, 1, 1, 1, 2 ],
+    "objectiveItems": [ "GAME", "TROP", "FRAM", "PLAN", "BOOK", "CATS" ]
+  },
+
+  {
+    "IdPrivateObj": "five",
+    "objectiveCoordinates":  [ 4, 1, 2, 1, 2, 2, 1, 4, 0, 0, 0, 3 ],
+    "objectiveItems": [ "TROP", "FRAM", "BOOK", "PLAN", "GAME", "CATS" ]
+  },
+
+  {
+    "IdPrivateObj": "six",
+    "objectiveCoordinates":  [ 5, 2, 5, 4, 3, 3, 1, 1, 1, 3, 0, 0 ],
+    "objectiveItems": [ "TROP", "CATS", "BOOK", "GAME", "FRAM", "PLAN" ]
+  },
+
+  {
+    "IdPrivateObj": "seven",
+    "objectiveCoordinates":  [ 5, 0, 4, 3, 3, 1, 2, 0, 1, 4, 0, 2 ],
+    "objectiveItems": [ "CATS", "FRAM", "PLAN", "TROP", "GAME", "BOOK" ]
+  },
+
+  {
+    "IdPrivateObj": "eight",
+    "objectiveCoordinates":  [ 5, 4, 4, 1, 3, 2, 2, 0, 1, 3, 0, 3 ],
+    "objectiveItems": [ "FRAM", "CATS", "TROP", "PLAN", "BOOK", "GAME" ]
+  },
+
+  {
+    "IdPrivateObj": "nine",
+    "objectiveCoordinates":  [ 5, 2, 3, 2, 2, 4, 1, 1, 1, 4, 0, 0 ],
+    "objectiveItems": [ "GAME", "CATS", "BOOK", "TROP", "PLAN", "FRAM" ]
+  },
+
+  {
+    "IdPrivateObj": "ten",
+    "objectiveCoordinates":  [ 5, 4, 4, 1, 3, 0, 2, 3, 1, 1, 0, 3 ],
+    "objectiveItems": [ "TROP", "GAME", "BOOK", "CATS", "FRAM", "PLAN" ]
+  },
+
+  {
+    "IdPrivateObj": "eleven",
+    "objectiveCoordinates":  [ 5, 2, 4, 1, 3, 0, 2, 2, 1 ,4, 0, 3 ],
+    "objectiveItems": [ "PLAN", "BOOK", "GAME", "FRAM", "CATS", "TROP" ]
+  },
+
+  {
+    "IdPrivateObj": "twelve",
+    "objectiveCoordinates":  [ 5, 2, 4, 1, 3, 2, 2, 3, 1, 4, 0, 0 ],
+    "objectiveItems": [ "BOOK", "PLAN", "FRAM", "TROP", "GAME", "CATS" ]
+  }
+]

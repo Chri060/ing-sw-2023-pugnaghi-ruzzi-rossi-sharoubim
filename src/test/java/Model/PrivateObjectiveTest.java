@@ -11,14 +11,18 @@ class PrivateObjectiveTest {
 
     @Test
     void objectiveCheck () {
-        PrivateObjective obiettivo = new PrivateObjective(1);
-        obiettivo.getPattern();
+
+        for (int i = 0; i < 12; i++) {
+            PrivateObjective obiettivo = new PrivateObjective(i);
+            obiettivo.getPattern();
+        }
+        
     }
 
 
     @Test
     void toVerify() throws ColumFullException {
-        PrivateObjective obiettivo = new PrivateObjective(1);
+        PrivateObjective obiettivo = new PrivateObjective(0);
         LibraryTest test = new LibraryTest();
         Library libreria = new Library();
         ArrayList<Cards> carte = new ArrayList<>();
