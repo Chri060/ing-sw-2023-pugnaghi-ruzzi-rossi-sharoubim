@@ -81,4 +81,20 @@ public class TableTest extends TestCase {
 
     }
 
+    @Test
+    void jsonTest() {
+        Table t;
+        Bag b = new Bag();
+        for (int i = 2; i < 5; i++) {
+            System.out.println("For " + i + " players");
+            t = new Table(i);
+            t.printTaps();
+            t.refill(b);
+            System.out.println();
+            t.printCards();
+            System.out.println();
+            System.out.println("---------------------------------------------------------------------");
+        }
+    }
+
 }

@@ -1,6 +1,14 @@
 package Model;
 
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,70 +17,25 @@ public class Table {
 	private Cards[][] dashboard;
 	private boolean[][] taps;
 
-	final int[] TwoPlayers = new int[] {
-			0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 1, 1, 0, 0, 0, 0,
-			0, 0, 0, 1, 1, 1, 0, 0, 0,
-			0, 0, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 1, 1, 1, 1, 1, 1, 0, 0,
-			0, 0, 0, 1, 1, 1, 0, 0, 0,
-			0, 0, 0, 0, 1, 1, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0
-	};
-
-
-	final int[] ThreePlayers = new int[] {
-			0, 0, 0, 1, 0, 0, 0, 0, 0,
-			0, 0, 0, 1, 1, 0, 0, 0, 0,
-			0, 0, 1, 1, 1, 1, 1, 0, 0,
-			0, 0, 1, 1, 1, 1, 1, 1, 1,
-			0, 1, 1, 1, 1, 1, 1, 1, 0,
-			1, 1, 1, 1, 1, 1, 1, 0, 0,
-			0, 0, 1, 1, 1, 1, 1, 0, 0,
-			0, 0, 0, 0, 1, 1, 0, 0, 0,
-			0, 0, 0, 0, 0, 1, 0, 0, 0
-	};
-
-
-	final int[] FourPlayers = new int[] {
-			0, 0, 0, 1, 1, 0, 0, 0, 0,
-			0, 0, 0, 1, 1, 1, 0, 0, 0,
-			0, 0, 1, 1, 1, 1, 1, 0, 0,
-			0, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 1,
-			1, 1, 1, 1, 1, 1, 1, 1, 0,
-			0, 0, 1, 1, 1, 1, 1, 0, 0,
-			0, 0, 0, 1, 1, 1, 0, 0, 0,
-			0, 0, 0, 0, 1, 1, 0, 0, 0
-	};
-
-
-
 	public Table(int playerNum) {
 		dashboard = new Cards[DASHBOARDDIM][DASHBOARDDIM];
 		taps = new boolean[DASHBOARDDIM][DASHBOARDDIM];
 
-		switch (playerNum) {
-			case 2:
-				for(int i = 0; i<DASHBOARDDIM*DASHBOARDDIM; i++) {
-					taps[i/DASHBOARDDIM][i%DASHBOARDDIM] = (TwoPlayers[i] == 1);
-				}
-				break;
-			case 3:
-				for(int i = 0; i<DASHBOARDDIM*DASHBOARDDIM; i++) {
-					taps[i/DASHBOARDDIM][i%DASHBOARDDIM] = (ThreePlayers[i] == 1);
-				}
-				break;
-			case 4:
-				for(int i = 0; i<DASHBOARDDIM*DASHBOARDDIM; i++) {
-					taps[i/DASHBOARDDIM][i%DASHBOARDDIM] = (FourPlayers[i] == 1);
-				}
+		try {
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/Table.json"));
+			JSONArray jsonArray = (JSONArray) file;
+			JSONArray pattern = (JSONArray) jsonArray.get(playerNum - 2);
+
+			for (int i = 0; i < pattern.size(); i++) {
+				taps[i / DASHBOARDDIM][i % DASHBOARDDIM] = ((Long) (pattern.get(i))).intValue() == 1;
+			}
+
+		} catch (FileNotFoundException | ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-
-
 	}
-
 	public void refill(Bag bag) {
 		for (int i = 0; i < DASHBOARDDIM; i++) {
 			for (int j = 0; j < DASHBOARDDIM; j++) {
