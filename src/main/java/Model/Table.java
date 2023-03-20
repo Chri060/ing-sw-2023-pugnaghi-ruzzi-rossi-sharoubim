@@ -13,18 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-	final int DASHBOARDDIM = 9;
+	int DASHBOARDDIM;
 	private Cards[][] dashboard;
 	private boolean[][] taps;
 
 	public Table(int playerNum) {
-		dashboard = new Cards[DASHBOARDDIM][DASHBOARDDIM];
-		taps = new boolean[DASHBOARDDIM][DASHBOARDDIM];
 
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/Table.json"));
-			JSONArray jsonArray = (JSONArray) file;
-			JSONArray pattern = (JSONArray) jsonArray.get(playerNum - 2);
+			JSONObject jsonObject = (JSONObject) file;
+			DASHBOARDDIM = ((Long) jsonObject.get("DashboardDimension")).intValue();
+			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
+			JSONArray pattern = (JSONArray) patterns.get(playerNum - 2);
+
+			dashboard = new Cards[DASHBOARDDIM][DASHBOARDDIM];
+			taps = new boolean[DASHBOARDDIM][DASHBOARDDIM];
 
 			for (int i = 0; i < pattern.size(); i++) {
 				taps[i / DASHBOARDDIM][i % DASHBOARDDIM] = ((Long) (pattern.get(i))).intValue() == 1;
@@ -49,8 +52,7 @@ public class Table {
 	public Cards checkout(int row, int col) {
 		return dashboard[row][col];
 	}
-
-
+	
 	//TODO: deve essere private
 	public Cards getCard(int row, int col) {
 		Cards c = dashboard[row][col];
