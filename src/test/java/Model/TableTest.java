@@ -1,14 +1,17 @@
 package Model;
 
+import Exceptions.BagEmptyException;
+import Exceptions.CannotWIthdrowCardException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class TableTest extends TestCase {
 
     @Test
-    void test() {
+    void test() throws BagEmptyException {
         Bag bag = new Bag();
         Table[] tabelle = new Table[3];
         for (int i = 0; i < 3; i++) {
@@ -25,64 +28,80 @@ public class TableTest extends TestCase {
 
 
     @Test
-    void listTest() {
-        Table[] tabelle = new Table[1];
+    void listTest() throws BagEmptyException {
+        Table tabelle;
         Bag bag = new Bag();
 
-        tabelle[0] = new Table(2);
-        tabelle[0].refill(bag);
-        tabelle[0].printCards();
+        tabelle = new Table(2);
+        tabelle.refill(bag);
+        tabelle.printCards();
         System.out.println();
 
 
         List<Integer> exampList = new ArrayList<>();
         List<Cards> givenList;
 
-        exampList.add(0);
-        exampList.add(0);
+        exampList.add(4);
+        exampList.add(1);
         exampList.add(5);
         exampList.add(1);
 
-        givenList = tabelle[0].withdraw(exampList);
+        try {
+            givenList = tabelle.withdraw(exampList);
+            for (int i = 0; i < givenList.size(); i++) {
+                System.out.println(givenList.get(i).getType());
+            }
+            System.out.println();
 
 
-        System.out.println(givenList);
-        System.out.println();
+            tabelle.printCards();
+            System.out.println();
+        }
+        catch (CannotWIthdrowCardException e) {}
 
 
-        tabelle[0].printCards();
-        System.out.println();
     }
 
 
     @Test
-    void refillTest () {
-        Table[] tabelle = new Table[1];
-        tabelle[0] = new Table(2);
+    void refillTest() throws BagEmptyException{
+        Table dash;
+        dash = new Table(2);
         Bag bag = new Bag();
+        List <Integer> cards = new ArrayList<Integer>();
+        List <Cards> withdrown = new ArrayList<Cards>();
+        Random rand = new Random();
 
+        dash.refill(bag);
 
-        tabelle[0].refill(bag);
-
-        tabelle[0].printCards();
+        dash.printCards();
         System.out.println();
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if ((i != 5 || j != 6)) {tabelle[0].getCard(i, j); }
+        for (int i = 1; i < 8; i++) {
+            for (int j = 1; j < 8; j++) {
+                cards.add(rand.nextInt(8));
+                cards.add(rand.nextInt(8));
+                try {
+                    withdrown = dash.withdraw(cards);
+                    System.out.println("Withdrawn " + withdrown.get(0).getType() + " from [" + cards.get(0) + ", " + cards.get(1) + "]");
+                    dash.printCards();
+                }
+                catch (CannotWIthdrowCardException e) {
+                }
+                cards.clear();
             }
         }
 
-        tabelle[0].printCards();
+        dash.printCards();
         System.out.println();
 
 
-        System.out.println(tabelle[0].needsRefill());
+        System.out.println(dash.needsRefill());
 
     }
 
     @Test
-    void jsonTest() {
+    void jsonTest() throws BagEmptyException {
         Table t;
         Bag b = new Bag();
         for (int i = 2; i < 5; i++) {

@@ -1,22 +1,24 @@
 package Model;
 
+import Exceptions.BagEmptyException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
-
 public class BagTest extends TestCase {
     @Test
-    void pesca() {
+    void pesca() throws BagEmptyException {
         Bag bag = new Bag();
+        Cards c;
 
-        for (int i = 0; i < bag.NUMBEROFCARDS * Cards.values().length; i++) {
-            System.out.println("Pesco il tipo " + bag.getCard());
+        for (int i = 0; i < bag.NUMBEROFCARDS * CardsType.values().length + 5; i++) {
+            try {
+                c = bag.getCard();
+                System.out.println("Pesco il tipo " + c.getType() + " con ID: " + c.cardID);
+            }
+            catch (BagEmptyException e) {
+            }
         }
 
-        for (Cards c : Cards.values()) {
-            System.out.println("Rimanenti per il tipo " + c + ": "+ bag.getNumberOf(c));
-        }
 
     }
 

@@ -1,51 +1,42 @@
 package Model;
 
-import java.util.HashMap;
+import Exceptions.BagEmptyException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Bag {
 	final int NUMBEROFCARDS = 22;
-	private HashMap<Cards, Integer> cardsLeft;
+	private List<Cards> cardsLeft;
 	private Random rand;
 
 	public Bag() {
-		cardsLeft = new HashMap<Cards, Integer>();
-		for (Cards c : Cards.values()) {
-			cardsLeft.put(c, NUMBEROFCARDS);
-		}
 		rand = new Random();
-	}
+		cardsLeft = new ArrayList<Cards>();
+		for (CardsType c : CardsType.values()) {
+			for (int i = 0; i < NUMBEROFCARDS; i++) {
+				cardsLeft.add(new Cards(c, i));
+			}
+		}
 
-	public int getNumberOf(Cards card) {
-		return cardsLeft.get(card);
 	}
 
 	private boolean containsSomething() {
-		for (Cards c : Cards.values()) {
-			if (getNumberOf(c) > 0) {
-				return true;
-			}
-		}
-		return false;
+		return cardsLeft.size() > 0;
 	}
 
-	private void remove(Cards card) {
-		cardsLeft.replace(card, cardsLeft.get(card) - 1);
-	}
 
-	public Cards getCard() {
+	public Cards getCard() throws BagEmptyException{
 		int j;
-		Cards card;
 
-		while (containsSomething()) {
-			j = rand.nextInt(Cards.values().length);
-			card = Cards.values()[j];
-			if (this.getNumberOf(card) > 0) {
-				remove(card);
-				return card;
-			}
+		if (containsSomething()) {
+			j = rand.nextInt(cardsLeft.size());
+			return cardsLeft.remove(j);
 		}
-		return null;
+		else {
+			throw new BagEmptyException() ;
+		}
 	}
 
 }

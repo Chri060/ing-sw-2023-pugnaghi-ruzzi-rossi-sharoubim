@@ -2,7 +2,6 @@ package Model;
 
 import Exceptions.ColumFullException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Library {
@@ -69,7 +68,6 @@ public class Library {
 		while (row < LIBRARYROWS && library[row][col] != null) {
 			row++;
 		}
-
 		return (row + nCards <= LIBRARYROWS);
 
 	}

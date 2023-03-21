@@ -16,7 +16,7 @@ public class PrivateObjective {
 
 	private int corrispondence;
 	private int[] coordinates;
-	private Cards[] object;
+	private CardsType[] object;
 
 
 
@@ -25,19 +25,19 @@ public class PrivateObjective {
 
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
-			JSONArray jsonArray = (JSONArray) file;
-			JSONObject jsonObject = (JSONObject) jsonArray.get(obiettivo);
+			JSONObject jsonObject = (JSONObject) file;
+			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
 
-			JSONArray coordinateJson = (JSONArray) jsonObject.get("objectiveCoordinates");
-			JSONArray objectiveJson = (JSONArray) jsonObject.get("objectiveItems");
+			JSONArray coordinateJson = (JSONArray) ((JSONObject) patterns.get(obiettivo)).get("objectiveCoordinates");
+			JSONArray objectiveJson = (JSONArray) ((JSONObject) patterns.get(obiettivo)).get("objectiveItems");
 
 			coordinates = new int[coordinateJson.size()];
 			for (int i = 0; i < coordinateJson.size(); i++) {
 				coordinates[i] = ((Long) coordinateJson.get(i)).intValue();
 			}
-			object = new Cards[objectiveJson.size()];
+			object = new CardsType[objectiveJson.size()];
 			for (int i = 0; i < objectiveJson.size(); i++) {
-				object[i] = Cards.valueOf((String) objectiveJson.get(i));
+				object[i] = CardsType.valueOf((String) objectiveJson.get(i));
 			}
 		}
 		catch (FileNotFoundException | ParseException e) {
@@ -47,21 +47,36 @@ public class PrivateObjective {
 		}
 		corrispondence = 0;
 	}
-
+	/*retruns number of coincidences*/
 	public int verify(Library library) {
 		int row;
 		int col;
-		Cards[][] libraryCopy = library.getAsMatrix();
-		for (int i = 0; i < 2 * object.length; i += 2) {
-			row = coordinates[i];
-			col = coordinates[i + 1];
-			if (libraryCopy[row][col] == (object[i / 2])) {
-				corrispondence++;
+
+
+		try {
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
+			JSONObject jsonObject = (JSONObject) file;
+			JSONArray points = (JSONArray) jsonObject.get("points");
+
+			Cards[][] libraryCopy = library.getAsMatrix();
+
+			for (int i = 0; i < 2 * object.length; i += 2) {
+				row = coordinates[i];
+				col = coordinates[i + 1];
+				if (libraryCopy[row][col].getType() == (object[i / 2])) {
+					corrispondence++;
+				}
 			}
+			return ((Long) points.get(corrispondence)).intValue();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
 		}
-		return corrispondence;
+
 	}
 
+	//TODO: valutare come viene restituito alla view, eventualmente creare nuovo tipo oggetto oppure usare matrice
 	public Cards[][] getPattern() {
 		System.out.println(Arrays.toString(this.coordinates));
 		System.out.println(Arrays.toString(this.object));

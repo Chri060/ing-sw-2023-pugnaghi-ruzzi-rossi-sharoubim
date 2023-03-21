@@ -1,17 +1,19 @@
 package Model;
 
-public enum Cards {
+public class Cards {
+    CardsType type;
+    int cardID;
 
-	CATS,
+    public Cards(CardsType type, int id) {
+        this.type = type;
+        this.cardID = id;
+    }
+    public int getCardID() {
+        return cardID;
+    }
 
-	BOOK,
-
-	GAME,
-
-	FRAM,
-
-	TROP,
-
-	PLAN
-
+    public CardsType getType() {
+        return type;
+    }
 }
+
