@@ -8,12 +8,9 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Match {
-
 	private String chair;
 	private Table dashboard;
 	private Bag bag;
@@ -21,14 +18,18 @@ public class Match {
 	private List<Player> players;
 	private Turn turn;
 
-	public Match(List<String> playerList) throws NotEnoughPrivateObjectivesException, NotEnoughPlayersException{
+	private String firstToFinish;
+
+	public Match(List<String> playerList) throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {
 		int pObjNum;
 		int cObjNum;
 		int x;
 		int numberpObj;
 
-		if (playerList.size() < 2) {
-			throw new NotEnoughPlayersException();
+		Collections.shuffle(playerList);
+
+		if (playerList.size() < 2 || playerList.size() > 4) {
+			throw new IncorrectPlayersNumberException();
 		}
 
 		Random rand = new Random();
@@ -99,11 +100,16 @@ public class Match {
 		throw new PlayerNotFoundException();
 	}
 
-	public void insert(List<Cards> cardsList, int col, String playerName) throws ColumFullException {
-		for (int i = 0; i < players.size(); i++) {
-			if (playerName.equals(players.get(i).getName())) {
-				players.get(i).insert(cardsList, col);
+	public void insert(List<Cards> cardsList, int col, String playerName) throws ColumFullException, NotYourTurnException {
+		if (playerName.equals(turn.getCurrentPlayer())) {
+			for (int i = 0; i < players.size(); i++) {
+				if (playerName.equals(players.get(i).getName())) {
+					players.get(i).insert(cardsList, col);
+				}
 			}
+		}
+		else {
+			throw new NotYourTurnException(turn.getCurrentPlayer());
 		}
 	}
 
@@ -138,19 +144,60 @@ public class Match {
 	public boolean endMatch() {
 		for (int i = 0; i < players.size(); i++) {
 			if (players.get(i).getLibrary().isFull()) {
+				firstToFinish = players.get(i).getName();
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public List<Cards> withdraw(List<Integer> coordinates) throws CannotWIthdrowCardException, InvalidPickException {
+	public List<Cards> withdraw(List<Integer> coordinates, String playerName) throws CannotWIthdrowCardException, InvalidPickException, NotYourTurnException {
+		if (playerName.equals(turn.getCurrentPlayer()))
 		return dashboard.withdraw(coordinates);
+		else {
+			throw new NotYourTurnException(turn.getCurrentPlayer());
+		}
 	}
 
 	//test Only
 	public void printDashboard() {
 		System.out.println("Turn n°: " + turn.getTurn());
 		dashboard.printCards();
+	}
+
+	//Test only
+	public int getCardsLeft(){
+		return bag.cardsLeft();
+	}
+
+	//test only
+	public void printPlayerPoints() {
+		System.out.println(firstToFinish + " finisched first, will get an extra point");
+		for (int i = 0; i < players.size(); i++) {
+			System.out.println(players.get(i).getName() + "'s library:");
+			printLibrary(players.get(i).getLibrary());
+			System.out.println(players.get(i).getName() + "'s private obj points:\nPattern is:");
+			players.get(i).getObjPattern();
+			System.out.print("Points: " + players.get(i).personalObjPoints());
+			System.out.println();
+			System.out.println();
+		}
+	}
+
+	//test only
+	private void printLibrary(Library l) {
+		Cards[][] c = l.getAsMatrix();
+		for (int i = l.LIBRARYROWS - 1; i >= 0; i--) {
+			for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
+				if (c[i][j] != null) {
+					System.out.print(c[i][j].getType() + "\t");
+				}
+				else {
+					System.out.print("null" + "\t");
+				}
+			}
+			System.out.println();
+
+		}
 	}
 }

@@ -52,7 +52,6 @@ public class PrivateObjective {
 		int row;
 		int col;
 
-
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
 			JSONObject jsonObject = (JSONObject) file;
@@ -63,7 +62,7 @@ public class PrivateObjective {
 			for (int i = 0; i < 2 * object.length; i += 2) {
 				row = coordinates[i];
 				col = coordinates[i + 1];
-				if (libraryCopy[row][col].getType() == (object[i / 2])) {
+				if (libraryCopy[row][col] != null && libraryCopy[row][col].getType() == (object[i / 2])) {
 					corrispondence++;
 				}
 			}

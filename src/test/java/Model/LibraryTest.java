@@ -42,7 +42,7 @@ public class LibraryTest extends TestCase {
                 cards.add(new Cards(CardsType.values()[rand.nextInt(6)], rand.nextInt(22)));
                // System.out.print(cards.get(j).getType() + " ");
             }
-            System.out.println();
+            //System.out.println();
             try {
                 l.insert(cards, x);
                 //printLibrary(l);
@@ -59,6 +59,7 @@ public class LibraryTest extends TestCase {
         Library l = insertTest();
         Library t = new Library(l);
         printLibrary(t);
+        printLibrary(l);
 
     }
 

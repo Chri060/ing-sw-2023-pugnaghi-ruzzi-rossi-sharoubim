@@ -16,7 +16,7 @@ public class Library {
 	}
 
 	public Library(Library l) {
-		library = new Cards[LIBRARYROWS][LIBRARYCOLUMNS];
+		this();
 		for (int i = 0; i < LIBRARYROWS; i++) {
 			for (int j = 0; j < LIBRARYCOLUMNS; j++) {
 				this.library[i][j] =  l.library[i][j];

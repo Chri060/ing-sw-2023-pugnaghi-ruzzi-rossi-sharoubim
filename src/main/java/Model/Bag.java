@@ -19,18 +19,16 @@ public class Bag {
 				cardsLeft.add(new Cards(c, i));
 			}
 		}
-
 	}
 
-	private boolean containsSomething() {
-		return cardsLeft.size() > 0;
+	public int cardsLeft(){
+		return cardsLeft.size();
 	}
-
 
 	public Cards getCard() throws BagEmptyException{
 		int j;
 
-		if (containsSomething()) {
+		if (cardsLeft.size() > 0) {
 			j = rand.nextInt(cardsLeft.size());
 			return cardsLeft.remove(j);
 		}
