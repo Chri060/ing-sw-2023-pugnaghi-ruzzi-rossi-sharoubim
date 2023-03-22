@@ -2,6 +2,7 @@ package Model;
 
 import Exceptions.BagEmptyException;
 import Exceptions.CannotWIthdrowCardException;
+import Exceptions.InvalidPickException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
@@ -57,14 +58,14 @@ public class TableTest extends TestCase {
             tabelle.printCards();
             System.out.println();
         }
-        catch (CannotWIthdrowCardException e) {}
+        catch (CannotWIthdrowCardException | InvalidPickException e) {}
 
 
     }
 
 
     @Test
-    void refillTest() throws BagEmptyException{
+    void refillTest() throws BagEmptyException, InvalidPickException{
         Table dash;
         dash = new Table(2);
         Bag bag = new Bag();

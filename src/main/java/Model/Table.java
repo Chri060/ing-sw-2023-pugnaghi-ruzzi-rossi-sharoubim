@@ -3,6 +3,7 @@ package Model;
 
 import Exceptions.BagEmptyException;
 import Exceptions.CannotWIthdrowCardException;
+import Exceptions.InvalidPickException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -62,7 +63,12 @@ public class Table {
 		return c;
 	}
 
-	public List<Cards> withdraw(List<Integer> coordinates) throws  CannotWIthdrowCardException{
+	public List<Cards> withdraw(List<Integer> coordinates) throws  CannotWIthdrowCardException, InvalidPickException {
+
+		if (coordinates == null || coordinates.size() == 0){
+			throw new InvalidPickException();
+		}
+
 		List<Cards> withdrawnCards = new ArrayList<>();
 
 		int i = 0;

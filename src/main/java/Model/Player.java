@@ -42,5 +42,6 @@ public class Player {
 	}
 	public void insert(List<Cards> cardsList, int col) throws ColumFullException {
 		library.insert(cardsList, col);
+
 	}
 }
