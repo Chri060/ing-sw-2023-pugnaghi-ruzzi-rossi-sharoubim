@@ -185,9 +185,9 @@ public class Match {
 	}
 
 	//test only
-	private void printLibrary(Library l) {
+	void printLibrary(Library l) {
 		Cards[][] c = l.getAsMatrix();
-		for (int i = l.LIBRARYROWS - 1; i >= 0; i--) {
+		for (int i = 0; i < l.LIBRARYROWS; i++) {
 			for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
 				if (c[i][j] != null) {
 					System.out.print(c[i][j].getType() + "\t");
@@ -197,7 +197,6 @@ public class Match {
 				}
 			}
 			System.out.println();
-
 		}
 	}
 }

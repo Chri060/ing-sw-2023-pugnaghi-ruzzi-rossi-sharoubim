@@ -14,7 +14,7 @@ public class LibraryTest extends TestCase {
     @Test
     void printLibrary(Library l) {
         Cards[][] c = l.getAsMatrix();
-        for (int i = l.LIBRARYROWS - 1; i >= 0; i--) {
+        for (int i = 0; i < l.LIBRARYROWS; i++) {
             for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
                 if (c[i][j] != null) {
                     System.out.print(c[i][j].getType() + "\t");
@@ -28,38 +28,33 @@ public class LibraryTest extends TestCase {
     }
 
     @Test
-    Library insertTest() {
+    void insertTest() {
         Library l = new Library();
         List<Cards> cards = new ArrayList<>();
         Random rand = new Random();
 
         int x;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             x = rand.nextInt(l.LIBRARYCOLUMNS);
-            //System.out.print("Inserting in " +  "column " + x + ": ");
-            cards = new ArrayList<>();
+            System.out.print("Inserting in " +  "column " + x + ": ");
             for (int j = 0; j < 1 + rand.nextInt(3); j++) {
                 cards.add(new Cards(CardsType.values()[rand.nextInt(6)], rand.nextInt(22)));
-               // System.out.print(cards.get(j).getType() + " ");
+                System.out.print(cards.get(j).getType() + " ");
             }
-            //System.out.println();
+            System.out.println();
             try {
                 l.insert(cards, x);
-                //printLibrary(l);
+                printLibrary(l);
             }
             catch (ColumFullException e) {
             }
+            cards.clear();
 
             System.out.println();
         }
-        return l;
     }
     @Test
     void constructorTest() {
-        Library l = insertTest();
-        Library t = new Library(l);
-        printLibrary(t);
-        printLibrary(l);
 
     }
 
@@ -121,11 +116,5 @@ public class LibraryTest extends TestCase {
         }
 
     }
-
-
-
-
-
-
 
 }

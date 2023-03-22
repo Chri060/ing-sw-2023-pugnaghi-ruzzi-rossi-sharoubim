@@ -13,7 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.lang.Math.abs;
 
 public class Table {
 	int dashDim;
@@ -65,14 +68,54 @@ public class Table {
 
 	public List<Cards> withdraw(List<Integer> coordinates) throws  CannotWIthdrowCardException, InvalidPickException {
 
-		if (coordinates == null || coordinates.size() == 0){
+		if (coordinates == null || coordinates.size() == 0 || coordinates.size() % 2 != 0){
 			throw new InvalidPickException();
 		}
 
-		List<Cards> withdrawnCards = new ArrayList<>();
-
 		int i = 0;
 		int row, col;
+		List<Cards> withdrawnCards = new ArrayList<>();
+
+		boolean vertical = false;
+		List<Integer> rows;
+		boolean orizzontal = false;
+		List<Integer> cols;
+
+
+		if (coordinates.size() != 2) {
+			for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
+				if (coordinates.get(2 * j) != coordinates.get(2 * j + 2)) {vertical = true;}
+				if (coordinates.get(2 * j + 1) != coordinates.get(2 * j + 3)) {orizzontal = true;}
+				if ((vertical && orizzontal) || (!vertical && !orizzontal)) {
+					throw new CannotWIthdrowCardException(coordinates);
+				}
+			}
+			if (vertical) {
+				rows  = new ArrayList<Integer>();
+				for (int j = 0; j < ((coordinates.size() / 2)); j++) {
+					rows.add(coordinates.get(2 * j));
+				}
+				Collections.sort(rows);
+				for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
+					if (rows.get(j) - rows.get(j + 1) != - 1) {
+						throw new CannotWIthdrowCardException(coordinates);
+					}
+				}
+			}
+			if (orizzontal) {
+				cols  = new ArrayList<Integer>();
+				for (int j = 0; j < ((coordinates.size() / 2)); j++) {
+					cols.add(coordinates.get(2 * j + 1));
+				}
+				Collections.sort(cols);
+				for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
+					if (cols.get(j) - cols.get(j + 1) != - 1) {
+						throw new CannotWIthdrowCardException(coordinates);
+					}
+				}
+			}
+		}
+
 
 		while (i < coordinates.size()) {
 			row = coordinates.get(i);
@@ -84,10 +127,10 @@ public class Table {
 				else if (checkout(row, col + 1) == null) { i += 2; }
 				else if (checkout(row, col - 1) == null) { i += 2; }
 				else {
-					throw new CannotWIthdrowCardException(row, col); }
+					throw new CannotWIthdrowCardException(coordinates); }
 			}
 			else {
-				throw new CannotWIthdrowCardException(row, col); }
+				throw new CannotWIthdrowCardException(coordinates); }
 		}
 
 		i = 0;

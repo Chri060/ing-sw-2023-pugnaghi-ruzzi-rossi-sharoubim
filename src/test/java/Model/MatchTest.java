@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.Math.min;
+
 public class MatchTest extends TestCase {
 
     @Test
@@ -23,9 +25,23 @@ public class MatchTest extends TestCase {
             return match;
 
     }
+
     @Test
-    void fluxControl() throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {
+    void constructionTest1() throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {
+
+        List<String> players = new ArrayList<>();
+
+        players.add("Christian");
+        players.add("Carlo");
+        players.add("Alessandro");
+        //players.add("Gianluca");
+        Match match = new Match(players);
+    }
+
+    @Test
+    void fluxControl() throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException, PlayerNotFoundException {
         List<Cards> cardsToWithdraw = new ArrayList<Cards>();
+        LibraryTest printer = new LibraryTest();
         List<Integer> coordinates = new ArrayList<Integer>();
         Random rand = new Random();
         int numberOfCardsWithdrawn;
@@ -36,7 +52,7 @@ public class MatchTest extends TestCase {
             boolean bagEmpty = false;
 
 
-        while (!match.endMatch()) {
+        while (!match.endMatch() || !match.getChairPlayer().equals(match.getCurrentPlayer())) {
             done = false;
             if (match.needsRefill() && !bagEmpty) {
                 try {
@@ -51,12 +67,10 @@ public class MatchTest extends TestCase {
             match.printDashboard();
 
             while (!done) {
-                numberOfCardsWithdrawn = rand.nextInt(2);
-                for (int i = 0; i < 2; i++) {
+                numberOfCardsWithdrawn = rand.nextInt(min(3, match.getPlayerLibrary(match.getCurrentPlayer()).maxFreeSpace())) + 1;
+                for (int i = 0; i < 2 * numberOfCardsWithdrawn; i++) {
                     coordinates.add(rand.nextInt(9));
-                }/*
-                coordinates.add(1);
-                coordinates.add(3);*/
+                }
                 try {
                     cardsToWithdraw =  match.withdraw(coordinates, match.getCurrentPlayer());
                     match.nextAction();
@@ -91,13 +105,10 @@ public class MatchTest extends TestCase {
 
     }
 
-
-
-
     @Test
     void printLibrary(Library l) {
         Cards[][] c = l.getAsMatrix();
-        for (int i = l.LIBRARYROWS - 1; i >= 0; i--) {
+        for (int i = 0; i < l.LIBRARYROWS; i++) {
             for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
                 if (c[i][j] != null) {
                     System.out.print(c[i][j].getType() + "\t");
@@ -107,8 +118,6 @@ public class MatchTest extends TestCase {
                 }
             }
             System.out.println();
-
         }
     }
-
 }

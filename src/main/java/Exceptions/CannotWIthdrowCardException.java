@@ -1,8 +1,10 @@
 package Exceptions;
 
+import java.util.List;
+
 public class CannotWIthdrowCardException extends  Throwable{
-    public  CannotWIthdrowCardException(int row, int col) {
-       // System.err.println("Cannot withdraw in " + row + "° row, " + (col) + "° column");
+    public  CannotWIthdrowCardException(List<Integer> coordinates) {
+        super("Cannot withdraw in" + coordinates);
     }
 
 }

@@ -35,13 +35,13 @@ public class Library {
 	}
 
 	public void insert(List<Cards> cardsList, int col) throws ColumFullException {
-		int row = 0;
+		int row = LIBRARYROWS - 1;
 		if (canInsertIn(cardsList.size(), col)) {
-			while (library[row][col] != null) {
-				row++;
+			while (row > 0 && library[row][col] != null) {
+				row--;
 			}
 			for (int i = 0; i < cardsList.size(); i++) {
-				library[row + i][col] = cardsList.get(i);
+				library[row - i][col] = cardsList.get(i);
 			}
 		}
 		else { throw new ColumFullException(col);
@@ -56,8 +56,8 @@ public class Library {
 
 		for (int i = 0; i < LIBRARYCOLUMNS; i++) {
 			row = 0;
-			while (row < LIBRARYROWS && library[row][i] != null ) { row++; }
-			if (space < LIBRARYROWS - row) { space = LIBRARYROWS - row; }
+			while (row < LIBRARYROWS && library[row][i] == null ) { row++; }
+			if (space < row) { space = row; }
 		}
 		return space;
 	}
@@ -65,10 +65,10 @@ public class Library {
 	public boolean  canInsertIn(int nCards, int col) {
 		int row = 0;
 
-		while (row < LIBRARYROWS && library[row][col] != null) {
+		while (row < LIBRARYROWS && library[row][col] == null) {
 			row++;
 		}
-		return (row + nCards <= LIBRARYROWS);
+		return (row >= nCards);
 
 	}
 
