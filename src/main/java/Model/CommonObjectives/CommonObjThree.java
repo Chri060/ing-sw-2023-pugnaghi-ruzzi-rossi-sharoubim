@@ -1,4 +1,8 @@
-package Model;
+package Model.CommonObjectives;
+
+import Model.Cards;
+import Model.CommonObjective;
+import Model.Library;
 
 public class CommonObjThree extends CommonObjective {
 
@@ -13,8 +17,8 @@ public class CommonObjThree extends CommonObjective {
 
         if (libraryCopy[0][0] != null && libraryCopy[row][0] != null && libraryCopy[0][col] != null && libraryCopy[row][col] != null) {
             return libraryCopy[0][0].getType() == libraryCopy[row][0].getType() &&
-                   libraryCopy[row][0].getType() == libraryCopy[0][col].getType() &&
-                   libraryCopy[0][col].getType() == libraryCopy[row][col].getType();
+                   libraryCopy[0][0].getType() == libraryCopy[0][col].getType() &&
+                   libraryCopy[0][0].getType() == libraryCopy[row][col].getType();
         }
 
         return false;
