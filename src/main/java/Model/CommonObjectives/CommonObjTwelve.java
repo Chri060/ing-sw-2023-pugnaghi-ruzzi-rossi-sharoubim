@@ -22,7 +22,6 @@ public class CommonObjTwelve extends CommonObjective {
 
         List<Integer> card = new ArrayList<>();
 
-
         for (int j = 0; j < col; j++) {
             for (int i = 0; i < row; i++) {
                 if (libraryCopy[i][j] != null) {
@@ -33,9 +32,6 @@ public class CommonObjTwelve extends CommonObjective {
             count = 0;
         }
 
-        System.out.println(card);
-
-
         for (int i = 0; i <= col - 5; i++) {
             if ((card.get(i) != 0) &&
                     (card.get(i) == card.get(i + 1) - 1) &&
@@ -44,14 +40,11 @@ public class CommonObjTwelve extends CommonObjective {
                     (card.get(i) == card.get(i + 4) - 4)) {
                 return true;
             }
-        }
-
-        for (int i = 0; i <= col - 5; i++) {
             if ((card.get(i) != 0) &&
-                (card.get(i) == card.get(i + 1) + 1) &&
-                (card.get(i) == card.get(i + 2) + 2) &&
-                (card.get(i) == card.get(i + 3) + 3) &&
-                (card.get(i) == card.get(i + 4) + 4)) {
+                    (card.get(i) == card.get(i + 1) + 1) &&
+                    (card.get(i) == card.get(i + 2) + 2) &&
+                    (card.get(i) == card.get(i + 3) + 3) &&
+                    (card.get(i) == card.get(i + 4) + 4)) {
                 return true;
             }
         }
