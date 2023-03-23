@@ -10,10 +10,10 @@ public class BagTest extends TestCase {
         Bag bag = new Bag();
         Cards c;
 
-        for (int i = 0; i < bag.NUMBEROFCARDS * CardsType.values().length + 5; i++) {
+        for (int i = 0; i < bag.getNumOfCards() * CardsType.values().length + 5; i++) {
             try {
                 c = bag.getCard();
-                System.out.println("Pesco il tipo " + c.getType() + " con ID: " + c.cardID);
+                System.out.println("Pesco il tipo " + c.getType() + " con ID: " + c.getCardID());
             }
             catch (BagEmptyException e) {
             }

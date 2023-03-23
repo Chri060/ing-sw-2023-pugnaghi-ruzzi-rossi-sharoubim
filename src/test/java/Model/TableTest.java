@@ -1,7 +1,7 @@
 package Model;
 
 import Exceptions.BagEmptyException;
-import Exceptions.CannotWIthdrowCardException;
+import Exceptions.CannotWithdrawCardException;
 import Exceptions.InvalidPickException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ public class TableTest extends TestCase {
             tabelle.printCards();
             System.out.println();
         }
-        catch (CannotWIthdrowCardException | InvalidPickException e) {}
+        catch (CannotWithdrawCardException | InvalidPickException e) {}
 
 
     }
@@ -87,7 +87,7 @@ public class TableTest extends TestCase {
                     System.out.println("Withdrawn " + withdrown.get(0).getType() + " from [" + cards.get(0) + ", " + cards.get(1) + "]");
                     dash.printCards();
                 }
-                catch (CannotWIthdrowCardException e) {
+                catch (CannotWithdrawCardException e) {
                 }
                 cards.clear();
             }

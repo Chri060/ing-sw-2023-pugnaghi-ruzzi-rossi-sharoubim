@@ -7,6 +7,9 @@ import java.util.List;
 
 public class Player {
 	private String name;
+
+	private int points;
+
 	private List<PrivateObjective> privateObj = new ArrayList<>();
 	private Library library;
 	public Player(String name, List<Integer> objID) {
@@ -15,6 +18,13 @@ public class Player {
 			privateObj.add(new PrivateObjective(objID.get(i)));
 		}
 		library = new Library();
+		points = 0;
+	}
+
+	//TODO: gestire punti (aggiunta)
+
+	public int getPoints() {
+		return points;
 	}
 
 	public String getName() {

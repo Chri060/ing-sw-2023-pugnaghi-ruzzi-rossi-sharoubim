@@ -62,6 +62,7 @@ public class Match {
 			bag = new Bag();
 			dashboard = new Table(players.size());
 			turn = new Turn(chair);
+
 		} catch (FileNotFoundException | ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -150,7 +151,7 @@ public class Match {
 		return false;
 	}
 
-	public List<Cards> withdraw(List<Integer> coordinates, String playerName) throws CannotWIthdrowCardException, InvalidPickException, NotYourTurnException {
+	public List<Cards> withdraw(List<Integer> coordinates, String playerName) throws CannotWithdrawCardException, InvalidPickException, NotYourTurnException {
 		if (playerName.equals(turn.getCurrentPlayer()))
 		return dashboard.withdraw(coordinates);
 		else {
@@ -186,8 +187,8 @@ public class Match {
 	//test only
 	void printLibrary(Library l) {
 		Cards[][] c = l.getAsMatrix();
-		for (int i = 0; i < l.LIBRARYROWS; i++) {
-			for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
+		for (int i = 0; i < l.getLibraryrows(); i++) {
+			for (int j = 0; j < l.getLibrarycols(); j++) {
 				if (c[i][j] != null) {
 					System.out.print(c[i][j].getType() + "\t");
 				}

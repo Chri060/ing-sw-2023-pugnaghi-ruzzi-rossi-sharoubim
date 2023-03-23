@@ -23,13 +23,13 @@ class PrivateObjectiveTest {
     void printLibrary(Library l) {
         Cards[][] c = l.getAsMatrix();
         System.out.print("\t");
-        for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
+        for (int j = 0; j < l.getLibrarycols(); j++) {
             System.out.print(j + "\t\t");
         }
         System.out.println();
-        for (int i = 0; i < l.LIBRARYROWS; i++) {
+        for (int i = 0; i < l.getLibraryrows(); i++) {
             System.out.print(i + "\t");
-            for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
+            for (int j = 0; j < l.getLibrarycols(); j++) {
                 System.out.print(c[i][j].getType() + "\t");
             }
             System.out.println();
@@ -46,8 +46,8 @@ class PrivateObjectiveTest {
         ArrayList<Cards> carte = new ArrayList<>();
 
 
-        for(int i = 0; i < libreria.LIBRARYROWS; i++) {
-            for (int j = 0; j < libreria.LIBRARYCOLUMNS; j++) {
+        for(int i = 0; i < libreria.getLibraryrows(); i++) {
+            for (int j = 0; j < libreria.getLibrarycols(); j++) {
                 carte.add(bag.getCard());
                 libreria.insert(carte, j);
                 carte.clear();

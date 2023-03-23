@@ -18,18 +18,15 @@ public class PrivateObjective {
 	private int[] coordinates;
 	private CardsType[] object;
 
-
-
-
-	public PrivateObjective(int obiettivo) {
+	public PrivateObjective(int ObjID) {
 
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
 			JSONObject jsonObject = (JSONObject) file;
 			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
 
-			JSONArray coordinateJson = (JSONArray) ((JSONObject) patterns.get(obiettivo)).get("objectiveCoordinates");
-			JSONArray objectiveJson = (JSONArray) ((JSONObject) patterns.get(obiettivo)).get("objectiveItems");
+			JSONArray coordinateJson = (JSONArray) ((JSONObject) patterns.get(ObjID)).get("objectiveCoordinates");
+			JSONArray objectiveJson = (JSONArray) ((JSONObject) patterns.get(ObjID)).get("objectiveItems");
 
 			coordinates = new int[coordinateJson.size()];
 			for (int i = 0; i < coordinateJson.size(); i++) {

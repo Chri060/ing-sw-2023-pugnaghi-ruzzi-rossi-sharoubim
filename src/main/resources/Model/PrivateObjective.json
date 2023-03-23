@@ -3,7 +3,7 @@
   "patterns" : [
   {
     "IdPrivateObj": "one",
-    "objectiveCoordinates":  [ 0 ,0, 0, 2, 1, 4, 2, 3, 3, 1, 5, 2 ],
+    "objectiveCoordinates":  [ 0, 0, 0, 2, 1, 4, 2, 3, 3, 1, 5, 2 ],
     "objectiveItems": [ "PLAN", "FRAM" , "CATS", "BOOK", "GAME", "TROP" ]
   },
 

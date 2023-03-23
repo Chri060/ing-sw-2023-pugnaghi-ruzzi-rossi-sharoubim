@@ -1,33 +1,55 @@
 package Model;
 
 import Exceptions.ColumFullException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 public class Library {
 
-	final int LIBRARYCOLUMNS = 5;
-	final int LIBRARYROWS = 6;
+	private int librarycols = 5;
+	private int libraryrows = 6;
 
 	private Cards[][] library;
 
 	public Library() {
-		library = new Cards[LIBRARYROWS][LIBRARYCOLUMNS];
+
+		try {
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/Library.json"));
+			JSONObject jsonObject = (JSONObject) file;
+			librarycols = ((Long) jsonObject.get("numberOfColoumns")).intValue();
+			libraryrows = ((Long) jsonObject.get("numberOfRows")).intValue();
+		}
+		catch (FileNotFoundException | ParseException e) {
+			e.printStackTrace();
+		} catch (
+				IOException e) {
+			throw new RuntimeException(e);
+		}
+
+
+
+		library = new Cards[libraryrows][librarycols];
 	}
 
 	public Library(Library l) {
 		this();
-		for (int i = 0; i < LIBRARYROWS; i++) {
-			for (int j = 0; j < LIBRARYCOLUMNS; j++) {
+		for (int i = 0; i < libraryrows; i++) {
+			for (int j = 0; j < librarycols; j++) {
 				this.library[i][j] =  l.library[i][j];
 			}
 		}
 	}
 
 	public Cards[][] getAsMatrix() {
-		Cards[][] result = new Cards[LIBRARYROWS][LIBRARYCOLUMNS];
-		for (int i = 0; i < LIBRARYROWS; i++) {
-			for (int j = 0; j < LIBRARYCOLUMNS; j++) {
+		Cards[][] result = new Cards[libraryrows][librarycols];
+		for (int i = 0; i < libraryrows; i++) {
+			for (int j = 0; j < librarycols; j++) {
 				result[i][j] = library[i][j];
 			}
 		}
@@ -35,7 +57,7 @@ public class Library {
 	}
 
 	public void insert(List<Cards> cardsList, int col) throws ColumFullException {
-		int row = LIBRARYROWS - 1;
+		int row = libraryrows - 1;
 		if (canInsertIn(cardsList.size(), col)) {
 			while (row > 0 && library[row][col] != null) {
 				row--;
@@ -54,9 +76,9 @@ public class Library {
 		int row = 0;
 		int space = 0;
 
-		for (int i = 0; i < LIBRARYCOLUMNS; i++) {
+		for (int i = 0; i < librarycols; i++) {
 			row = 0;
-			while (row < LIBRARYROWS && library[row][i] == null ) { row++; }
+			while (row < libraryrows && library[row][i] == null ) { row++; }
 			if (space < row) { space = row; }
 		}
 		return space;
@@ -65,11 +87,18 @@ public class Library {
 	public boolean  canInsertIn(int nCards, int col) {
 		int row = 0;
 
-		while (row < LIBRARYROWS && library[row][col] == null) {
+		while (row < libraryrows && library[row][col] == null) {
 			row++;
 		}
 		return (row >= nCards);
 
 	}
 
+	public int getLibrarycols() {
+		return librarycols;
+	}
+
+	public int getLibraryrows() {
+		return libraryrows;
+	}
 }

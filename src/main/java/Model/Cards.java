@@ -2,7 +2,7 @@ package Model;
 
 public class Cards {
     CardsType type;
-    int cardID;
+    private int cardID;
 
     public Cards(CardsType type, int id) {
         this.type = type;

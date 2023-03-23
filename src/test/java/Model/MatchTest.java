@@ -91,7 +91,7 @@ public class MatchTest extends TestCase {
                         done = true;
                     }
                     catch (PlayerNotFoundException e) {};
-                } catch (CannotWIthdrowCardException | InvalidPickException | NotYourTurnException e) {
+                } catch (CannotWithdrawCardException | InvalidPickException | NotYourTurnException e) {
                     coordinates.clear();
                 }
 
@@ -108,8 +108,8 @@ public class MatchTest extends TestCase {
     @Test
     void printLibrary(Library l) {
         Cards[][] c = l.getAsMatrix();
-        for (int i = 0; i < l.LIBRARYROWS; i++) {
-            for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
+        for (int i = 0; i < l.getLibraryrows(); i++) {
+            for (int j = 0; j < l.getLibrarycols(); j++) {
                 if (c[i][j] != null) {
                     System.out.print(c[i][j].getType() + "\t");
                 }

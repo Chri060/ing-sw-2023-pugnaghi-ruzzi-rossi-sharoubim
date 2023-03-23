@@ -4,7 +4,6 @@ import Exceptions.ColumFullException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
-import java.awt.font.LineBreakMeasurer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,8 +13,8 @@ public class LibraryTest extends TestCase {
     @Test
     void printLibrary(Library l) {
         Cards[][] c = l.getAsMatrix();
-        for (int i = 0; i < l.LIBRARYROWS; i++) {
-            for (int j = 0; j < l.LIBRARYCOLUMNS; j++) {
+        for (int i = 0; i < l.getLibrarycols(); i++) {
+            for (int j = 0; j < l.getLibraryrows(); j++) {
                 if (c[i][j] != null) {
                     System.out.print(c[i][j].getType() + "\t");
                 }
@@ -35,7 +34,7 @@ public class LibraryTest extends TestCase {
 
         int x;
         for (int i = 0; i < 10; i++) {
-            x = rand.nextInt(l.LIBRARYCOLUMNS);
+            x = rand.nextInt(l.getLibrarycols());
             System.out.print("Inserting in " +  "column " + x + ": ");
             for (int j = 0; j < 1 + rand.nextInt(3); j++) {
                 cards.add(new Cards(CardsType.values()[rand.nextInt(6)], rand.nextInt(22)));
@@ -68,7 +67,7 @@ public class LibraryTest extends TestCase {
         int x;
 
         while (!l.isFull()) {
-            x = rand.nextInt(l.LIBRARYCOLUMNS);
+            x = rand.nextInt(l.getLibrarycols());
             System.out.print("Inserting in " +  "column " + x + ": ");
             cards.clear();
             for (int j = 0; j < 1 + rand.nextInt(3); j++) {
@@ -97,7 +96,7 @@ public class LibraryTest extends TestCase {
         int x;
 
         while (!l.isFull()) {
-            x = rand.nextInt(l.LIBRARYCOLUMNS);
+            x = rand.nextInt(l.getLibrarycols());
             System.out.print("Inserting in " +  "column " + x + ": ");
             cards.clear();
             for (int j = 0; j < 1 + rand.nextInt(3); j++) {

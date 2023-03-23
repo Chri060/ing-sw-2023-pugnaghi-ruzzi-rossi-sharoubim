@@ -2,7 +2,7 @@ package Model;
 
 
 import Exceptions.BagEmptyException;
-import Exceptions.CannotWIthdrowCardException;
+import Exceptions.CannotWithdrawCardException;
 import Exceptions.InvalidPickException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,9 +12,7 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.abs;
 
@@ -55,18 +53,27 @@ public class Table {
 		}
 	}
 
-	public Cards checkout(int row, int col) {
+	public Cards checkout(int row, int col) throws InvalidPickException {
+		if (row >= dashDim || row < 0 || col >= dashDim || col < 0) {
+			throw new InvalidPickException();
+		}
 		return dashboard[row][col];
 	}
 
 	//TODO: deve essere private: done
-	private Cards getCard(int row, int col) {
+	private Cards getCard(int row, int col) throws InvalidPickException{
+		if (row >= dashDim || row < 0 || col >= dashDim || col < 0) {
+			throw new InvalidPickException();
+		}
+		if (dashboard[row][col] == null) {
+			throw new InvalidPickException();
+		}
 		Cards c = dashboard[row][col];
 		dashboard[row][col] = null;
 		return c;
 	}
 
-	public List<Cards> withdraw(List<Integer> coordinates) throws  CannotWIthdrowCardException, InvalidPickException {
+	public List<Cards> withdraw(List<Integer> coordinates) throws CannotWithdrawCardException, InvalidPickException {
 
 		if (coordinates == null || coordinates.size() == 0 || coordinates.size() % 2 != 0){
 			throw new InvalidPickException();
@@ -87,7 +94,7 @@ public class Table {
 				if (coordinates.get(2 * j) != coordinates.get(2 * j + 2)) {vertical = true;}
 				if (coordinates.get(2 * j + 1) != coordinates.get(2 * j + 3)) {orizzontal = true;}
 				if ((vertical && orizzontal) || (!vertical && !orizzontal)) {
-					throw new CannotWIthdrowCardException(coordinates);
+					throw new CannotWithdrawCardException(coordinates);
 				}
 			}
 			if (vertical) {
@@ -98,7 +105,7 @@ public class Table {
 				Collections.sort(rows);
 				for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
 					if (rows.get(j) - rows.get(j + 1) != - 1) {
-						throw new CannotWIthdrowCardException(coordinates);
+						throw new CannotWithdrawCardException(coordinates);
 					}
 				}
 			}
@@ -110,12 +117,18 @@ public class Table {
 				Collections.sort(cols);
 				for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
 					if (cols.get(j) - cols.get(j + 1) != - 1) {
-						throw new CannotWIthdrowCardException(coordinates);
+						throw new CannotWithdrawCardException(coordinates);
 					}
 				}
 			}
 		}
 
+		boolean outOfBounds = coordinates.stream().anyMatch( x -> {
+			if(x < 0) return true;
+			if(x >= dashDim) return true;
+			return false;
+		});
+		if(outOfBounds) throw new CannotWithdrawCardException(coordinates);
 
 		while (i < coordinates.size()) {
 			row = coordinates.get(i);
@@ -127,10 +140,10 @@ public class Table {
 				else if (checkout(row, col + 1) == null) { i += 2; }
 				else if (checkout(row, col - 1) == null) { i += 2; }
 				else {
-					throw new CannotWIthdrowCardException(coordinates); }
+					throw new CannotWithdrawCardException(coordinates); }
 			}
 			else {
-				throw new CannotWIthdrowCardException(coordinates); }
+				throw new CannotWithdrawCardException(coordinates); }
 		}
 
 		i = 0;
@@ -148,12 +161,19 @@ public class Table {
 		for(int i = 0; i < dashDim * dashDim; i++) {
 			int row = i / dashDim;
 			int col = i % dashDim;
-			if (checkout(row, col) != null) {
-				if (col > 0 && checkout(row, col - 1) != null) { return false;}
-				else if (col < dashDim - 1 && checkout(row, col + 1) != null)  { return false;}
-				else if (row > 0 && checkout(row - 1, col) != null)  { return false;}
-				else if (row < dashDim - 1 && checkout(row +1, col) != null)  { return false;}
-			}
+			try {
+				if (checkout(row, col) != null) {
+					if (col > 0 && checkout(row, col - 1) != null) {
+						return false;
+					} else if (col < dashDim - 1 && checkout(row, col + 1) != null) {
+						return false;
+					} else if (row > 0 && checkout(row - 1, col) != null) {
+						return false;
+					} else if (row < dashDim - 1 && checkout(row + 1, col) != null) {
+						return false;
+					}
+				}
+			}catch (InvalidPickException e) {}
 		}
 		return true;
 	}
