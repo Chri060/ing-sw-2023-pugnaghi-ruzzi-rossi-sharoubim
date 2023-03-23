@@ -17,7 +17,6 @@ public class Match {
 	private List<CommonObjective> commonObjectives;
 	private List<Player> players;
 	private Turn turn;
-
 	private String firstToFinish;
 
 	public Match(List<String> playerList) throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {

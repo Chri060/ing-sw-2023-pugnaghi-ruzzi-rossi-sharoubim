@@ -1,18 +1,21 @@
 package Model;
 
+import java.util.List;
+
 public abstract class CommonObjective {
 
-	private int type;
+	private List<Integer> objID;
 
-	private String completedBy;
+	private List<String> completedBy;
 
 
 	public CommonObjective (){
-
+		//TODO: pesca due numeri casuali da 1 a 12
 	};
 
-	public boolean verify(Library library) {
-		return false;
+	public void chosenObjective (List<Integer> objID) {
+		//TODO: costruisce gli oggetti relativi ai due obiettivi pescati
 	}
+
 
 }
