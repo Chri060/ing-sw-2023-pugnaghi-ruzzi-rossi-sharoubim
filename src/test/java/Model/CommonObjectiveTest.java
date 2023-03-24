@@ -15,7 +15,7 @@ class CommonObjectiveTest {
 
     @Test
     void test() throws ColumFullException {
-        for (int k = 0; k < 2000; k++) {
+        for (int k = 0; k < 1; k++) {
             Library library = new Library();
             List<Cards> cards = new ArrayList<>();
             Random rand = new Random();
@@ -23,12 +23,13 @@ class CommonObjectiveTest {
             int row = 6;
             int col = 5;
             for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    cards.add(new Cards(CardsType.values()[rand.nextInt(6)], rand.nextInt(22)));
-                    library.insert(cards, j);
-                    cards.clear();
+                    for (int j = 0; j < col; j++) {
 
-                }
+                            cards.add(new Cards(CardsType.values()[rand.nextInt(6)], rand.nextInt(22)));
+                            library.insert(cards, j);
+                            cards.clear();
+                    }
+
             }
 
             System.out.println();
@@ -46,7 +47,7 @@ class CommonObjectiveTest {
             }
 
 
-            CommonObjSeven obiettivo = new CommonObjSeven();
+            CommonObjFive obiettivo = new CommonObjFive();
 
             System.out.println(obiettivo.verify(library));
         }
