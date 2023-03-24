@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class CommonObjective {
-	private List<Player> completedBy;
+	private List<String> completedBy;
 
 	int objID;
 
@@ -13,7 +13,7 @@ public abstract class CommonObjective {
 
 	}
 
-	public List<Player> getCompletion () {
+	public List<String> getCompletion () {
 		return completedBy;
 	}
 

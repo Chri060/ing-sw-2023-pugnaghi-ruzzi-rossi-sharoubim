@@ -17,14 +17,12 @@ public class CommonObjectiveFactory {
 
     }
 
-    public List<CommonObjective> chosenObjective() {
+    public List<CommonObjective> chosenObjective(int objToDraw) {
         int numOfObj = 0;
-        int objToDraw = 0;
         try {
             Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/CommonObjective.json"));
             JSONObject jsonObject = (JSONObject) file;
             numOfObj = ((Long) jsonObject.get("numOfObj")).intValue();
-            objToDraw = ((Long) jsonObject.get("objToDraw")).intValue();
         }
         catch (FileNotFoundException | ParseException e) {
             e.printStackTrace();
@@ -33,7 +31,7 @@ public class CommonObjectiveFactory {
         }
 
         List<Integer> objID = new ArrayList<>();
-        ArrayList<Integer> num = new ArrayList<Integer>();
+        ArrayList<Integer> num = new ArrayList<>();
         for (int i = 1; i <= numOfObj; i++) {
             num.add(i);
             Collections.shuffle(num);

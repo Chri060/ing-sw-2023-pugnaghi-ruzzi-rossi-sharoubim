@@ -62,7 +62,7 @@ public class Match {
 			bag = new Bag();
 			dashboard = new Table(players.size());
 			turn = new Turn(chair);
-
+			commonObjectives = new CommonObjectiveFactory().chosenObjective(cObjNum);
 		} catch (FileNotFoundException | ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -102,9 +102,9 @@ public class Match {
 
 	public void insert(List<Cards> cardsList, int col, String playerName) throws ColumFullException, NotYourTurnException {
 		if (playerName.equals(turn.getCurrentPlayer())) {
-			for (int i = 0; i < players.size(); i++) {
-				if (playerName.equals(players.get(i).getName())) {
-					players.get(i).insert(cardsList, col);
+			for (Player player : players) {
+				if (playerName.equals(player.getName())) {
+					player.insert(cardsList, col);
 				}
 			}
 		}
@@ -114,9 +114,9 @@ public class Match {
 	}
 
 	public int PersonalObjPoints(String playerName) throws PlayerNotFoundException {
-		for (int i = 0; i < players.size(); i++) {
-			if (playerName.equals(players.get(i).getName())) {
-				return players.get(i).personalObjPoints();
+		for (Player player : players) {
+			if (playerName.equals(player.getName())) {
+				return player.personalObjPoints();
 			}
 		}
 		throw new PlayerNotFoundException();
@@ -157,10 +157,6 @@ public class Match {
 		else {
 			throw new NotYourTurnException(turn.getCurrentPlayer());
 		}
-	}
-
-	public void setCommonObjectives (List<CommonObjective> objectives) {
-		commonObjectives = objectives;
 	}
 
 

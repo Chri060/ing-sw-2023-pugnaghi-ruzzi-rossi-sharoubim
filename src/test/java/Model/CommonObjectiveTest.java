@@ -55,7 +55,7 @@ class CommonObjectiveTest {
     @Test
     void getRandomObjectives() {
 
-        List<CommonObjective> objectives = new ArrayList<>();
+
         List<String> player = new ArrayList<>();
 
         player.add("a");
@@ -64,11 +64,10 @@ class CommonObjectiveTest {
         CommonObjectiveFactory objs = new CommonObjectiveFactory();
         try {
             Match match = new Match(player);
-            objectives = objs.chosenObjective();
-            match.setCommonObjectives(objectives);
 
-            for (int i = 0; i < objectives.size(); i++) {
-                System.out.println(match.getCommonObjectives().get(i).objID);
+
+            for (int i = 0; i < 2; i++) {
+                System.out.println(match.getCommonObjectives().get(i).getObjID());
             }
         }
         catch (NotEnoughPrivateObjectivesException |IncorrectPlayersNumberException e){
