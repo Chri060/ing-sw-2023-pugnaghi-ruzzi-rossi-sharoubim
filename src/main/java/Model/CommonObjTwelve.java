@@ -1,4 +1,4 @@
-package Model.CommonObjectives;
+package Model;
 
 import Model.Cards;
 import Model.CardsType;
@@ -11,7 +11,7 @@ import java.util.List;
 public class CommonObjTwelve extends CommonObjective {
 
     public CommonObjTwelve () {
-
+        objID = 12;
     }
 
     public boolean verify (Library library) {

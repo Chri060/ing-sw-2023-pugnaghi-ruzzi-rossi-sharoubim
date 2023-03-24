@@ -26,12 +26,12 @@ public class Bag {
 			JSONObject jsonObject = (JSONObject) file;
 			numOfCards = ((Long) jsonObject.get("numberOfCardsOfEachType")).intValue();
 		}
-	catch (FileNotFoundException | ParseException e) {
-		e.printStackTrace();
-	} catch (
-	IOException e) {
-		throw new RuntimeException(e);
-	}
+		catch (FileNotFoundException | ParseException e) {
+		e	.printStackTrace();
+		} catch (
+		IOException e) {
+			throw new RuntimeException(e);
+		}
 
 
 		for (CardsType c : CardsType.values()) {

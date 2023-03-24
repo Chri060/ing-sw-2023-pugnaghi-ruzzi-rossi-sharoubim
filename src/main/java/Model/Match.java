@@ -159,6 +159,17 @@ public class Match {
 		}
 	}
 
+	public void setCommonObjectives (List<CommonObjective> objectives) {
+		commonObjectives = objectives;
+	}
+
+
+	public List<CommonObjective>  getCommonObjectives () {
+		return commonObjectives;
+	}
+
+
+
 	//test Only
 	public void printDashboard() {
 		System.out.println("Turn n°: " + turn.getTurn());
@@ -199,4 +210,6 @@ public class Match {
 			System.out.println();
 		}
 	}
+
+
 }

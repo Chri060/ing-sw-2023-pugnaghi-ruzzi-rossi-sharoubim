@@ -1,4 +1,4 @@
-package Model.CommonObjectives;
+package Model;
 
 import Model.Cards;
 import Model.CommonObjective;
@@ -7,7 +7,7 @@ import Model.Library;
 public class CommonObjFive extends CommonObjective {
 
     public CommonObjFive() {
-
+        objID = 5;
     }
 
     public boolean verify(Library library) {

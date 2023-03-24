@@ -1,4 +1,4 @@
-package Model.CommonObjectives;
+package Model;
 
 import Model.Cards;
 import Model.CardsType;
@@ -8,10 +8,11 @@ import Model.Library;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommonObjSix extends CommonObjective {
+public class CommonObjNine extends CommonObjective {
 
-    public CommonObjSix () {
 
+    public CommonObjNine () {
+        objID = 9;
     }
 
     public boolean verify (Library library) {
@@ -28,11 +29,11 @@ public class CommonObjSix extends CommonObjective {
                     card.add(libraryCopy[i][j].getType());
                 }
             }
-            if (card.size() == 6) {
+            if (card.size() <= 3) {
                 count++;
             }
             card.clear();
         }
-        return count >= 2;
+        return count >= 3;
     }
 }

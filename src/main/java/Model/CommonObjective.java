@@ -1,21 +1,23 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class CommonObjective {
+	private List<Player> completedBy;
 
-	private List<Integer> objID;
+	int objID;
 
-	private List<String> completedBy;
+	public CommonObjective () {
 
-
-	public CommonObjective (){
-		//TODO: pesca due numeri casuali da 1 a 12
-	};
-
-	public void chosenObjective (List<Integer> objID) {
-		//TODO: costruisce gli oggetti relativi ai due obiettivi pescati
 	}
 
+	public List<Player> getCompletion () {
+		return completedBy;
+	}
 
+	public int getObjID () {
+		return objID;
+	}
 }

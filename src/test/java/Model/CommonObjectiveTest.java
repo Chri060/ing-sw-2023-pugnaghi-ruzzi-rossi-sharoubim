@@ -1,22 +1,20 @@
-package Model.CommonObjectives;
+package Model;
 
 import Exceptions.ColumFullException;
-import Model.Cards;
-import Model.CardsType;
-import Model.Library;
-import Model.LibraryTest;
+import Exceptions.IncorrectPlayersNumberException;
+import Exceptions.NotEnoughPrivateObjectivesException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-class commonObjective {
+import static org.junit.jupiter.api.Assertions.*;
+
+class CommonObjectiveTest {
 
     @Test
     void test() throws ColumFullException {
-
-
         for (int k = 0; k < 2000; k++) {
             Library library = new Library();
             List<Cards> cards = new ArrayList<>();
@@ -51,6 +49,30 @@ class commonObjective {
             CommonObjSeven obiettivo = new CommonObjSeven();
 
             System.out.println(obiettivo.verify(library));
+        }
+    }
+
+    @Test
+    void getRandomObjectives() {
+
+        List<CommonObjective> objectives = new ArrayList<>();
+        List<String> player = new ArrayList<>();
+
+        player.add("a");
+        player.add("b");
+
+        CommonObjectiveFactory objs = new CommonObjectiveFactory();
+        try {
+            Match match = new Match(player);
+            objectives = objs.chosenObjective();
+            match.setCommonObjectives(objectives);
+
+            for (int i = 0; i < objectives.size(); i++) {
+                System.out.println(match.getCommonObjectives().get(i).objID);
+            }
+        }
+        catch (NotEnoughPrivateObjectivesException |IncorrectPlayersNumberException e){
+            e.printStackTrace();
         }
     }
 }

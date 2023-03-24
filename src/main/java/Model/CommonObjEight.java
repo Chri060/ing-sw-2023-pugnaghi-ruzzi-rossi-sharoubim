@@ -1,4 +1,4 @@
-package Model.CommonObjectives;
+package Model;
 
 import Model.Cards;
 import Model.CardsType;
@@ -12,7 +12,7 @@ public class CommonObjEight extends CommonObjective {
 
 
     public CommonObjEight () {
-
+        objID = 8;
     }
 
     public boolean verify (Library library) {
@@ -33,7 +33,6 @@ public class CommonObjEight extends CommonObjective {
             }
             card.clear();
         }
-
         return count >= 2;
     }
 
