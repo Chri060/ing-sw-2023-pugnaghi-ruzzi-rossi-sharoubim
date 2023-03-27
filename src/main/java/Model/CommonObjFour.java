@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CommonObjFour extends CommonObjective {
-    public CommonObjFour () {
+    public CommonObjFour (int numOfPlayers) {
+        super(numOfPlayers);
         objID = 4;
     }
 

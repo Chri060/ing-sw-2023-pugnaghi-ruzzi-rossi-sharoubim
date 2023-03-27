@@ -33,6 +33,16 @@ public class PreMatch {
         return players.stream().map(PreMatchPlayer::isReady).reduce((a, b) -> a && b).get();
     }
 
+    public String getRoomLeader() {
+        return players.stream().filter(x -> x.isRoomLeader()).findAny().get().getName();
+    }
+
+    public List<String> start() {
+        List<String> playerList = new ArrayList<>();
+        players.stream().forEach(x -> playerList.add(x.getName()));
+        return playerList;
+    }
+
 
     //test only
     public void print() {

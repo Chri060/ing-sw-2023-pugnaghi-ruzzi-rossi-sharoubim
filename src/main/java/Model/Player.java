@@ -42,6 +42,11 @@ public class Player {
 		}
 		return points;
 	}
+
+	public void addPoints(int adder) {
+		this.points =+ adder;
+	}
+
 	//TODO: fino a quando non fixiamo get pattern avremo una lista con dentro tutti null
 	public List <Cards[][]> getObjPattern() {
 		List <Cards[][]> l = new ArrayList<>();

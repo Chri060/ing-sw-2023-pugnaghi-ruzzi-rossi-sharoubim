@@ -10,7 +10,8 @@ import java.util.List;
 
 public class CommonObjTwelve extends CommonObjective {
 
-    public CommonObjTwelve () {
+    public CommonObjTwelve (int numOfPlayers) {
+        super(numOfPlayers);
         objID = 12;
     }
 

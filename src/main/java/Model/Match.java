@@ -61,7 +61,7 @@ public class Match {
 			bag = new Bag();
 			dashboard = new Table(players.size());
 			turn = new Turn(chair);
-			commonObjectives = new CommonObjectiveFactory().chosenObjective(cObjNum);
+			commonObjectives = new CommonObjectiveFactory().chosenObjective(playerList.size());
 		} catch (FileNotFoundException | ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

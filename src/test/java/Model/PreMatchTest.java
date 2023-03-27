@@ -25,7 +25,6 @@ public class PreMatchTest extends TestCase {
 
         prelobby.print();
 
-
         printAllReady(prelobby);
 
 

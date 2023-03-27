@@ -46,9 +46,13 @@ class CommonObjectiveTest {
                 System.out.println();
             }
 
+            System.out.println();
+            System.out.println();
+            System.out.println();
 
-            CommonObjFive obiettivo = new CommonObjFive();
-
+            CommonObjFive obiettivo = new CommonObjFive(8);
+            obiettivo.getMaxAvaiblePoints();
+            System.out.println(obiettivo.checkMaxAvaiablePoints());
             System.out.println(obiettivo.verify(library));
         }
     }

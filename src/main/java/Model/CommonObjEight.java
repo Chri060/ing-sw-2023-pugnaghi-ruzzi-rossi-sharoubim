@@ -11,7 +11,9 @@ import java.util.List;
 public class CommonObjEight extends CommonObjective {
 
 
-    public CommonObjEight () {
+    public CommonObjEight (int numOfPlayers) {
+        super(numOfPlayers);
+
         objID = 8;
     }
 

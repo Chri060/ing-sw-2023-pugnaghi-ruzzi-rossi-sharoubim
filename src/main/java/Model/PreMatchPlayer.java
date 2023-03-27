@@ -30,4 +30,6 @@ public class PreMatchPlayer {
     public boolean isReady() {
         return ready;
     }
+
+    public boolean isRoomLeader() {return roomLeader;}
 }

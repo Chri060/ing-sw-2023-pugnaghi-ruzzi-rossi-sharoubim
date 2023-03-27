@@ -6,7 +6,8 @@ import Model.Library;
 
 public class CommonObjTen extends CommonObjective {
 
-    public CommonObjTen() {
+    public CommonObjTen(int numOfPlayers) {
+        super(numOfPlayers);
         objID = 10;
     }
 

@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommonObjEleven extends CommonObjective {
-    public CommonObjEleven () {
+    public CommonObjEleven (int numOfPlayers) {
+        super(numOfPlayers);
         objID = 11;
     }
 

@@ -6,7 +6,8 @@ import Model.Library;
 
 public class CommonObjFive extends CommonObjective {
 
-    public CommonObjFive() {
+    public CommonObjFive(int numOfPlayers) {
+        super(numOfPlayers);
         objID = 5;
     }
 
@@ -96,7 +97,7 @@ public class CommonObjFive extends CommonObjective {
                 }
             }
         }
-        System.out.println(count);
+//        System.out.println(count);
         return count >= 4;
     }
 }
