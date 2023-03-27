@@ -20,7 +20,7 @@ public class CommonObjectiveFactory {
     public List<CommonObjective> chosenObjective(int objToDraw) {
         int numOfObj = 0;
         try {
-            Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/CommonObjective.json"));
+            Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
             JSONObject jsonObject = (JSONObject) file;
             numOfObj = ((Long) jsonObject.get("numOfObj")).intValue();
         }

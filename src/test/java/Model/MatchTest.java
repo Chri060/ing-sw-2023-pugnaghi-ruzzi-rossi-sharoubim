@@ -33,13 +33,24 @@ public class MatchTest extends TestCase {
 
         players.add("Christian");
         players.add("Carlo");
-        players.add("Alessandro");
-        //players.add("Gianluca");
+        //players.add("Alessandro");
+       // players.add("Gianluca");
         Match match = new Match(players);
     }
 
     @Test
     void fluxControl() throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException, PlayerNotFoundException {
+
+        List<String> players = new ArrayList<>();
+
+        players.add("Christian");
+        players.add("Carlo");
+        players.add("Alessandro");
+        players.add("Gianluca");
+        Match match = new Match(players);
+
+
+
         List<Cards> cardsToWithdraw = new ArrayList<Cards>();
         LibraryTest printer = new LibraryTest();
         List<Integer> coordinates = new ArrayList<Integer>();
@@ -48,8 +59,8 @@ public class MatchTest extends TestCase {
         boolean done = false;
         boolean inserted = false;
 
-            Match match = constructionTest();
-            boolean bagEmpty = false;
+
+        boolean bagEmpty = false;
 
 
         while (!match.endMatch() || !match.getChairPlayer().equals(match.getCurrentPlayer())) {
@@ -76,7 +87,7 @@ public class MatchTest extends TestCase {
                     match.nextAction();
                     while (!inserted) {
                         try {
-                            match.insert(cardsToWithdraw, rand.nextInt(5), match.getCurrentPlayer());
+                            match.insert(cardsToWithdraw, rand.nextInt(match.getPlayerLibrary(match.getCurrentPlayer()).getLibrarycols()), match.getCurrentPlayer());
                             inserted = true;
                         }
                         catch (ColumFullException e) {

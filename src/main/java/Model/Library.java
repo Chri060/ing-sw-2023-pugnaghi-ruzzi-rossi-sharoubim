@@ -20,8 +20,9 @@ public class Library {
 	public Library() {
 
 		try {
-			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/Library.json"));
-			JSONObject jsonObject = (JSONObject) file;
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
+			JSONObject jsonObject0 = (JSONObject) file;
+			JSONObject jsonObject = (JSONObject) jsonObject0.get("libraryConfig");
 			librarycols = ((Long) jsonObject.get("numberOfColoumns")).intValue();
 			libraryrows = ((Long) jsonObject.get("numberOfRows")).intValue();
 		}
@@ -84,7 +85,12 @@ public class Library {
 		return space;
 	}
 
+	//TODO: lanciare eccezione
 	public boolean  canInsertIn(int nCards, int col) {
+		if (col < 0 || col > librarycols) {
+			return false;
+		}
+
 		int row = 0;
 
 		while (row < libraryrows && library[row][col] == null) {

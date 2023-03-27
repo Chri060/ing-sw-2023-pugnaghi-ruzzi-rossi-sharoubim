@@ -35,12 +35,11 @@ public class Match {
 		List <Integer> chosenID = new ArrayList<>();
 		List <Integer> chosenIDforPlayer = new ArrayList<>();
 		try {
-			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/Match.json"));
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
 			JSONObject jsonObject = (JSONObject) file;
 			pObjNum = ((Long) jsonObject.get("privateObjectives")).intValue();
 			cObjNum = ((Long) jsonObject.get("commonObjectives")).intValue();
-			Object fileObj = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
-			JSONObject jsonObj = (JSONObject) fileObj;
+			JSONObject jsonObj = (JSONObject) jsonObject.get("privateObjectivesConfig");
 			numberpObj = ((Long) jsonObj.get("numberOfpOjectives")).intValue();;
 			if (numberpObj < pObjNum * playerList.size()) {
 				throw new NotEnoughPrivateObjectivesException();

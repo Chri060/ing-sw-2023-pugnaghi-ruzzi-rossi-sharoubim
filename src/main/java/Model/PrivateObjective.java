@@ -21,8 +21,11 @@ public class PrivateObjective {
 	public PrivateObjective(int ObjID) {
 
 		try {
-			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
-			JSONObject jsonObject = (JSONObject) file;
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
+			JSONObject jsonObject0 = (JSONObject) file;
+
+			JSONObject jsonObject = (JSONObject) jsonObject0.get("privateObjectivesConfig");
+
 			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
 
 			JSONArray coordinateJson = (JSONArray) ((JSONObject) patterns.get(ObjID)).get("objectiveCoordinates");
@@ -50,8 +53,11 @@ public class PrivateObjective {
 		int col;
 
 		try {
-			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/PrivateObjective.json"));
-			JSONObject jsonObject = (JSONObject) file;
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
+			JSONObject jsonObject0 = (JSONObject) file;
+			JSONObject jsonObject = (JSONObject) jsonObject0.get("privateObjectivesConfig");
+
+
 			JSONArray points = (JSONArray) jsonObject.get("points");
 
 			Cards[][] libraryCopy = library.getAsMatrix();

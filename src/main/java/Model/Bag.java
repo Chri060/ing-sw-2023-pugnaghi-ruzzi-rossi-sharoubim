@@ -22,7 +22,7 @@ public class Bag {
 		rand = new Random();
 		cardsLeft = new ArrayList<Cards>();
 		try {
-			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/Bag.json"));
+			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
 			JSONObject jsonObject = (JSONObject) file;
 			numOfCards = ((Long) jsonObject.get("numberOfCardsOfEachType")).intValue();
 		}

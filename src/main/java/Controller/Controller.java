@@ -1,12 +1,23 @@
 package Controller;
 
-import java.util.Observable;
-import java.util.Observer;
+import Model.Match;
 
-public class Controller implements Observer {
+import java.util.List;
 
-    @Override
-    public void update(Observable o, Object arg) {
+public class Controller {
 
+    private Match match;
+
+    Controller (Match match) {
+        this.match = match;
     }
+
+    void withdrawUpdate(/*view Identifier, */List<Integer> coordinates) {
+        //if view identifier corresponds to current player
+        //match.canWithdraw(coordinates);
+    }
+
 }
+
+
+
