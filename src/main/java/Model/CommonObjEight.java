@@ -1,19 +1,14 @@
 package Model;
 
-import Model.Cards;
-import Model.CardsType;
-import Model.CommonObjective;
-import Model.Library;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommonObjEight extends CommonObjective {
 
 
+
     public CommonObjEight (int numOfPlayers) {
         super(numOfPlayers);
-
         objID = 8;
     }
 
@@ -23,7 +18,6 @@ public class CommonObjEight extends CommonObjective {
         int col = libraryCopy[0].length;
         int count = 0;
         List<CardsType> card = new ArrayList<>();
-
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++){
                 if (libraryCopy[i][j] != null && !card.contains(libraryCopy[i][j].getType())) {
@@ -37,5 +31,4 @@ public class CommonObjEight extends CommonObjective {
         }
         return count >= 2;
     }
-
 }

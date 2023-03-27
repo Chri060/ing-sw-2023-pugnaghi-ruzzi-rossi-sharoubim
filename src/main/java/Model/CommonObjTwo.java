@@ -1,10 +1,7 @@
 package Model;
 
-import Model.Cards;
-import Model.CommonObjective;
-import Model.Library;
-
 public class CommonObjTwo extends CommonObjective {
+
 
 
     public CommonObjTwo (int numOfPlayers) {
@@ -17,7 +14,6 @@ public class CommonObjTwo extends CommonObjective {
         final int diagonalLength = 5;
         int row = libraryCopy.length;;
         int col = libraryCopy[0].length;
-
         for (int i = 0; i <= row - diagonalLength; i++) {
             for (int j = 0; j <= col - diagonalLength; j++) {
                 if (libraryCopy[i][j] != null) {
@@ -34,7 +30,6 @@ public class CommonObjTwo extends CommonObjective {
                 }
             }
         }
-
         for (int i = row - 1; i >= diagonalLength - 1; i--) {
             for (int j = 0; j <= col - diagonalLength; j++) {
                 if (libraryCopy[i][j] != null) {
@@ -52,8 +47,6 @@ public class CommonObjTwo extends CommonObjective {
                 }
             }
         }
-
-
         return false;
     }
 }

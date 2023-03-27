@@ -4,27 +4,26 @@ import Exceptions.ColumFullException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
 public class Library {
-
-	private int librarycols = 5;
-	private int libraryrows = 6;
-
+	private int librarycols;
+	private int libraryrows;
 	private Cards[][] library;
 
-	public Library() {
 
+
+	public Library() {
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
 			JSONObject jsonObject0 = (JSONObject) file;
 			JSONObject jsonObject = (JSONObject) jsonObject0.get("libraryConfig");
 			librarycols = ((Long) jsonObject.get("numberOfColoumns")).intValue();
 			libraryrows = ((Long) jsonObject.get("numberOfRows")).intValue();
+			library = new Cards[libraryrows][librarycols];
 		}
 		catch (FileNotFoundException | ParseException e) {
 			e.printStackTrace();
@@ -32,10 +31,6 @@ public class Library {
 				IOException e) {
 			throw new RuntimeException(e);
 		}
-
-
-
-		library = new Cards[libraryrows][librarycols];
 	}
 
 	public Library(Library l) {
@@ -67,16 +62,19 @@ public class Library {
 				library[row - i][col] = cardsList.get(i);
 			}
 		}
-		else { throw new ColumFullException(col);
+		//TODO: gestire caso di indici non validi
+		else {
+			throw new ColumFullException(col);
 		}
 	}
 
-	public boolean isFull() { return (maxFreeSpace() == 0); }
+	public boolean isFull() {
+		return (maxFreeSpace() == 0);
+	}
 
 	public int maxFreeSpace() {
 		int row = 0;
 		int space = 0;
-
 		for (int i = 0; i < librarycols; i++) {
 			row = 0;
 			while (row < libraryrows && library[row][i] == null ) { row++; }
@@ -85,26 +83,22 @@ public class Library {
 		return space;
 	}
 
-	//TODO: lanciare eccezione
 	public boolean  canInsertIn(int nCards, int col) {
 		if (col < 0 || col > librarycols) {
 			return false;
 		}
-
 		int row = 0;
-
 		while (row < libraryrows && library[row][col] == null) {
 			row++;
 		}
 		return (row >= nCards);
-
 	}
 
-	public int getLibrarycols() {
+	public int getLibraryCols() {
 		return librarycols;
 	}
 
-	public int getLibraryrows() {
+	public int getLibraryRows() {
 		return libraryrows;
 	}
 }

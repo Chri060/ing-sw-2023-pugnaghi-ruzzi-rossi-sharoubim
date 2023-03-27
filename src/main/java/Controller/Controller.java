@@ -1,7 +1,6 @@
 package Controller;
 
 import Model.Match;
-
 import java.util.List;
 
 public class Controller {

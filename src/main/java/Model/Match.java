@@ -4,8 +4,6 @@ import Exceptions.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -19,18 +17,17 @@ public class Match {
 	private Turn turn;
 	private String firstToFinish;
 
+
+
 	public Match(List<String> playerList) throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {
 		int pObjNum;
 		int cObjNum;
 		int x;
 		int numberpObj;
-
 		Collections.shuffle(playerList);
-
 		if (playerList.size() < 2 || playerList.size() > 4) {
 			throw new IncorrectPlayersNumberException();
 		}
-
 		Random rand = new Random();
 		List <Integer> chosenID = new ArrayList<>();
 		List <Integer> chosenIDforPlayer = new ArrayList<>();
@@ -62,16 +59,13 @@ public class Match {
 			dashboard = new Table(players.size());
 			turn = new Turn(chair);
 			commonObjectives = new CommonObjectiveFactory().chosenObjective(playerList.size());
-		} catch (FileNotFoundException | ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void nextAction() {
 		turn.nextAction();
-
 	}
 
 	public void nextPlayer() {
@@ -88,7 +82,9 @@ public class Match {
 		return chair;
 	}
 
-	public String getCurrentPlayer() {return turn.getCurrentPlayer();}
+	public String getCurrentPlayer() {
+		return turn.getCurrentPlayer();
+	}
 
 	public Library getPlayerLibrary(String playerName) throws PlayerNotFoundException{
 		for (int i = 0; i < players.size(); i++) {
@@ -121,7 +117,6 @@ public class Match {
 		throw new PlayerNotFoundException();
 	}
 
-	//TODO: solito problema del pattern
 	public List<Cards[][]> getPlayerObjPattern(String playerName) throws PlayerNotFoundException{
 		for (int i = 0; i < players.size(); i++) {
 			if (playerName.equals(players.get(i).getName())) {
@@ -158,12 +153,9 @@ public class Match {
 		}
 	}
 
-
 	public List<CommonObjective>  getCommonObjectives () {
 		return commonObjectives;
 	}
-
-
 
 	//test Only
 	public void printDashboard() {
@@ -171,7 +163,7 @@ public class Match {
 		dashboard.printCards();
 	}
 
-	//Test only
+	//test only
 	public int getCardsLeft(){
 		return bag.cardsLeft();
 	}
@@ -193,8 +185,8 @@ public class Match {
 	//test only
 	void printLibrary(Library l) {
 		Cards[][] c = l.getAsMatrix();
-		for (int i = 0; i < l.getLibraryrows(); i++) {
-			for (int j = 0; j < l.getLibrarycols(); j++) {
+		for (int i = 0; i < l.getLibraryRows(); i++) {
+			for (int j = 0; j < l.getLibraryCols(); j++) {
 				if (c[i][j] != null) {
 					System.out.print(c[i][j].getType() + "\t");
 				}
@@ -205,6 +197,4 @@ public class Match {
 			System.out.println();
 		}
 	}
-
-
 }

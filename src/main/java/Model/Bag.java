@@ -4,7 +4,6 @@ import Exceptions.BagEmptyException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,10 +12,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Bag {
-
 	private int numOfCards;
 	private List<Cards> cardsLeft;
 	private Random rand;
+
+
 
 	public Bag() {
 		rand = new Random();
@@ -50,9 +50,8 @@ public class Bag {
 		return cardsLeft.size();
 	}
 
-	public Cards getCard() throws BagEmptyException{
+	public Cards getCard() throws BagEmptyException {
 		int j;
-
 		if (cardsLeft.size() > 0) {
 			j = rand.nextInt(cardsLeft.size());
 			return cardsLeft.remove(j);
@@ -61,5 +60,4 @@ public class Bag {
 			throw new BagEmptyException() ;
 		}
 	}
-
 }

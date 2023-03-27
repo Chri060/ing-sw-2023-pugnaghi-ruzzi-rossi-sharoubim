@@ -1,14 +1,11 @@
 package Model;
 
-import Model.Cards;
-import Model.CardsType;
-import Model.CommonObjective;
-import Model.Library;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommonObjTwelve extends CommonObjective {
+
+
 
     public CommonObjTwelve (int numOfPlayers) {
         super(numOfPlayers);
@@ -20,9 +17,7 @@ public class CommonObjTwelve extends CommonObjective {
         int row = libraryCopy.length;
         int col = libraryCopy[0].length;
         int count = 0;
-
         List<Integer> card = new ArrayList<>();
-
         for (int j = 0; j < col; j++) {
             for (int i = 0; i < row; i++) {
                 if (libraryCopy[i][j] != null) {
@@ -32,7 +27,6 @@ public class CommonObjTwelve extends CommonObjective {
             card.add(count);
             count = 0;
         }
-
         for (int i = 0; i <= col - 5; i++) {
             if ((card.get(i) != 0) &&
                     (card.get(i) == card.get(i + 1) - 1) &&
@@ -49,7 +43,6 @@ public class CommonObjTwelve extends CommonObjective {
                 return true;
             }
         }
-
         return false;
     }
 }

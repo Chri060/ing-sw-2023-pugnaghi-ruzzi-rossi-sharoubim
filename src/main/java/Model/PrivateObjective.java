@@ -1,36 +1,29 @@
 package Model;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
 public class PrivateObjective {
-
 	private int corrispondence;
 	private int[] coordinates;
 	private CardsType[] object;
 
-	public PrivateObjective(int ObjID) {
 
+
+	public PrivateObjective(int ObjID) {
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
 			JSONObject jsonObject0 = (JSONObject) file;
-
 			JSONObject jsonObject = (JSONObject) jsonObject0.get("privateObjectivesConfig");
-
 			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
-
 			JSONArray coordinateJson = (JSONArray) ((JSONObject) patterns.get(ObjID)).get("objectiveCoordinates");
 			JSONArray objectiveJson = (JSONArray) ((JSONObject) patterns.get(ObjID)).get("objectiveItems");
-
 			coordinates = new int[coordinateJson.size()];
 			for (int i = 0; i < coordinateJson.size(); i++) {
 				coordinates[i] = ((Long) coordinateJson.get(i)).intValue();
@@ -47,21 +40,16 @@ public class PrivateObjective {
 		}
 		corrispondence = 0;
 	}
-	/*retruns number of coincidences*/
+
 	public int verify(Library library) {
 		int row;
 		int col;
-
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
 			JSONObject jsonObject0 = (JSONObject) file;
 			JSONObject jsonObject = (JSONObject) jsonObject0.get("privateObjectivesConfig");
-
-
 			JSONArray points = (JSONArray) jsonObject.get("points");
-
 			Cards[][] libraryCopy = library.getAsMatrix();
-
 			for (int i = 0; i < 2 * object.length; i += 2) {
 				row = coordinates[i];
 				col = coordinates[i + 1];
@@ -70,18 +58,20 @@ public class PrivateObjective {
 				}
 			}
 			return ((Long) points.get(corrispondence)).intValue();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (ParseException e) {
+		} catch (IOException | ParseException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
-	//TODO: valutare come viene restituito alla view, eventualmente creare nuovo tipo oggetto oppure usare matrice
 	public Cards[][] getPattern() {
-		System.out.println(Arrays.toString(this.coordinates));
-		System.out.println(Arrays.toString(this.object));
-		return null;
+		Library l = new Library();
+		Cards[][] pattern = l.getAsMatrix();
+		l = null;
+		for (int i = 0; i < object.length; i++) {
+			pattern[coordinates[2 * i]][coordinates[2 * i + 1]]= new Cards(object[i], 0);
+		}
+		System.out.println(Arrays.toString(coordinates));
+		System.out.println(Arrays.toString(object));
+		return pattern;
 	}
 }

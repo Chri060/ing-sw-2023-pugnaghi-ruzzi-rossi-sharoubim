@@ -1,18 +1,15 @@
 package Model;
 
-
 import Exceptions.PlayerAlreadyInLobby;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class PreMatch {
     private List<PreMatchPlayer> players = new ArrayList<>();
 
-    public void addPlayer(String player) throws PlayerAlreadyInLobby {
 
-        /*if (players.size() > )
-*/
+
+    public void addPlayer(String player) throws PlayerAlreadyInLobby {
         if (players.stream().map(PreMatchPlayer::getName).anyMatch(x -> x.equals(player))) {
             throw new PlayerAlreadyInLobby(player);
         }
@@ -29,7 +26,7 @@ public class PreMatch {
         players.stream().filter(x -> x.getName().equals(player)).findAny().ifPresent(x -> x.toggleReady());
     }
 
-    public boolean allReady(){
+    public boolean allReady() {
         return players.stream().map(PreMatchPlayer::isReady).reduce((a, b) -> a && b).get();
     }
 
@@ -43,12 +40,10 @@ public class PreMatch {
         return playerList;
     }
 
-
     //test only
     public void print() {
         System.out.println("PreMatch status:");
         players.stream().forEach(System.out :: println);
         System.out.println();
     }
-
 }

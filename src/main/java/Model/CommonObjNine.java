@@ -1,14 +1,10 @@
 package Model;
 
-import Model.Cards;
-import Model.CardsType;
-import Model.CommonObjective;
-import Model.Library;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommonObjNine extends CommonObjective {
+
 
 
     public CommonObjNine (int numOfPlayers) {

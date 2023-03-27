@@ -1,10 +1,8 @@
 package Model;
 
-import Model.Cards;
-import Model.CommonObjective;
-import Model.Library;
-
 public class CommonObjFive extends CommonObjective {
+
+
 
     public CommonObjFive(int numOfPlayers) {
         super(numOfPlayers);
@@ -18,7 +16,6 @@ public class CommonObjFive extends CommonObjective {
         int[][] groups = new int[row][col];
         int count = 0;
         int max, min;
-
         for (int k = 0; k < 4; k++) {
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
@@ -97,7 +94,6 @@ public class CommonObjFive extends CommonObjective {
                 }
             }
         }
-//        System.out.println(count);
         return count >= 4;
     }
 }

@@ -87,7 +87,7 @@ public class MatchTest extends TestCase {
                     match.nextAction();
                     while (!inserted) {
                         try {
-                            match.insert(cardsToWithdraw, rand.nextInt(match.getPlayerLibrary(match.getCurrentPlayer()).getLibrarycols()), match.getCurrentPlayer());
+                            match.insert(cardsToWithdraw, rand.nextInt(match.getPlayerLibrary(match.getCurrentPlayer()).getLibraryCols()), match.getCurrentPlayer());
                             inserted = true;
                         }
                         catch (ColumFullException e) {
@@ -119,8 +119,8 @@ public class MatchTest extends TestCase {
     @Test
     void printLibrary(Library l) {
         Cards[][] c = l.getAsMatrix();
-        for (int i = 0; i < l.getLibraryrows(); i++) {
-            for (int j = 0; j < l.getLibrarycols(); j++) {
+        for (int i = 0; i < l.getLibraryRows(); i++) {
+            for (int j = 0; j < l.getLibraryCols(); j++) {
                 if (c[i][j] != null) {
                     System.out.print(c[i][j].getType() + "\t");
                 }

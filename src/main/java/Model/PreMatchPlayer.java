@@ -5,14 +5,13 @@ public class PreMatchPlayer {
     private boolean ready;
     private boolean roomLeader;
 
-    //socket ?
+
 
     PreMatchPlayer(String name, boolean leader) {
         this.name = name;
         ready = false;
         roomLeader = leader;
     }
-
 
     void toggleReady() {
         ready = !ready;
@@ -31,5 +30,7 @@ public class PreMatchPlayer {
         return ready;
     }
 
-    public boolean isRoomLeader() {return roomLeader;}
+    public boolean isRoomLeader() {
+        return roomLeader;
+    }
 }
