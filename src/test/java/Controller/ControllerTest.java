@@ -18,12 +18,12 @@ public class ControllerTest extends TestCase {
         List<String> players = new ArrayList<>();
         players.add("Christian");
         players.add("Carlo");
-        players.add("Gianluca");
         Match model = new Match(players);
-        Controller controller = new Controller(model);
+        Controller controller = Controller.createGame(players, players.size(), model);
         if(model.needsRefill()) {
             model.refill();
         }
+
 
         List<Integer> coordinates = new ArrayList<>();
         coordinates.add(1);
@@ -35,12 +35,13 @@ public class ControllerTest extends TestCase {
         List<Cards> cards = new ArrayList<>();
         cards.add(new Cards(CardsType.CATS, 10));
         cards.add(new Cards(CardsType.PLAN, 11));
-        PlayerAction action1 = new InsertTile(1, cards, "Carlo");
-        controller.doAction(action1);
+        action = new InsertTile(1, cards, "Carlo");
+        controller.doAction(action);
         System.out.println(model.getCurrentAction());
 
-        PlayerAction action2 = new EndOfAction("Carlo");
-        controller.doAction(action2);
+        action = new EndOfAction("Carlo");
+        controller.doAction(action);
         System.out.println(model.getCurrentAction());
+        System.out.println(model.getCurrentPlayer());
     }
 }

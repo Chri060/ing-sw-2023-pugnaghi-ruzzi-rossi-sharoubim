@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.*;
 
 public class Match {
+	private int playerNum;
 	private String chair;
 	private Table dashboard;
 	private Bag bag;
@@ -16,7 +17,6 @@ public class Match {
 	private List<Player> players;
 	private Turn turn;
 	private String firstToFinish;
-
 
 
 	public Match(List<String> playerList) throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {
@@ -60,6 +60,7 @@ public class Match {
 			turn = new Turn(chair);
 			commonObjectives = new CommonObjectiveFactory().chosenObjective(playerList.size());
 			firstToFinish = null;
+			playerNum = players.size();
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
@@ -103,8 +104,7 @@ public class Match {
 					player.insert(cardsList, col);
 				}
 			}
-		}
-		else {
+		} else {
 			throw new NotYourTurnException(turn.getCurrentPlayer());
 		}
 	}
@@ -148,7 +148,7 @@ public class Match {
 
 	public List<Cards> withdraw(List<Integer> coordinates, String playerName) throws CannotWithdrawCardException, InvalidPickException, NotYourTurnException {
 		if (playerName.equals(turn.getCurrentPlayer()))
-		return dashboard.withdraw(coordinates);
+			return dashboard.withdraw(coordinates);
 		else {
 			throw new NotYourTurnException(turn.getCurrentPlayer());
 		}
@@ -190,8 +190,7 @@ public class Match {
 			for (int j = 0; j < l.getLibraryCols(); j++) {
 				if (c[i][j] != null) {
 					System.out.print(c[i][j].getType() + "\t");
-				}
-				else {
+				} else {
 					System.out.print("null" + "\t");
 				}
 			}
@@ -203,4 +202,11 @@ public class Match {
 		return turn.getCurrentAction();
 	}
 
+	public int getTurn() {
+		return turn.getTurn();
+	}
+
+	public int getPlayerNum() {
+		return playerNum;
+	}
 }

@@ -40,9 +40,9 @@ public abstract class PlayerAction {
 	* @throws exception when the game is ended
 	*/
 	public void isGameRunning(Match model) {
-		if (model.endMatch()) {
+		if (model.endMatch() && (model.getTurn() % model.getPlayerNum()) == 0) {
 			//TODO: RuntimeException
-			throw new RuntimeException("The match is ended.");
+			throw new RuntimeException("The match is ended");
 		}
 	}
 
