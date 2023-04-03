@@ -4,8 +4,8 @@ import Exceptions.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.*;
 
 public class Match {
@@ -59,6 +59,7 @@ public class Match {
 			dashboard = new Table(players.size());
 			turn = new Turn(chair);
 			commonObjectives = new CommonObjectiveFactory().chosenObjective(playerList.size());
+			firstToFinish = null;
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
@@ -170,13 +171,13 @@ public class Match {
 
 	//test only
 	public void printPlayerPoints() {
-		System.out.println(firstToFinish + " finisched first, will get an extra point");
-		for (int i = 0; i < players.size(); i++) {
-			System.out.println(players.get(i).getName() + "'s library:");
-			printLibrary(players.get(i).getLibrary());
-			System.out.println(players.get(i).getName() + "'s private obj points:\nPattern is:");
-			players.get(i).getObjPattern();
-			System.out.print("Points: " + players.get(i).personalObjPoints());
+		System.out.println(firstToFinish + " finished first, will get an extra point");
+		for (Player player : players) {
+			System.out.println(player.getName() + "'s library:");
+			printLibrary(player.getLibrary());
+			System.out.println(player.getName() + "'s private obj points:\nPattern is:");
+			player.getObjPattern();
+			System.out.print("Points: " + player.personalObjPoints());
 			System.out.println();
 			System.out.println();
 		}
@@ -197,4 +198,9 @@ public class Match {
 			System.out.println();
 		}
 	}
+
+	public Action getCurrentAction() {
+		return turn.getCurrentAction();
+	}
+
 }

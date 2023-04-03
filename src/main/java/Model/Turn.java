@@ -27,11 +27,14 @@ public class Turn {
 
 	public void changePlayer(String next) {
 		currentPlayer = next;
-		currentAction = Action.WITHDRAW;
 		turn++;
 	}
 
 	public void nextAction() {
-		currentAction = Action.INSERT;
+		switch (currentAction) {
+			case WITHDRAW -> currentAction = Action.INSERT;
+			case INSERT -> currentAction = Action.ENDPHASE;
+			case ENDPHASE -> currentAction = Action.WITHDRAW;
+		}
 	}
 }
