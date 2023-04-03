@@ -83,7 +83,8 @@ public class MatchTest extends TestCase {
                     coordinates.add(rand.nextInt(9));
                 }
                 try {
-                    cardsToWithdraw =  match.withdraw(coordinates, match.getCurrentPlayer());
+                    match.withdraw(coordinates, match.getCurrentPlayer());
+                    cardsToWithdraw = match.getCardsToInsert();
                     match.nextAction();
                     while (!inserted) {
                         try {

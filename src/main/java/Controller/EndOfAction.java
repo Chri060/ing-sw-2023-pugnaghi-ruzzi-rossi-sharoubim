@@ -25,6 +25,12 @@ public class EndOfAction extends PlayerAction {
 	 *
 	 * @throws exceptions based on the problem found
 	 */
+
+	@Override
+	public void validate(Match model, PlayerAction action) throws PlayerNotFoundException {
+	}
+
+	@Override
 	public void execute(Match model) throws BagEmptyException {
 		//TODO: se siamo nella fase finale bisogna terminare la partita altrimenti si cambia giocatore
 		if(model.needsRefill()) { model.refill(); }

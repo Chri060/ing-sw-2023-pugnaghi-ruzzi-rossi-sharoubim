@@ -18,6 +18,8 @@ public class Match {
 	private Turn turn;
 	private String firstToFinish;
 
+	private List<Cards> cardsToInsert;
+
 
 	public Match(List<String> playerList) throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException {
 		int pObjNum;
@@ -57,11 +59,13 @@ public class Match {
 			chair = players.get(rand.nextInt(players.size())).getName();
 			bag = new Bag();
 			dashboard = new Table(players.size());
+			//TODO rivedere il refill iniziale
+			dashboard.refill(bag);
 			turn = new Turn(chair);
 			commonObjectives = new CommonObjectiveFactory().chosenObjective(playerList.size());
 			firstToFinish = null;
 			playerNum = players.size();
-		} catch (ParseException | IOException e) {
+		} catch (ParseException | IOException | BagEmptyException e) {
 			e.printStackTrace();
 		}
 	}
@@ -146,9 +150,9 @@ public class Match {
 		return false;
 	}
 
-	public List<Cards> withdraw(List<Integer> coordinates, String playerName) throws CannotWithdrawCardException, InvalidPickException, NotYourTurnException {
+	public void withdraw(List<Integer> coordinates, String playerName) throws CannotWithdrawCardException, InvalidPickException, NotYourTurnException {
 		if (playerName.equals(turn.getCurrentPlayer()))
-			return dashboard.withdraw(coordinates);
+			cardsToInsert = dashboard.withdraw(coordinates);
 		else {
 			throw new NotYourTurnException(turn.getCurrentPlayer());
 		}
@@ -184,7 +188,7 @@ public class Match {
 	}
 
 	//test only
-	void printLibrary(Library l) {
+	public void printLibrary(Library l) {
 		Cards[][] c = l.getAsMatrix();
 		for (int i = 0; i < l.getLibraryRows(); i++) {
 			for (int j = 0; j < l.getLibraryCols(); j++) {
@@ -208,5 +212,9 @@ public class Match {
 
 	public int getPlayerNum() {
 		return playerNum;
+	}
+
+	public List<Cards> getCardsToInsert() {
+		return cardsToInsert;
 	}
 }
