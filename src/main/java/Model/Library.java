@@ -23,13 +23,15 @@ public class Library {
 			JSONObject jsonObject = (JSONObject) jsonObject0.get("libraryConfig");
 			librarycols = ((Long) jsonObject.get("numberOfColoumns")).intValue();
 			libraryrows = ((Long) jsonObject.get("numberOfRows")).intValue();
+			if (libraryrows <= 0 || librarycols <= 0) {
+				System.err.println("Bad JSON format: rows and columns must be more than 0");
+				System.exit(-1);
+			}
 			library = new Cards[libraryrows][librarycols];
 		}
-		catch (FileNotFoundException | ParseException e) {
-			e.printStackTrace();
-		} catch (
-				IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException | ParseException | NullPointerException | ClassCastException e) {
+			System.err.println("Bad JSON format: invalid entries for Library object");
+			System.exit(-1);
 		}
 	}
 

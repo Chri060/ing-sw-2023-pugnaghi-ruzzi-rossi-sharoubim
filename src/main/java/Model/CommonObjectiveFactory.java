@@ -19,12 +19,11 @@ public class CommonObjectiveFactory {
     }
 
     public List<CommonObjective> chosenObjective(int numOfPlayers) {
-        int numOfObj = 0;
+        int numOfObj = 12;
         int objToDraw = 0;
         try {
             Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
             JSONObject jsonObject = (JSONObject) file;
-            numOfObj = ((Long) jsonObject.get("numOfObj")).intValue();
             objToDraw = ((Long) jsonObject.get("commonObjectives")).intValue();
         }
         catch (FileNotFoundException | ParseException e) {

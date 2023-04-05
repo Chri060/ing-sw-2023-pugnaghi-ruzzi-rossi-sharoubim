@@ -25,18 +25,30 @@ public class Table {
 			JSONObject jsonObject0 = (JSONObject) file;
 			JSONObject jsonObject = (JSONObject) jsonObject0.get("tableConfig");
 			dashDim = ((Long) jsonObject.get("DashboardDimension")).intValue();
+			if (dashDim < 2) {
+				System.err.println("Dashboard dimension must be at least 3 x 3");
+				System.exit(-1);
+			}
 			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
+			if (patterns.size() <= playerNum - 1) {
+				System.err.println("Dashboard pattern is not defined for " + playerNum + " of players");
+				System.exit(-1);
+			}
+
 			JSONArray pattern = (JSONArray) patterns.get(playerNum - 2);
+			if (dashDim * dashDim != pattern.size()) {
+				System.err.println("Dashboard dimension must be at least 3 x 3");
+				System.exit(-1);
+			}
 			dashboard = new Cards[dashDim][dashDim];
 			taps = new boolean[dashDim][dashDim];
 			for (int i = 0; i < pattern.size(); i++) {
-				taps[i / dashDim][i % dashDim] = ((Long) (pattern.get(i))).intValue() == 1;
+				taps[i / dashDim][i % dashDim] = ((Long) (pattern.get(i))).intValue() > 0;
 			}
-		} catch (FileNotFoundException | ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		} catch (IOException | ParseException | NullPointerException | ClassCastException e) {
+			System.err.println("Bad JSON format: invalid entries for Table object");
+			System.exit(-1);
+			}
 	}
 	public void refill(Bag bag) throws BagEmptyException {
 		for (int i = 0; i < dashDim; i++) {

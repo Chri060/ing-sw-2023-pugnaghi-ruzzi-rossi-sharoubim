@@ -18,6 +18,8 @@ public class Match {
 	private Turn turn;
 	private String firstToFinish;
 
+	private final int NUMOFCOMMONOBJECTIVES = 12;
+
 	private List<Cards> cardsToInsert;
 
 
@@ -41,7 +43,17 @@ public class Match {
 			JSONObject jsonObj = (JSONObject) jsonObject.get("privateObjectivesConfig");
 			numberpObj = ((Long) jsonObj.get("numberOfpOjectives")).intValue();;
 			if (numberpObj < pObjNum * playerList.size()) {
-				throw new NotEnoughPrivateObjectivesException();
+				System.err.println("Bad JSON format: Not enough Private Objectives for all players");
+				System.exit(-1);
+			}
+			Library l = new Library();
+			if (playerList.size() * l.getLibraryRows() * l.getLibraryCols() > (new Bag()).cardsLeft()) {
+				System.err.println("Bad JSON format: Not enough cards to guarantee the match to mathematically end");
+				System.exit(-1);
+			}
+			if (NUMOFCOMMONOBJECTIVES < cObjNum) {
+				System.err.println("Bad JSON format: Not enough common objectives available");
+				System.exit(-1);
 			}
 			players = new ArrayList<>();
 			for (int i = 0; i < playerList.size(); i++) {
@@ -65,8 +77,9 @@ public class Match {
 			commonObjectives = new CommonObjectiveFactory().chosenObjective(playerList.size());
 			firstToFinish = null;
 			playerNum = players.size();
-		} catch (ParseException | IOException | BagEmptyException e) {
-			e.printStackTrace();
+		} catch (ParseException | NullPointerException | IOException | BagEmptyException e) {
+			System.err.println("File JSON not found or badly formatted");
+			System.exit(-1);
 		}
 	}
 

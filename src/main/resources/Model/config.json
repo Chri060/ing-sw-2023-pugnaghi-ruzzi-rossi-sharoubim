@@ -9,9 +9,8 @@
     [8, 6, 4],
     [8, 6, 4, 2]
   ],
-"commonObjectives" : 2,
+  "commonObjectives" : 2,
   "privateObjectives" : 1,
-  "numOfObj" : 12,
   "tableConfig" : {
     "DashboardDimension" : 9,
     "patterns" :
@@ -120,7 +119,6 @@
         "objectiveItems": [ "BOOK", "PLAN", "FRAM", "TROP", "GAME", "CATS" ]
       }
     ],
-    "points" : [0, 1, 2, 4, 6, 9, 12]
+    "points" : [0, 1, 2, 4, 6, 9, 12, 15]
   }
-
 }

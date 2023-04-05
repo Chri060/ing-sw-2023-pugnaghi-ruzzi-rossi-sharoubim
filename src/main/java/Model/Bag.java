@@ -26,14 +26,14 @@ public class Bag {
 			JSONObject jsonObject = (JSONObject) file;
 			numOfCards = ((Long) jsonObject.get("numberOfCardsOfEachType")).intValue();
 		}
-		catch (FileNotFoundException | ParseException e) {
-		e	.printStackTrace();
-		} catch (
-		IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException | ParseException | NullPointerException | ClassCastException e) {
+			System.err.println("Bad JSON format: invalid entries for Bag object");
+			System.exit(-1);
 		}
-
-
+		if (numOfCards <= 0) {
+			System.err.println("Bad JSON format: numberOfCardsOfEachType must be more than 0");
+			System.exit(-1);
+		}
 		for (CardsType c : CardsType.values()) {
 			for (int i = 0; i < numOfCards; i++) {
 				cardsLeft.add(new Cards(c, i));
