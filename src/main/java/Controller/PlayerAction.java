@@ -10,7 +10,6 @@ public abstract class PlayerAction {
 	private Action action;
 
 
-
 	/*
 	* Used by the subclasses to initialize the name of the player which is trying to play
 	*
@@ -40,7 +39,7 @@ public abstract class PlayerAction {
 	* @throws exception when the game is ended
 	*/
 	public void isGameRunning(Match model) {
-		if (model.endMatch() && (model.getTurn() % model.getPlayerNum() == 1)) {
+		if (model.endMatch()) {
 			//TODO: RuntimeException
 			throw new RuntimeException("The match is ended");
 		}
@@ -73,7 +72,7 @@ public abstract class PlayerAction {
 	 *
 	 * @throws exception if it encounters problems in performing the action
 	 */
-	public abstract void execute(Match model) throws InvalidPickException, NotYourTurnException, CannotWithdrawCardException, ColumFullException, BagEmptyException;
+	public abstract void execute(Match model) throws InvalidPickException, NotYourTurnException, CannotWithdrawCardException, NotEnoughSpaceInColumnException, BagEmptyException;
 
 	/*
 	* A getter for the player which is requesting to do the action

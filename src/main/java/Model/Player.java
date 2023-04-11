@@ -1,6 +1,8 @@
 package Model;
 
-import Exceptions.ColumFullException;
+import Exceptions.NotEnoughSpaceInColumnException;
+import Exceptions.InvalidPickException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,6 @@ public class Player {
 	private int points;
 	private List<PrivateObjective> privateObj = new ArrayList<>();
 	private Library library;
-
 
 
 	public Player(String name, List<Integer> objID) {
@@ -53,7 +54,7 @@ public class Player {
 		return l;
 	}
 
-	public void insert(List<Cards> cardsList, int col) throws ColumFullException {
+	public void insert(List<Cards> cardsList, int col) throws NotEnoughSpaceInColumnException, InvalidPickException {
 		library.insert(cardsList, col);
 	}
 }

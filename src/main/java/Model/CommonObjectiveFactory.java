@@ -1,5 +1,6 @@
 package Model;
 
+import Exceptions.MatchException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,7 +19,7 @@ public class CommonObjectiveFactory {
 
     }
 
-    public List<CommonObjective> chosenObjective(int numOfPlayers) {
+    public List<CommonObjective> chosenObjective(int numOfPlayers) throws MatchException {
         int numOfObj = 12;
         int objToDraw = 0;
         try {

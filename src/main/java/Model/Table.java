@@ -14,9 +14,10 @@ import java.util.*;
 
 public class Table {
 	int dashDim;
-	private Cards[][] dashboard;
-	private boolean[][] taps;
 
+	//TODO rimettere privata
+	public Cards[][] dashboard;
+	public boolean[][] taps;
 
 
 	public Table(int playerNum) {
@@ -30,7 +31,7 @@ public class Table {
 				System.exit(-1);
 			}
 			JSONArray patterns = (JSONArray) jsonObject.get("patterns");
-			if (patterns.size() <= playerNum - 1) {
+			if (patterns.size() < playerNum - 1) {
 				System.err.println("Dashboard pattern is not defined for " + playerNum + " of players");
 				System.exit(-1);
 			}
@@ -48,13 +49,16 @@ public class Table {
 		} catch (IOException | ParseException | NullPointerException | ClassCastException e) {
 			System.err.println("Bad JSON format: invalid entries for Table object");
 			System.exit(-1);
-			}
+		}
 	}
+
 	public void refill(Bag bag) throws BagEmptyException {
-		for (int i = 0; i < dashDim; i++) {
-			for (int j = 0; j < dashDim; j++) {
-				if (taps[i][j] && dashboard[i][j] == null) {
-					dashboard[i][j] = bag.getCard();
+		if (needsRefill()) {
+			for (int i = 0; i < dashDim; i++) {
+				for (int j = 0; j < dashDim; j++) {
+					if (taps[i][j] && dashboard[i][j] == null) {
+						dashboard[i][j] = bag.getCard();
+					}
 				}
 			}
 		}
@@ -79,6 +83,30 @@ public class Table {
 		return c;
 	}
 
+	public boolean[][] getTaps() {
+		boolean[][] res = new boolean[dashDim][dashDim];
+		for (int i = 0; i < dashDim; i++) {
+			for (int j = 0; j < dashDim; j++) {
+				res[i][j] = taps[i][j];
+			}
+		}
+		return res;
+	}
+
+	public Cards[][] getTable() {
+		Cards[][] res = new Cards[dashDim][dashDim];
+		for (int i = 0; i < dashDim; i++) {
+			for (int j = 0; j < dashDim; j++) {
+				res[i][j] = dashboard[i][j];
+			}
+		}
+		return res;
+	}
+
+	public int getDashDim() {
+		return dashDim;
+	}
+
 	public List<Cards> withdraw(List<Integer> coordinates) throws CannotWithdrawCardException, InvalidPickException {
 		int row;
 		int col;
@@ -91,8 +119,20 @@ public class Table {
 				withdrawnCards.add(getCard(row, col));
 				i += 2;
 			}
+		} else {
+			throw new CannotWithdrawCardException(coordinates);
 		}
 		return withdrawnCards;
+	}
+
+	private boolean areNear(List<Integer> coordinates) {
+		Collections.sort(coordinates);
+		for (int i = 0; i < coordinates.size() - 1; i++) {
+			if (coordinates.get(i) - coordinates.get(i + 1) != - 1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean needsRefill() {
@@ -125,7 +165,7 @@ public class Table {
 			System.out.println();
 		}
 	}
-	
+
 	//test only
 	public void printCards() {
 		System.out.print("\t");
@@ -138,8 +178,7 @@ public class Table {
 			for(int j = 0; j < dashDim; j++) {
 				if (dashboard[i][j] != null) {
 					System.out.print(dashboard[i][j].getType() + "\t");
-				}
-				else {
+				} else {
 					System.out.print("null" + "\t");
 				}
 			}
@@ -148,71 +187,78 @@ public class Table {
 	}
 
 	//TODO: sistemare
-	public boolean canWithdraw (List<Integer> coordinates) throws CannotWithdrawCardException, InvalidPickException {
-		if (coordinates == null || coordinates.size() == 0 || coordinates.size() % 2 != 0){
+
+	/* Returns true only if cards can be withdrawn
+	 * @param coordinates	List of coordinates of the cards in the board
+	 * @throws InvalidPickException if coordinates is null, not a even set of numbers or if contains values out of
+	 * table bounds
+	 * */
+	private boolean canWithdraw (List<Integer> coordinates) throws InvalidPickException {
+		if (coordinates == null || coordinates.size() % 2 != 0) { //Checks that coordinates are in a valid format
 			throw new InvalidPickException();
 		}
-		int i = 0;
-		int row, col;
-		List<Cards> withdrawnCards = new ArrayList<>();
-		boolean vertical = false;
-		List<Integer> rows;
-		boolean orizzontal = false;
-		List<Integer> cols;
-		if (coordinates.size() != 2) {
-			for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
-				if (!Objects.equals(coordinates.get(2 * j), coordinates.get(2 * j + 2))) {vertical = true;}
-				if (!Objects.equals(coordinates.get(2 * j + 1), coordinates.get(2 * j + 3))) {orizzontal = true;}
-				if ((vertical && orizzontal) || (!vertical && !orizzontal)) {
-					throw new CannotWithdrawCardException(coordinates);
-				}
+
+		boolean outOfBounds = coordinates.stream().anyMatch( x -> { //Checks that coordinates aren't out of bounds
+			if (x < 0 || x >= dashDim) return true;
+			return false;
+		});
+		if (outOfBounds) throw new InvalidPickException();
+
+		if (coordinates.size() > 2) { //If more than one card, Checks if coordinates are in row or in column
+			List<Integer> rows = new ArrayList<>();
+			List<Integer> cols = new ArrayList<>();
+
+			for (int i = 0; i < coordinates.size(); i += 2) { //Creates rows and columns coordinates lists
+				rows.add(coordinates.get(i));
+				cols.add(coordinates.get(i + 1));
 			}
-			if (vertical) {
-				rows  = new ArrayList<Integer>();
-				for (int j = 0; j < ((coordinates.size() / 2)); j++) {
-					rows.add(coordinates.get(2 * j));
-				}
-				Collections.sort(rows);
-				for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
-					if (rows.get(j) - rows.get(j + 1) != - 1) {
-						throw new CannotWithdrawCardException(coordinates);
-					}
-				}
+
+			boolean vertical = (rows.stream().distinct().count() > 1);
+			boolean horizontal = (cols.stream().distinct().count() > 1);
+
+			if (vertical && horizontal) { //Cards are not in row or in column
+				return false;
 			}
-			if (orizzontal) {
-				cols  = new ArrayList<Integer>();
-				for (int j = 0; j < ((coordinates.size() / 2)); j++) {
-					cols.add(coordinates.get(2 * j + 1));
+			if (!vertical && !horizontal) { //The same card was chosen 2 times
+				throw new InvalidPickException();
+			}
+
+			if (vertical) { //If vertical checks that the rows are adjacent
+				if (!areNear(rows)) {
+					return false;
 				}
-				Collections.sort(cols);
-				for (int j = 0; j < ((coordinates.size() / 2) - 1); j++) {
-					if (cols.get(j) - cols.get(j + 1) != - 1) {
-						throw new CannotWithdrawCardException(coordinates);
-					}
+			} else { //If horizontal checks that the cols are adjacent
+				if (!areNear(cols)) {
+					return false;
 				}
 			}
 		}
 
-		boolean outOfBounds = coordinates.stream().anyMatch( x -> {
-			if (x < 0 || x >= dashDim) return true;
-			return false;
-		});
-		if(outOfBounds) throw new CannotWithdrawCardException(coordinates);
+
+		int i = 0;
+		int row, col;
+
 
 		while (i < coordinates.size()) {
 			row = coordinates.get(i);
 			col = coordinates.get(i + 1);
 			if (checkout(row, col) != null) {
-				if (row == 0 || row == (dashDim - 1) || col == 0 || col == (dashDim - 1)) { i += 2; }
-				else if (checkout(row + 1, col) == null) { i += 2; }
-				else if (checkout(row - 1, col) == null) { i += 2; }
-				else if (checkout(row, col + 1) == null) { i += 2; }
-				else if (checkout(row, col - 1) == null) { i += 2; }
-				else {
-					throw new CannotWithdrawCardException(coordinates); }
+				if (row == 0 || row == (dashDim - 1) || col == 0 || col == (dashDim - 1)) {
+					i += 2;
+				} else if (checkout(row + 1, col) == null) {
+					i += 2;
+				} else if (checkout(row - 1, col) == null) {
+					i += 2;
+				} else if (checkout(row, col + 1) == null) {
+					i += 2;
+				} else if (checkout(row, col - 1) == null) {
+					i += 2;
+				} else { //At least one card doesn't have a free adjacent free space
+					return false;
+				}
+			} else { //An already taken card is being withdrawn
+				throw new InvalidPickException();
 			}
-			else {
-				throw new CannotWithdrawCardException(coordinates); }
 		}
 		return true;
 	}

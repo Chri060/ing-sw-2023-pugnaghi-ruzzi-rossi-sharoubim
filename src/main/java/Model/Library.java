@@ -1,10 +1,11 @@
 package Model;
 
-import Exceptions.ColumFullException;
+import Exceptions.NotEnoughSpaceInColumnException;
+import Exceptions.InvalidPickException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import java.io.FileNotFoundException;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -54,7 +55,7 @@ public class Library {
 		return result;
 	}
 
-	public void insert(List<Cards> cardsList, int col) throws ColumFullException {
+	public void insert(List<Cards> cardsList, int col) throws NotEnoughSpaceInColumnException, InvalidPickException {
 		int row = libraryrows - 1;
 		if (canInsertIn(cardsList.size(), col)) {
 			while (row > 0 && library[row][col] != null) {
@@ -64,9 +65,8 @@ public class Library {
 				library[row - i][col] = cardsList.get(i);
 			}
 		}
-		//TODO: gestire caso di indici non validi
 		else {
-			throw new ColumFullException(col);
+			throw new NotEnoughSpaceInColumnException(col);
 		}
 	}
 
@@ -85,9 +85,9 @@ public class Library {
 		return space;
 	}
 
-	public boolean  canInsertIn(int nCards, int col) {
+	public boolean canInsertIn(int nCards, int col) throws InvalidPickException{
 		if (col < 0 || col > librarycols) {
-			return false;
+			throw new InvalidPickException();
 		}
 		int row = 0;
 		while (row < libraryrows && library[row][col] == null) {

@@ -33,7 +33,8 @@ public class InsertTile extends PlayerAction {
 	 *
 	 * @throws exceptions based on the problem found
 	 */
-	public void execute(Match model) throws NotYourTurnException, ColumFullException {
+	public void execute(Match model) throws NotYourTurnException, NotEnoughSpaceInColumnException, InvalidPickException {
+		//TODO Gestire i casi delle eccezioni
 		model.insert(cards, column, getCurrPlayer());
 	}
 }

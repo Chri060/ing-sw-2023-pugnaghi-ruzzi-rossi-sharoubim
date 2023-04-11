@@ -1,6 +1,7 @@
 package Model;
 
-import Exceptions.ColumFullException;
+import Exceptions.NotEnoughSpaceInColumnException;
+import Exceptions.InvalidPickException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ public class LibraryTest extends TestCase {
     }
 
     @Test
-    void insertTest() {
+    void insertTest() throws InvalidPickException {
         Library l = new Library();
         List<Cards> cards = new ArrayList<>();
         Random rand = new Random();
@@ -45,7 +46,7 @@ public class LibraryTest extends TestCase {
                 l.insert(cards, x);
                 printLibrary(l);
             }
-            catch (ColumFullException e) {
+            catch (NotEnoughSpaceInColumnException e) {
             }
             cards.clear();
 
@@ -60,7 +61,7 @@ public class LibraryTest extends TestCase {
 
 
     @Test
-    void is_Full() throws ColumFullException {
+    void is_Full() throws NotEnoughSpaceInColumnException, InvalidPickException {
         Library l = new Library();
         List<Cards> cards = new ArrayList<Cards>();
         Random rand = new Random();
@@ -79,7 +80,7 @@ public class LibraryTest extends TestCase {
                 l.insert(cards, x);
                 printLibrary(l);
             }
-            catch (ColumFullException e) {
+            catch (NotEnoughSpaceInColumnException e) {
             }
 
             System.out.println(l.isFull());
@@ -89,7 +90,7 @@ public class LibraryTest extends TestCase {
 
 
     @Test
-    void maxcolumn() throws ColumFullException {
+    void maxcolumn() throws NotEnoughSpaceInColumnException, InvalidPickException {
         Library l = new Library();
         List<Cards> cards = new ArrayList<>();
         Random rand = new Random();
@@ -110,7 +111,7 @@ public class LibraryTest extends TestCase {
                 System.out.println(l.maxFreeSpace());
                 System.out.println();
             }
-            catch (ColumFullException e) {
+            catch (NotEnoughSpaceInColumnException e) {
             }
         }
 

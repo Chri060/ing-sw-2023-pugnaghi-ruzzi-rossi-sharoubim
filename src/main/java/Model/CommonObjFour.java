@@ -1,5 +1,7 @@
 package Model;
 
+import Exceptions.MatchException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +9,7 @@ public class CommonObjFour extends CommonObjective {
 
 
 
-    public CommonObjFour (int numOfPlayers) {
+    public CommonObjFour (int numOfPlayers) throws MatchException {
         super(numOfPlayers);
         objID = 4;
     }

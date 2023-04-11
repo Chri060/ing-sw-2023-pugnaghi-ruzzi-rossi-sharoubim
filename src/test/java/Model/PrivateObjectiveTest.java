@@ -1,11 +1,11 @@
 package Model;
 
 import Exceptions.BagEmptyException;
-import Exceptions.ColumFullException;
+import Exceptions.NotEnoughSpaceInColumnException;
+import Exceptions.InvalidPickException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 class PrivateObjectiveTest {
@@ -39,31 +39,31 @@ class PrivateObjectiveTest {
 
 
     @Test
-    void toVerify() throws ColumFullException, BagEmptyException {
+    void toVerify() throws NotEnoughSpaceInColumnException, BagEmptyException, InvalidPickException {
         Random random = new Random();
-        PrivateObjective obiettivo = new PrivateObjective(random.nextInt(12));
-        Library libreria = new Library();
+        PrivateObjective objective = new PrivateObjective(random.nextInt(12));
+        Library library = new Library();
         Bag bag = new Bag();
         ArrayList<Cards> carte = new ArrayList<>();
 
 
-        for(int i = 0; i < libreria.getLibraryRows(); i++) {
-            for (int j = 0; j < libreria.getLibraryCols(); j++) {
+        for(int i = 0; i < library.getLibraryRows(); i++) {
+            for (int j = 0; j < library.getLibraryCols(); j++) {
                 carte.add(bag.getCard());
-                libreria.insert(carte, j);
+                library.insert(carte, j);
                 carte.clear();
             }
         }
 
-        printLibrary(libreria);
+        printLibrary(library);
 
-        obiettivo.getPattern();
-        System.out.println(obiettivo.verify(libreria));
+        objective.getPattern();
+        System.out.println(objective.verify(library));
 
     }
 
     @Test
-    void toVerify50() throws ColumFullException, BagEmptyException{
+    void toVerify50() throws NotEnoughSpaceInColumnException, BagEmptyException, InvalidPickException {
         for(int i = 0; i < 50; i++) {
             toVerify();
         }

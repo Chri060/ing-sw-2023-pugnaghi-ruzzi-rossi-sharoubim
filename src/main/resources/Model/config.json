@@ -45,7 +45,6 @@
     ]
   },
   "privateObjectivesConfig" : {
-    "numberOfpOjectives" : 12,
     "patterns" : [
       {
         "IdPrivateObj": "one",

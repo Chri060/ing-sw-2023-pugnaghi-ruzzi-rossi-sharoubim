@@ -12,6 +12,133 @@ import java.util.Random;
 public class TableTest extends TestCase {
 
     @Test
+    void withdrawTest() {
+
+
+        Table table = new Table(3);
+        List<Integer> coordinates = new ArrayList<>();
+        List<Cards> cardsList;
+
+        coordinates.add(-1);
+        coordinates.add(5);
+
+        try {
+            table.withdraw(coordinates);
+            assert (false);
+        } catch (InvalidPickException e) {
+        }
+        catch (CannotWithdrawCardException e) {
+            assert (false);
+        }
+
+        coordinates.clear();
+
+
+        for (int i = 0; i < table.dashDim; i++) {
+            for (int j = 0; j < table.dashDim; j++) {
+                if (table.taps[i][j] && table.dashboard[i][j] == null) {
+                    Cards card = new Cards(CardsType.values()[i % 6], 0);
+                    table.dashboard[i][j] = card;
+                }
+            }
+        }
+
+        coordinates.add(3);
+        coordinates.add(2);
+        coordinates.add(3);
+        coordinates.add(4);
+
+
+        try {
+            table.withdraw(coordinates);
+            assert (false);
+        } catch (InvalidPickException e) {
+            assert (false);
+        }
+        catch (CannotWithdrawCardException e) {
+            assert(table.dashboard[3][2] != null);
+            assert(table.dashboard[3][3] != null);
+        }
+
+
+        coordinates.clear();
+
+
+        coordinates.add(1);
+        coordinates.add(3);
+        coordinates.add(1);
+        coordinates.add(4);
+        coordinates.add(2);
+        coordinates.add(3);
+
+
+        try {
+            table.withdraw(coordinates);
+            assert (false);
+        } catch (InvalidPickException e) {
+            assert (false);
+        }
+        catch (CannotWithdrawCardException e) {
+            assert(table.dashboard[1][3] != null);
+            assert(table.dashboard[1][4] != null);
+            assert(table.dashboard[2][3] != null);
+        }
+
+        coordinates.clear();
+
+
+        coordinates.add(1);
+        coordinates.add(3);
+        coordinates.add(1);
+        coordinates.add(4);
+
+        try {
+            cardsList = table.withdraw(coordinates);
+            assert (cardsList.get(0).getType() == CardsType.BOOK);
+            assert (cardsList.get(1).getType() == CardsType.BOOK);
+            assert (table.dashboard[1][3] == null);
+            assert (table.dashboard[1][4] == null);
+        } catch (InvalidPickException | CannotWithdrawCardException e) {
+            assert (false);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
     void test() throws BagEmptyException {
         Bag bag = new Bag();
         Table[] tabelle = new Table[3];

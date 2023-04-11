@@ -1,10 +1,12 @@
 package Model;
 
+import Exceptions.MatchException;
+
 public class CommonObjTwo extends CommonObjective {
 
 
 
-    public CommonObjTwo (int numOfPlayers) {
+    public CommonObjTwo (int numOfPlayers) throws MatchException {
         super(numOfPlayers);
         objID = 2;
     }

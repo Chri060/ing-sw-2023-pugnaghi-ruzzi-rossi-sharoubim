@@ -1,6 +1,7 @@
 package Controller;
 
 import Exceptions.*;
+import Exceptions.MatchException;
 import Model.*;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class ControllerTest extends TestCase {
 
 
     @Test
-    public void cont() throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException, PlayerNotFoundException, InvalidPickException, NotYourTurnException, CannotWithdrawCardException, Exception, BagEmptyException, ColumFullException {
+    public void cont() throws  MatchException, PlayerNotFoundException, InvalidPickException, NotYourTurnException, CannotWithdrawCardException, Exception, BagEmptyException, NotEnoughSpaceInColumnException {
         List<String> players = new ArrayList<>();
         players.add("Christian");
         players.add("Carlo");
@@ -47,7 +48,7 @@ public class ControllerTest extends TestCase {
     }
 
     @Test
-    public void fluxTest() throws NotEnoughPrivateObjectivesException, IncorrectPlayersNumberException, BagEmptyException {
+    public void fluxTest() throws MatchException, BagEmptyException {
         List<String> players = new ArrayList<>();
         players.add("Christian");
         players.add("Carlo");
@@ -78,7 +79,7 @@ public class ControllerTest extends TestCase {
                                 model.printDashboard();
                             } catch (PlayerNotFoundException e) {}
                     } catch (InvalidPickException | NotYourTurnException | CannotWithdrawCardException |
-                             ColumFullException e) {
+                             NotEnoughSpaceInColumnException e) {
                         coordinates.clear();
                     }
                 }
@@ -93,14 +94,14 @@ public class ControllerTest extends TestCase {
                         model.printLibrary(model.getPlayerLibrary(model.getCurrentPlayer()));
 
                     } catch (InvalidPickException | NotYourTurnException | CannotWithdrawCardException |
-                             PlayerNotFoundException | ColumFullException e) {
+                             PlayerNotFoundException | NotEnoughSpaceInColumnException e) {
                     }
                 }
                 try {
                     action = new EndOfAction(model.getCurrentPlayer());
                     controller.doAction(action);
                 } catch (InvalidPickException | NotYourTurnException | CannotWithdrawCardException |
-                         PlayerNotFoundException | ColumFullException e) {
+                         PlayerNotFoundException | NotEnoughSpaceInColumnException e) {
                 }
 
             } catch (RuntimeException e) {
@@ -109,4 +110,55 @@ public class ControllerTest extends TestCase {
             }
         }
     }
+
+
+    @Test
+    public void endTest() {
+
+        List<String> players = new ArrayList<>();
+        players.add("Christian");
+        players.add("Carlo");
+
+
+        try {
+            Match model = new Match(players);
+            Controller controller = Controller.createGame(players, players.size(), model);
+            try {
+                for (int i = 0; i < (new Library()).getLibraryCols(); i++) { //fills chair's player shelf
+                    List<Cards> cards = new ArrayList<>();
+                    for (int j = 0; j < (new Library()).getLibraryRows(); j++) {
+                        cards.add(new Cards(CardsType.CATS, 0));
+                    }
+                    model.insert(cards, i, model.getChairPlayer());
+                }
+                List<Integer> coordinates = new ArrayList<>();
+                coordinates.add(1);
+                coordinates.add(3);
+
+                model.isLastTurn();
+
+
+                try {
+                    controller.doAction(new DrawTile(coordinates, model.getChairPlayer()));
+                }
+                catch (RuntimeException e) {
+                    e.printStackTrace();
+                    assert (false);
+                }
+            }
+            catch (InvalidPickException | NotEnoughSpaceInColumnException e) {} catch (BagEmptyException |
+                                                                                       NotYourTurnException |
+                                                                                       CannotWithdrawCardException |
+                                                                                       PlayerNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        catch (MatchException e) {}
+
+
+
+    }
+
+
+
 }

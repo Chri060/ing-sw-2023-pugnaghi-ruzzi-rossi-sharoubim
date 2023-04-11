@@ -9,7 +9,6 @@ public class DrawTile extends PlayerAction {
 	private List<Integer> coordinates;
 
 
-
 	/*
 	 * Creates a new PlayerAction for the WITHDRAW phase
 	 *
@@ -30,7 +29,12 @@ public class DrawTile extends PlayerAction {
 	* @throws exceptions based on the problem found
 	*/
 	@Override
-	public void execute(Match model) throws InvalidPickException, NotYourTurnException, CannotWithdrawCardException {
-		model.withdraw(coordinates, getCurrPlayer());
+	public void execute(Match model) {
+		try {
+			model.withdraw(coordinates, getCurrPlayer());
+		}
+		catch (CannotWithdrawCardException | InvalidPickException e) {
+			//TODO Chiedere nuovamente al client le coordinate
+		}
 	}
 }

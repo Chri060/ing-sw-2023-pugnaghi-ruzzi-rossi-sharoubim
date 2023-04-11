@@ -2,10 +2,12 @@ package Controller;
 
 import Exceptions.*;
 import Model.Action;
+import Model.CommonObjective;
 import Model.Match;
 
-public class EndOfAction extends PlayerAction {
+import java.util.List;
 
+public class EndOfAction extends PlayerAction {
 
 
 	/*
@@ -26,14 +28,24 @@ public class EndOfAction extends PlayerAction {
 	 * @throws exceptions based on the problem found
 	 */
 
-	@Override
-	public void validate(Match model, PlayerAction action) throws PlayerNotFoundException {
-	}
 
 	@Override
-	public void execute(Match model) throws BagEmptyException {
+	public void execute(Match model) {
+		List<Integer> objectivesPoints;
 		//TODO: se siamo nella fase finale bisogna terminare la partita altrimenti si cambia giocatore
-		if(model.needsRefill()) { model.refill(); }
+
+		try {
+			model.refill();
+		} catch (BagEmptyException e) {}
+
+		model.isLastTurn();
+
+		try {
+			objectivesPoints = model.getCommonObjectivesPoints(getCurrPlayer());
+		}
+		catch (PlayerNotFoundException e) {
+			throw new RuntimeException("Player " + getCurrPlayer() + " not found while checking for its common points");
+		}
 		//TODO: obiettivo comune
 		model.nextPlayer();
 	}

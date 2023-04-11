@@ -1,20 +1,18 @@
 package Model;
 
-import Exceptions.ColumFullException;
-import Exceptions.IncorrectPlayersNumberException;
-import Exceptions.NotEnoughPrivateObjectivesException;
+import Exceptions.NotEnoughSpaceInColumnException;
+import Exceptions.MatchException;
+import Exceptions.InvalidPickException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class CommonObjectiveTest {
 
     @Test
-    void test() throws ColumFullException {
+   void test() throws MatchException, NotEnoughSpaceInColumnException, InvalidPickException {
         for (int k = 0; k < 1; k++) {
             Library library = new Library();
             List<Cards> cards = new ArrayList<>();
@@ -75,7 +73,7 @@ class CommonObjectiveTest {
                 System.out.println(match.getCommonObjectives().get(i).getObjID());
             }
         }
-        catch (NotEnoughPrivateObjectivesException |IncorrectPlayersNumberException e){
+        catch (MatchException e){
             e.printStackTrace();
         }
     }

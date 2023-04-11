@@ -47,8 +47,9 @@ public class Controller {
 	*
 	* @param action 	is the PlayerAction that someone is trying
 	*/
-	public void doAction(PlayerAction action) throws PlayerNotFoundException, InvalidPickException, NotYourTurnException, CannotWithdrawCardException, ColumFullException, BagEmptyException {
+	public void doAction(PlayerAction action) throws PlayerNotFoundException, InvalidPickException, NotYourTurnException, CannotWithdrawCardException, NotEnoughSpaceInColumnException, BagEmptyException {
 		action.validate(model, action);
+		//TODO Notificare al client che non è il suo turno
 		action.execute(model);
 		model.nextAction();
 	}
