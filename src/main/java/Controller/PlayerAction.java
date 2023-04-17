@@ -2,12 +2,14 @@ package Controller;
 
 import Exceptions.*;
 import Model.Action;
-import Model.Match;
+import Model.Model;
+
+import java.util.List;
 import java.util.Objects;
 
 public abstract class PlayerAction {
 	private String currPlayer;
-	private Action action;
+	Action action;
 
 
 	/*
@@ -26,9 +28,10 @@ public abstract class PlayerAction {
 	* @param model 		is the class Match in the model linked to the current Controller
 	* @param action 	is the current action
 	*/
-	public void validate(Match model, PlayerAction action) throws PlayerNotFoundException {
-		isGameRunning(model);
-		isCorrectTurn(action, model);
+	public void validate(Model model) throws WrongActionException, NotYourTurnException {
+		if (isGameRunning(model))
+			//TODO partita finita
+			isCorrectTurn(model);
 	}
 
 	/*
@@ -38,11 +41,8 @@ public abstract class PlayerAction {
 	*
 	* @throws exception when the game is ended
 	*/
-	public void isGameRunning(Match model) {
-		if (model.endMatch()) {
-			//TODO: RuntimeException
-			throw new RuntimeException("The match is ended");
-		}
+	public boolean isGameRunning(Model model) {
+		return model.endMatch();
 	}
 
 	/*
@@ -53,14 +53,12 @@ public abstract class PlayerAction {
 	*
 	* @throws exception when the wrong player is trying to do an action
 	*/
-	public void isCorrectTurn(PlayerAction action, Match model) throws PlayerNotFoundException {
+	public void isCorrectTurn(Model model) throws NotYourTurnException, WrongActionException {
 		if (!Objects.equals(currPlayer, model.getCurrentPlayer())) {
-			//TODO: RuntimeException
-			throw new RuntimeException("The wrong player is trying to do an action");
+			throw new NotYourTurnException(currPlayer);
 		}
-		if (action.getAction() != model.getCurrentAction()) {
-			//TODO: RuntimeException
-			throw new RuntimeException("Wrong action");
+		if (getAction() != model.getCurrentAction()) {
+			throw new WrongActionException(model.getCurrentAction());
 		}
 	}
 
@@ -72,7 +70,8 @@ public abstract class PlayerAction {
 	 *
 	 * @throws exception if it encounters problems in performing the action
 	 */
-	public abstract void execute(Match model) throws InvalidPickException, NotYourTurnException, CannotWithdrawCardException, NotEnoughSpaceInColumnException, BagEmptyException;
+	public abstract void execute(Model model) throws InvalidPickException, NotYourTurnException,
+			CannotWithdrawCardException, NotEnoughSpaceInColumnException, BagEmptyException;
 
 	/*
 	* A getter for the player which is requesting to do the action
@@ -86,12 +85,5 @@ public abstract class PlayerAction {
 	 */
 	public Action getAction() {
 		return action;
-	}
-
-	/*
-	 * A setter for the action which needs to be executed (used in subclasses)
-	 */
-	public void setAction(Action action) {
-		this.action = action;
 	}
 }

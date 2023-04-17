@@ -2,17 +2,18 @@ package Model;
 
 import Exceptions.*;
 import Exceptions.MatchException;
+import Model.CommonObjectives.CommonObjOne;
+import Model.CommonObjectives.CommonObjTwo;
+import Model.CommonObjectives.CommonObjective;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 import static java.lang.Math.min;
 
-public class MatchTest extends TestCase {
+public class ModelTest extends TestCase {
 
     @Test
     void constructionTest() throws MatchException {
@@ -22,10 +23,10 @@ public class MatchTest extends TestCase {
         players.add("Carlo");
 
         try {
-            Match model = new Match(players);
-            for (int i = 0; i < (new Library()).getLibraryCols(); i++) { //fills chair's player shelf
+            Model model = new Model(players);
+            for (int i = 0; i < (new Shelf()).getLibraryCols(); i++) { //fills chair's player shelf
                 List<Cards> cards = new ArrayList<>();
-                for (int j = 0; j < (new Library()).getLibraryRows(); j++) {
+                for (int j = 0; j < (new Shelf()).getLibraryRows(); j++) {
                     cards.add(new Cards(CardsType.CATS, 0));
                 }
                 model.insert(cards, i, model.getChairPlayer());

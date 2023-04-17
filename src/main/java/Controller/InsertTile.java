@@ -3,13 +3,12 @@ package Controller;
 import Exceptions.*;
 import Model.Action;
 import Model.Cards;
-import Model.Match;
+import Model.Model;
 import java.util.List;
 
 public class InsertTile extends PlayerAction {
 	private int column;
 	private List<Cards> cards;
-
 
 
 	/*
@@ -23,7 +22,7 @@ public class InsertTile extends PlayerAction {
 		super(player);
 		column = col;
 		cards = card;
-		setAction(Action.INSERT);
+		this.action = Action.INSERT;
 	}
 
 	/*
@@ -33,8 +32,7 @@ public class InsertTile extends PlayerAction {
 	 *
 	 * @throws exceptions based on the problem found
 	 */
-	public void execute(Match model) throws NotYourTurnException, NotEnoughSpaceInColumnException, InvalidPickException {
-		//TODO Gestire i casi delle eccezioni
+	public void execute(Model model) throws InvalidPickException, NotEnoughSpaceInColumnException {
 		model.insert(cards, column, getCurrPlayer());
 	}
 }

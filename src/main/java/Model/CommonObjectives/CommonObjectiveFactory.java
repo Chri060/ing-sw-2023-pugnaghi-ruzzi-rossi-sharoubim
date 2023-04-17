@@ -1,4 +1,4 @@
-package Model;
+package Model.CommonObjectives;
 
 import Exceptions.MatchException;
 import org.json.simple.JSONObject;

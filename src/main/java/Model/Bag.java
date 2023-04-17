@@ -1,5 +1,7 @@
 package Model;
 
+import Controller.DrawTile;
+import Controller.EndOfAction;
 import Exceptions.BagEmptyException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

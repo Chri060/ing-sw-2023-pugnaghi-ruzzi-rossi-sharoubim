@@ -2,7 +2,7 @@ package Controller;
 
 import Exceptions.*;
 import Model.Action;
-import Model.Match;
+import Model.Model;
 import java.util.List;
 
 public class DrawTile extends PlayerAction {
@@ -18,7 +18,7 @@ public class DrawTile extends PlayerAction {
 	public DrawTile(List<Integer> coordinate, String player) {
 		super(player);
 		coordinates = coordinate;
-		setAction(Action.WITHDRAW);
+		this.action = Action.WITHDRAW;
 	}
 
 	/*
@@ -29,12 +29,7 @@ public class DrawTile extends PlayerAction {
 	* @throws exceptions based on the problem found
 	*/
 	@Override
-	public void execute(Match model) {
-		try {
-			model.withdraw(coordinates, getCurrPlayer());
-		}
-		catch (CannotWithdrawCardException | InvalidPickException e) {
-			//TODO Chiedere nuovamente al client le coordinate
-		}
+	public void execute(Model model) throws CannotWithdrawCardException, InvalidPickException {
+		model.withdraw(coordinates, getCurrPlayer());
 	}
 }

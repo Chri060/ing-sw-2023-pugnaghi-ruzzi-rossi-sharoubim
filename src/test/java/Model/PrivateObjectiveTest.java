@@ -21,7 +21,7 @@ class PrivateObjectiveTest {
     }
 
     @Test
-    void printLibrary(Library l) {
+    void printLibrary(Shelf l) {
         Cards[][] c = l.getAsMatrix();
         System.out.print("\t");
         for (int j = 0; j < l.getLibraryCols(); j++) {
@@ -42,23 +42,23 @@ class PrivateObjectiveTest {
     void toVerify() throws NotEnoughSpaceInColumnException, BagEmptyException, InvalidPickException {
         Random random = new Random();
         PrivateObjective objective = new PrivateObjective(random.nextInt(12));
-        Library library = new Library();
+        Shelf shelf = new Shelf();
         Bag bag = new Bag();
         ArrayList<Cards> carte = new ArrayList<>();
 
 
-        for(int i = 0; i < library.getLibraryRows(); i++) {
-            for (int j = 0; j < library.getLibraryCols(); j++) {
+        for(int i = 0; i < shelf.getLibraryRows(); i++) {
+            for (int j = 0; j < shelf.getLibraryCols(); j++) {
                 carte.add(bag.getCard());
-                library.insert(carte, j);
+                shelf.insert(carte, j);
                 carte.clear();
             }
         }
 
-        printLibrary(library);
+        printLibrary(shelf);
 
         objective.getPattern();
-        System.out.println(objective.verify(library));
+        System.out.println(objective.verify(shelf));
 
     }
 
@@ -76,7 +76,7 @@ class PrivateObjectiveTest {
         PrivateObjective p = new PrivateObjective(1);
 
 
-        Library l = new Library();
+        Shelf l = new Shelf();
         Cards[][] c = p.getPattern();
         for (int i = 0; i < l.getLibraryRows(); i++) {
             for (int j = 0; j < l.getLibraryCols(); j++) {

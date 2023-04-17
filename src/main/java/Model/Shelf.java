@@ -10,14 +10,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public class Library {
+public class Shelf {
 	private int librarycols;
 	private int libraryrows;
 	private Cards[][] library;
 
 
 
-	public Library() {
+	public Shelf() {
 		try {
 			Object file = new JSONParser().parse(new FileReader("src/main/resources/Model/config.json"));
 			JSONObject jsonObject0 = (JSONObject) file;
@@ -36,7 +36,7 @@ public class Library {
 		}
 	}
 
-	public Library(Library l) {
+	public Shelf(Shelf l) {
 		this();
 		for (int i = 0; i < libraryrows; i++) {
 			for (int j = 0; j < librarycols; j++) {

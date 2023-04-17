@@ -1,6 +1,8 @@
-package Model;
+package Model.CommonObjectives;
 
 import Exceptions.MatchException;
+import Model.Cards;
+import Model.Shelf;
 
 public class CommonObjTwo extends CommonObjective {
 
@@ -11,8 +13,8 @@ public class CommonObjTwo extends CommonObjective {
         objID = 2;
     }
 
-    public boolean verify (Library library) {
-        Cards[][] libraryCopy = library.getAsMatrix();
+    public boolean verify (Shelf shelf) {
+        Cards[][] libraryCopy = shelf.getAsMatrix();
         final int diagonalLength = 5;
         int row = libraryCopy.length;;
         int col = libraryCopy[0].length;

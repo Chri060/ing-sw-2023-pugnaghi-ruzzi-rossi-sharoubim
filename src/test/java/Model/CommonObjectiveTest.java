@@ -3,6 +3,8 @@ package Model;
 import Exceptions.NotEnoughSpaceInColumnException;
 import Exceptions.MatchException;
 import Exceptions.InvalidPickException;
+import Model.CommonObjectives.CommonObjFive;
+import Model.CommonObjectives.CommonObjectiveFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ class CommonObjectiveTest {
     @Test
    void test() throws MatchException, NotEnoughSpaceInColumnException, InvalidPickException {
         for (int k = 0; k < 1; k++) {
-            Library library = new Library();
+            Shelf shelf = new Shelf();
             List<Cards> cards = new ArrayList<>();
             Random rand = new Random();
 
@@ -24,7 +26,7 @@ class CommonObjectiveTest {
                     for (int j = 0; j < col; j++) {
 
                             cards.add(new Cards(CardsType.values()[rand.nextInt(6)], rand.nextInt(22)));
-                            library.insert(cards, j);
+                            shelf.insert(cards, j);
                             cards.clear();
                     }
 
@@ -32,7 +34,7 @@ class CommonObjectiveTest {
 
             System.out.println();
 
-            Cards[][] c = library.getAsMatrix();
+            Cards[][] c = shelf.getAsMatrix();
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
                     if (c[i][j] != null) {
@@ -51,7 +53,7 @@ class CommonObjectiveTest {
             CommonObjFive obiettivo = new CommonObjFive(8);
             obiettivo.getMaxAvaiblePoints();
             System.out.println(obiettivo.checkMaxAvaiablePoints());
-            System.out.println(obiettivo.verify(library));
+            System.out.println(obiettivo.verify(shelf));
         }
     }
 
@@ -66,11 +68,11 @@ class CommonObjectiveTest {
 
         CommonObjectiveFactory objs = new CommonObjectiveFactory();
         try {
-            Match match = new Match(player);
+            Model model = new Model(player);
 
 
             for (int i = 0; i < 2; i++) {
-                System.out.println(match.getCommonObjectives().get(i).getObjID());
+                System.out.println(model.getCommonObjectives().get(i).getObjID());
             }
         }
         catch (MatchException e){

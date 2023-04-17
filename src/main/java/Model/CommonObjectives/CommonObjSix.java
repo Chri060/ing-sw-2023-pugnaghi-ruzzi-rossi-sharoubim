@@ -1,6 +1,9 @@
-package Model;
+package Model.CommonObjectives;
 
 import Exceptions.MatchException;
+import Model.Cards;
+import Model.CardsType;
+import Model.Shelf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +17,8 @@ public class CommonObjSix extends CommonObjective {
         objID = 6;
     }
 
-    public boolean verify (Library library) {
-        Cards[][] libraryCopy = library.getAsMatrix();
+    public boolean verify (Shelf shelf) {
+        Cards[][] libraryCopy = shelf.getAsMatrix();
         List<CardsType> card = new ArrayList<>();
         int row = libraryCopy.length;;
         int col = libraryCopy[0].length;

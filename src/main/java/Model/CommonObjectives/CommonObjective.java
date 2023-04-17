@@ -1,11 +1,12 @@
-package Model;
+package Model.CommonObjectives;
 
 import Exceptions.MatchException;
+import Model.Shelf;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import java.io.FileNotFoundException;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public abstract class CommonObjective {
 
 
 
-	abstract public boolean verify (Library library);
+	abstract public boolean verify (Shelf shelf);
 
 	public int checkMaxAvaiablePoints() {
 		if (Points.isEmpty()){

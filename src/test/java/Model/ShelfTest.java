@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LibraryTest extends TestCase {
+public class ShelfTest extends TestCase {
 
     @Test
-    void printLibrary(Library l) {
+    void printLibrary(Shelf l) {
         Cards[][] c = l.getAsMatrix();
         for (int i = 0; i < l.getLibraryRows(); i++) {
             for (int j = 0; j < l.getLibraryCols(); j++) {
@@ -29,7 +29,7 @@ public class LibraryTest extends TestCase {
 
     @Test
     void insertTest() throws InvalidPickException {
-        Library l = new Library();
+        Shelf l = new Shelf();
         List<Cards> cards = new ArrayList<>();
         Random rand = new Random();
 
@@ -62,7 +62,7 @@ public class LibraryTest extends TestCase {
 
     @Test
     void is_Full() throws NotEnoughSpaceInColumnException, InvalidPickException {
-        Library l = new Library();
+        Shelf l = new Shelf();
         List<Cards> cards = new ArrayList<Cards>();
         Random rand = new Random();
         int x;
@@ -91,7 +91,7 @@ public class LibraryTest extends TestCase {
 
     @Test
     void maxcolumn() throws NotEnoughSpaceInColumnException, InvalidPickException {
-        Library l = new Library();
+        Shelf l = new Shelf();
         List<Cards> cards = new ArrayList<>();
         Random rand = new Random();
         int x;

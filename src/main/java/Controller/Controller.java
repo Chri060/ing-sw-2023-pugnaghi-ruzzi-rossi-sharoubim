@@ -1,14 +1,13 @@
 package Controller;
 
 import Exceptions.*;
-import Model.Match;
+import Model.Model;
 import java.util.List;
 import java.util.Objects;
 
 public class Controller {
-	private Match model;
+	private Model model;
 	private PlayerAction playerAction;
-
 
 
 	/*
@@ -17,7 +16,7 @@ public class Controller {
 	*
 	* @param model 		is an instance of the class Model.ModelWrapper
 	*/
-	public Controller(Match model) {
+	public Controller(Model model) {
 		Objects.requireNonNull(model);
 		this.model = model;
 	}
@@ -30,12 +29,11 @@ public class Controller {
 	* @param playerNum 	is the actual number of player that are needed to start the game
 	* @param model 		is the model linked to this Controller
 	*/
-	public static Controller createGame(List<String> players, int playerNum, Match model) {
+	public static Controller createGame(List<String> players, int playerNum, Model model) {
 		Objects.requireNonNull(players);
 		if (playerNum == players.size()) {
 			return new Controller(model);
-		}
-		else {
+		} else {
 			//TODO: RuntimeException
 			throw new RuntimeException("The number of players in the list is different from the number inserted by lobby leader.");
 		}
@@ -47,10 +45,12 @@ public class Controller {
 	*
 	* @param action 	is the PlayerAction that someone is trying
 	*/
-	public void doAction(PlayerAction action) throws PlayerNotFoundException, InvalidPickException, NotYourTurnException, CannotWithdrawCardException, NotEnoughSpaceInColumnException, BagEmptyException {
-		action.validate(model, action);
-		//TODO Notificare al client che non è il suo turno
+	public void doAction(PlayerAction action) throws BagEmptyException, InvalidPickException, PlayerNotFoundException,
+			NotYourTurnException, WrongActionException, CannotWithdrawCardException, NotEnoughSpaceInColumnException {
+
+		action.validate(model);
 		action.execute(model);
 		model.nextAction();
+
 	}
 }

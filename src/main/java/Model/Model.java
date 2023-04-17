@@ -2,15 +2,18 @@ package Model;
 
 import Exceptions.*;
 import Exceptions.MatchException;
+import Model.CommonObjectives.CommonObjective;
+import Model.CommonObjectives.CommonObjectiveFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import java.util.Optional;
 
 import java.io.*;
 import java.util.*;
 
-public class Match {
+public class Model {
 
 	public enum Event {
 		WITHDRAW, //Notifies client requested cards where withdrawn from thw board
@@ -39,7 +42,7 @@ public class Match {
 
 	private List<Cards> cardsToInsert;
 
-	public Match(List<String> playerList) throws MatchException {
+	public Model(List<String> playerList) throws MatchException {
 		int pObjNum;
 		int cObjNum;
 		int x;
@@ -69,7 +72,7 @@ public class Match {
 						"\nAvailable: " + numberpObj + ", Requested for each player: " + pObjNum +
 						" number of players: " + playerList.size());
 			}
-			Library l = new Library();
+			Shelf l = new Shelf();
 			if (playerList.size() * l.getLibraryRows() * l.getLibraryCols() - playerList.size() + 1 > (new Bag()).cardsLeft()) {
 				throw new MatchException("Bad JSON format: Not enough cards to guarantee the match to mathematically end");
 			}
@@ -127,7 +130,7 @@ public class Match {
 		return turn.getCurrentPlayer();
 	}
 
-	public Library getPlayerLibrary(String playerName) throws PlayerNotFoundException{
+	public Shelf getPlayerLibrary(String playerName) throws PlayerNotFoundException{
 		for (int i = 0; i < players.size(); i++) {
 			if (players.get(i).getName().equals(playerName)) {
 				return players.get(i).getLibrary();
@@ -187,7 +190,17 @@ public class Match {
 		return (lastTurn && getCurrentPlayer().equals(getChairPlayer()));
 	}
 
-	public void withdraw(List<Integer> coordinates, String playerName) throws CannotWithdrawCardException, InvalidPickException {
+	public void withdraw(List<Integer> coordinates, String playerName)
+			throws CannotWithdrawCardException, InvalidPickException {
+
+		for (Player p : players) {
+			if (p.getName().equals(playerName)) {
+				if (coordinates.size() / 2 > p.maxFreeSpace()) {
+					throw new CannotWithdrawCardException(p.maxFreeSpace());
+				}
+			}
+		}
+
 		cardsToInsert = dashboard.withdraw(coordinates);
 	}
 
@@ -197,7 +210,7 @@ public class Match {
 
 	public List<Integer> getCommonObjectivesPoints(String playerName) throws PlayerNotFoundException {
 
-		Library l = getPlayerLibrary(playerName);
+		Shelf l = getPlayerLibrary(playerName);
 
 		List<Integer> result = new ArrayList<>();
 		for (CommonObjective obj : commonObjectives) {
@@ -207,8 +220,7 @@ public class Match {
 				if (obj.verify(l)) {
 					obj.getCompletion().add(playerName);
 					result.add(obj.getMaxAvaiblePoints());
-				}
-				else {
+				} else {
 					result.add(0);
 				}
 			}
@@ -243,7 +255,7 @@ public class Match {
 	}
 
 	//test only
-	public void printLibrary(Library l) {
+	public void printLibrary(Shelf l) {
 		Cards[][] c = l.getAsMatrix();
 		for (int i = 0; i < l.getLibraryRows(); i++) {
 			for (int j = 0; j < l.getLibraryCols(); j++) {

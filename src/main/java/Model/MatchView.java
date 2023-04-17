@@ -1,4 +1,4 @@
-package ModelView;
+package Model;
 
 import java.io.Serializable;
 

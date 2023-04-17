@@ -1,6 +1,5 @@
 package Model;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,10 +60,10 @@ public class PrivateObjective {
 		corrispondence = 0;
 	}
 
-	public int verify(Library library) {
+	public int verify(Shelf shelf) {
 		int row;
 		int col;
-		Cards[][] libraryCopy = library.getAsMatrix();
+		Cards[][] libraryCopy = shelf.getAsMatrix();
 		for (int i = 0; i < 2 * object.length; i += 2) {
 			row = coordinates[i];
 			col = coordinates[i + 1];
@@ -76,7 +75,7 @@ public class PrivateObjective {
 	}
 
 	public Cards[][] getPattern() {
-		Library l = new Library();
+		Shelf l = new Shelf();
 		Cards[][] pattern = l.getAsMatrix();
 		l = null;
 		for (int i = 0; i < object.length; i++) {

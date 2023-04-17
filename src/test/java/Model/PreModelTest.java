@@ -4,7 +4,7 @@ import Exceptions.PlayerAlreadyInLobby;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
-public class PreMatchTest extends TestCase {
+public class PreModelTest extends TestCase {
 
     @Test
     void createAndUse() throws PlayerAlreadyInLobby {

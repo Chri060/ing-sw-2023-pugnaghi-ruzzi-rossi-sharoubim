@@ -2,8 +2,7 @@ package Controller;
 
 import Exceptions.*;
 import Model.Action;
-import Model.CommonObjective;
-import Model.Match;
+import Model.Model;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class EndOfAction extends PlayerAction {
 	 */
 	public EndOfAction(String player) {
 		super(player);
-		setAction(Action.ENDPHASE);
+		this.action = Action.ENDPHASE;
 	}
 
 	/*
@@ -30,7 +29,7 @@ public class EndOfAction extends PlayerAction {
 
 
 	@Override
-	public void execute(Match model) {
+	public void execute(Model model) {
 		List<Integer> objectivesPoints;
 		//TODO: se siamo nella fase finale bisogna terminare la partita altrimenti si cambia giocatore
 
@@ -44,7 +43,7 @@ public class EndOfAction extends PlayerAction {
 			objectivesPoints = model.getCommonObjectivesPoints(getCurrPlayer());
 		}
 		catch (PlayerNotFoundException e) {
-			throw new RuntimeException("Player " + getCurrPlayer() + " not found while checking for its common points");
+			objectivesPoints = null;
 		}
 		//TODO: obiettivo comune
 		model.nextPlayer();

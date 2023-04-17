@@ -10,7 +10,7 @@ public class Player {
 	private String name;
 	private int points;
 	private List<PrivateObjective> privateObj = new ArrayList<>();
-	private Library library;
+	private Shelf shelf;
 
 
 	public Player(String name, List<Integer> objID) {
@@ -18,7 +18,7 @@ public class Player {
 		for (Integer integer : objID) {
 			privateObj.add(new PrivateObjective(integer));
 		}
-		library = new Library();
+		shelf = new Shelf();
 		points = 0;
 	}
 
@@ -30,14 +30,14 @@ public class Player {
 		return name;
 	}
 
-	public Library getLibrary() {
-		return new Library(this.library);
+	public Shelf getLibrary() {
+		return new Shelf(this.shelf);
 	}
 
 	public int personalObjPoints() {
 		int points = 0;
 		for (PrivateObjective privateObjective : privateObj) {
-			points += privateObjective.verify(library);
+			points += privateObjective.verify(shelf);
 		}
 		return points;
 	}
@@ -55,6 +55,10 @@ public class Player {
 	}
 
 	public void insert(List<Cards> cardsList, int col) throws NotEnoughSpaceInColumnException, InvalidPickException {
-		library.insert(cardsList, col);
+		shelf.insert(cardsList, col);
+	}
+
+	public int maxFreeSpace() {
+		return shelf.maxFreeSpace();
 	}
 }
