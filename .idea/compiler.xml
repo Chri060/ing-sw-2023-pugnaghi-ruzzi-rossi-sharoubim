@@ -7,7 +7,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="softeng-gc21" />
-        <module name="ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
