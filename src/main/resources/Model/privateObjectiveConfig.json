@@ -1,0 +1,64 @@
+{
+  "patterns" : [
+    {
+      "objectiveCoordinates":  [ 0, 0, 0, 2, 1, 4, 2, 3, 3, 1, 5, 2 ],
+      "objectiveItems": [ "PLANT", "FRAME" , "CAT", "BOOK", "GAME", "TROPHY" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 1, 1, 2, 0, 2, 2, 3, 4, 4, 3, 5, 4 ],
+      "objectiveItems": [ "PLANT" , "CAT" , "GAME", "BOOK", "TROPHY", "FRAME" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 1, 0, 1, 3, 2, 2, 3, 1, 3, 4, 5, 0 ],
+      "objectiveItems": [ "FRAME", "GAME", "PLANT", "CAT", "TROPHY", "BOOK" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 4, 2, 0, 2, 2, 3, 3, 4, 1, 4, 2 ],
+      "objectiveItems": [ "GAME", "TROPHY", "FRAME", "PLANT", "BOOK", "CAT" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 1, 1, 3, 1, 3, 2, 4, 4, 5, 0, 5, 3 ],
+      "objectiveItems": [ "TROPHY", "FRAME", "BOOK", "PLANT", "GAME", "CAT" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 2, 0, 4, 2, 3, 4, 1, 4, 3, 5, 0 ],
+      "objectiveItems": [ "TROPHY", "CAT", "BOOK", "GAME", "FRAME", "PLANT" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 0, 1, 3, 2, 1, 3, 0, 4, 4, 5, 2 ],
+      "objectiveItems": [ "CAT", "FRAME", "PLANT", "TROPHY", "GAME", "BOOK" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 4, 1, 1, 2, 2, 3, 0, 4, 3, 5, 3 ],
+      "objectiveItems": [ "FRAME", "CAT", "TROPHY", "PLANT", "BOOK", "GAME" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 2, 2, 2, 3, 4, 4, 1, 4, 4, 5, 0 ],
+      "objectiveItems": [ "GAME", "CAT", "BOOK", "TROPHY", "PLANT", "FRAME" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 4, 1, 1, 2, 0, 3, 3, 4, 1, 5, 3 ],
+      "objectiveItems": [ "TROPHY", "GAME", "BOOK", "CAT", "FRAME", "PLANT" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 2, 1, 1, 2, 0, 3, 2, 4, 4, 5, 3 ],
+      "objectiveItems": [ "PLANT", "BOOK", "GAME", "FRAME", "CAT", "TROPHY" ]
+    },
+
+    {
+      "objectiveCoordinates":  [ 0, 2, 1, 1, 2, 2, 3, 3, 4, 4, 5, 0 ],
+      "objectiveItems": [ "BOOK", "PLANT", "FRAME", "TROPHY", "GAME", "CAT" ]
+    }
+  ],
+  "points" : [0, 1, 2, 4, 6, 9, 12]
+}
