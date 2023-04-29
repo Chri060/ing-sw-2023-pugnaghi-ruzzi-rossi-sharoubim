@@ -58,18 +58,23 @@ public class Shelf implements Iterable {
         }
         return shelf[planarCoordinate.getRow()][planarCoordinate.getColumn()];
     }
-    public void insert(List<Card> cardList, int column) throws InvalidArgumentException {
-
+    public boolean canInsert(List<Card> cardList, int column) {
         if (cardList == null) {
-            throw new InvalidArgumentException("CardList to insert in shelf is null");
+            return false;
         }
         if (cardList.size() == 0) {
-            throw new InvalidArgumentException("Empty card list provided");
+            return false;
         }
-        if (cardList.size() > this.columnFreeSpace(column)) {
-            throw new InvalidArgumentException("Not enough space in the " + (column + 1) + "° column");
+        if (column < 0 || column >= getColumns()) {
+            return false;
         }
 
+        if (cardList.size() > this.columnFreeSpace(column)) {
+            return false;
+        }
+        return true;
+    }
+    public void insert(List<Card> cardList, int column) {
         int row = this.rows - 1;
         while (row > 0 && this.shelf[row][column] != null) {
             row--;
