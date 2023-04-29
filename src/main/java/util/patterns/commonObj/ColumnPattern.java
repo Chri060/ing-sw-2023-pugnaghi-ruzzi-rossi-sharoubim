@@ -1,5 +1,6 @@
 package util.patterns.commonObj;
 
+import Model.entities.Card;
 import util.Config;
 
 public class ColumnPattern extends CommonObjectivePattern{
@@ -14,5 +15,10 @@ public class ColumnPattern extends CommonObjectivePattern{
         for (int i = 0; i < this.patternLength; i++) {
             this.pattern[i][0] = true;
         }
+    }
+
+    @Override
+    public int verifyPatternWithOneCard(Card[][] shelfMatrix) {
+        return this.patternWithOneCard(shelfMatrix);
     }
 }

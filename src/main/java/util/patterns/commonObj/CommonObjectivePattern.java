@@ -292,4 +292,57 @@ public abstract class CommonObjectivePattern {
         }
         return maxHits;
     }
+    //As some pattern might be overlapped and exploration from the left up corner might not find the max amount of appearance
+    //of that pattern. To fix this method flips the matrix 4 times to explore all the possible combinations
+    //NOTE for patterns that are not symmetric by 90° rotations such as columns and rows do not use this method
+    public int verifyPatternWithOneCard(Card[][] shelfMatrix) {
+        //Will be rotated
+        Card[][] temp;
+        int max = 0;
+
+        for (int i = 0; i < 4; i++) {
+            temp = cloneMatrix(shelfMatrix);
+            max = Math.max(max, patternWithOneCard(temp));
+            shelfMatrix = rotateMatrix(shelfMatrix);
+        }
+        return max;
+    }
+    private Card[][] rotateMatrix(Card[][] matrix) {
+        //rows and columns are the number of columns and rows of matrix (notice they're swapped)
+        int rows = matrix[0].length;
+        int columns = matrix.length;
+
+        Card[][] result = new Card[rows][columns];
+
+        //Transposed matrix
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result[i][j] = matrix[j][i];
+            }
+        }
+
+        //Swaps columns
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns / 2; j++) {
+                Card temp = result[i][j];
+                result[i][j] = result[i][columns - 1 - j];
+                result[i][columns - 1 - j] = temp;
+            }
+        }
+
+        return result;
+    }
+    private Card[][] cloneMatrix(Card[][] matrix) {
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+        Card[][] result = new Card[rows][columns];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result[i][j] = matrix[i][j];
+            }
+        }
+        return result;
+    }
 }

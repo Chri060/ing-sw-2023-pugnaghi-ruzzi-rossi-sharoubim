@@ -13,6 +13,6 @@ public class CommonObjective10 extends PatternCommonObjective {
 
     @Override
     public boolean verify(Shelf shelf) {
-        return 0 < this.pattern.verifyWithSameType(shelf.asMatrix(), 1);
+        return 0 < this.pattern.verifyPatternWithOneCard(shelf.asMatrix());
     }
 }
