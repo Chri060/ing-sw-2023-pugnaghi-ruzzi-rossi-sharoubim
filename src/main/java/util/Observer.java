@@ -1,6 +1,6 @@
 package util;
 
-import Distributed.NetworkMessage;
+import Distributed.Messages.NetworkMessage;
 
 public interface Observer<ObservedObject extends Observable<Arg>, Arg extends NetworkMessage> {
 

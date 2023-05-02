@@ -1,6 +1,6 @@
 package util;
 
-import Distributed.NetworkMessage;
+import Distributed.Messages.NetworkMessage;
 
 import java.util.Vector;
 
