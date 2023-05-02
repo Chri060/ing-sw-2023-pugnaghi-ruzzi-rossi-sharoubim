@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="softeng-gc21" />
+        <module name="Progetto MyShelfie" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

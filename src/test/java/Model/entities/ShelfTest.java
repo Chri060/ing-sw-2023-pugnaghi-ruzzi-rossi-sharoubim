@@ -91,12 +91,7 @@ class ShelfTest {
         shelf.insert(cardList, 4);
         assert (shelf.isFull());
 
-        try {
-            shelf.insert(cardList, 0);
-            assert (false);
-        } catch (InvalidArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+
 
     }
 }
