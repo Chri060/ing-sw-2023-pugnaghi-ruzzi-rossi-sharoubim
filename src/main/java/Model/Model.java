@@ -1,5 +1,6 @@
 package Model;
 
+import Distributed.Messages.NetworkMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.entities.*;
@@ -7,7 +8,6 @@ import Model.entities.commonObjectives.CommonObjective;
 import Model.entities.commonObjectives.CommonObjective7;
 import util.Config;
 import util.Generator;
-import Distributed.NetworkMessage;
 import util.Observable;
 import util.PlanarCoordinate;
 
