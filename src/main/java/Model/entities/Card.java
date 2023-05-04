@@ -1,6 +1,9 @@
 package Model.entities;
 
-public class Card {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Card implements Serializable {
 
     public enum Type{
         CAT,

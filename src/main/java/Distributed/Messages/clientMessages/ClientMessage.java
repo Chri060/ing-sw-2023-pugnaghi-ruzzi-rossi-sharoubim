@@ -7,7 +7,5 @@ import java.io.Serializable;
 
 public interface ClientMessage extends NetworkMessage{
 
-    void injectName(String name);
-
     void execute(Controller controller);
 }

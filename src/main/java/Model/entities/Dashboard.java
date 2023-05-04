@@ -153,7 +153,7 @@ public class Dashboard implements Iterable {
     public void refill(Bag bag) throws InvalidActionException {
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                if (taps[i][j]) {
+                if (taps[i][j] && dashboard[i][j] == null) {
                     dashboard[i][j] = bag.getCard();
                 }
             }
@@ -172,6 +172,18 @@ public class Dashboard implements Iterable {
             throw new InvalidArgumentException("Coordinates are out of bounds");
         }
         return dashboard[planarCoordinate.getRow()][planarCoordinate.getColumn()];
+    }
+
+    public Card[][] asMatrix() {
+        Card[][] result = new Card[this.getRows()][this.getColumns()];
+
+        for (int i = 0; i < this.getRows(); i++) {
+            for (int j = 0; j < this.getColumns(); j++) {
+                result[i][j] = this.dashboard[i][j];
+            }
+        }
+
+        return result;
     }
 
     @Override

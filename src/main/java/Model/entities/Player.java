@@ -41,15 +41,22 @@ public class Player {
     public void givePoints(Point point) {
         points.add(point);
     }
-
     public boolean hasAlreadyGotCommonPoints(int ID) {
         return points.stream().anyMatch(x -> x.getOrigin().equals("Common Objective "  + ID));
+    }
+    public List<Point> getPrivatePoint() {
+        return this.privateObjectives.stream().map(x -> x.getMaxPoints(this.shelf)).toList();
+    }
+    public Point getTotalPrivatePoints() {
+        return new Point(this.getPrivatePoint().stream().mapToInt(x -> x.getValue()).sum(), name + "'s private objectives points");
+    }
+    public Point getTotalPoints() {
+        return new Point(this.getPoints().stream().mapToInt(x -> x.getValue()).sum(), name + "'s private objectives points");
     }
 
     public boolean equals(Player player) {
         return player.getName().equals(this.name);
     }
-
     public boolean equals(String playerName) {
         return playerName.equals(this.name);
     }
