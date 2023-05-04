@@ -5,6 +5,7 @@ import Model.entities.Shelf;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import util.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class CommonObjectiveTest {
 
     @BeforeEach
     void setup(){
+        Config.initialise(2);
         shelf = new Shelf();
         carte = new ArrayList<>();
     }

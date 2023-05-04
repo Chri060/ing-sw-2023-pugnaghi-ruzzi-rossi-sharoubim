@@ -3,6 +3,7 @@ package Model.entities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import util.Config;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class PrivateObjectiveTest {
 
     @BeforeEach
     void setupPriv() {
+        Config.initialise(2);
         l = new Shelf();     // come oggetti globali
         carte = new ArrayList<>();
     }
