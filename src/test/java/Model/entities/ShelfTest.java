@@ -94,4 +94,163 @@ class ShelfTest {
 
 
     }
+
+    @Test
+    void freeSpaceTest() throws InvalidArgumentException
+    {
+        Config.initialise(2);
+
+        Shelf shelf = new Shelf();
+
+        List<Card> cardList = new ArrayList<>();
+
+        Card cat = new Card(Card.Type.CAT, 0);
+        Card trophy =new Card(Card.Type.TROPHY, 0);
+        Card plant = new Card(Card.Type.PLANT, 0);
+        Card book = new Card(Card.Type.BOOK, 0);
+        Card game = new Card(Card.Type.GAME, 0);
+        Card frame = new Card(Card.Type.FRAME, 0);
+
+        assert (shelf.maxFreeSpace()==6);
+        assert (!shelf.canInsert(cardList, 0));
+
+        cardList.add(cat);
+        cardList.add(plant);
+        cardList.add(trophy);
+
+        assert (shelf.maxFreeSpace()==6);
+        shelf.insert(cardList,0);
+        assert (shelf.maxFreeSpace()==6);
+        assert (shelf.canInsert(cardList, 0));
+
+        cardList.add(cat);
+        assert (!shelf.canInsert(cardList, 0));
+        assert (!shelf.canInsert(cardList, -1));
+        assert (!shelf.canInsert(cardList, 5));
+        assert (shelf.canInsert(cardList, 4));
+        shelf.insert(cardList,4);
+        assert (shelf.maxFreeSpace()==6);
+
+        cardList.clear();
+        cardList.add(frame);
+        assert (shelf.canInsert(cardList, 4));
+        assert (shelf.canInsert(cardList, 0));
+        assert (shelf.canInsert(cardList, 1));
+        shelf.insert(cardList,1);
+        assert (shelf.canInsert(cardList, 1));
+        assert (shelf.maxFreeSpace()==6);
+
+        cardList.add(game);
+        assert (shelf.canInsert(cardList, 2));
+        shelf.insert(cardList,2);
+        assert (shelf.canInsert(cardList, 2));
+        assert (shelf.maxFreeSpace()==6);
+
+        cardList.clear();
+        cardList.add(book);
+        assert (shelf.canInsert(cardList, 3));
+        shelf.insert(cardList,3);
+        assert (shelf.canInsert(cardList, 3));
+        assert (shelf.maxFreeSpace()==5);
+
+        cardList.add(plant);
+        assert (shelf.canInsert(cardList, 3));
+        assert (shelf.canInsert(cardList, 4));
+        shelf.insert(cardList,4);
+        assert (!shelf.canInsert(cardList, 4));
+        shelf.insert(cardList,3);
+        assert (shelf.maxFreeSpace()==5);
+
+        cardList.clear();
+        cardList.add(book);
+        assert (shelf.canInsert(cardList, 1));
+        shelf.insert(cardList,1);
+        assert (shelf.canInsert(cardList, 1));
+        assert (shelf.maxFreeSpace()==4);
+
+        cardList.add(trophy);
+        assert (shelf.canInsert(cardList, 0));
+        shelf.insert(cardList,0);
+        assert (!shelf.canInsert(cardList, 0));
+
+        assert (shelf.canInsert(cardList, 1));
+        shelf.insert(cardList,1);
+        assert (shelf.canInsert(cardList, 1));
+        assert (shelf.maxFreeSpace()==4);
+
+        assert (!shelf.canInsert(cardList, 0));
+        assert (!shelf.canInsert(cardList, 4));
+        assert (shelf.canInsert(cardList, 3));
+        shelf.insert(cardList,3);
+        assert (!shelf.canInsert(cardList, 3));
+        assert (shelf.maxFreeSpace()==4);
+
+        cardList.clear();
+        cardList.add(cat);
+        assert (shelf.canInsert(cardList, 0));
+        shelf.insert(cardList,0);
+        assert (!shelf.canInsert(cardList, 0));
+        assert (shelf.maxFreeSpace()==4);
+        assert (shelf.canInsert(cardList, 2));
+        shelf.insert(cardList,2);
+        assert (shelf.maxFreeSpace()==3);
+
+        cardList.add(frame);
+        assert (!shelf.canInsert(cardList, 3));
+        assert (shelf.canInsert(cardList, 1));
+        assert (shelf.canInsert(cardList, 2));
+        shelf.insert(cardList,2);
+        assert (!shelf.canInsert(cardList, 2));
+        assert (shelf.maxFreeSpace()==2);
+        assert (!shelf.isFull());
+
+        assert (shelf.canInsert(cardList, 1));
+        shelf.insert(cardList,1);
+        assert (!shelf.canInsert(cardList, 1));
+        assert (shelf.maxFreeSpace()==1);
+        assert (!shelf.isFull());
+
+        cardList.clear();
+        assert (!shelf.canInsert(cardList, 0));
+        assert (!shelf.canInsert(cardList, 1));
+        assert (!shelf.canInsert(cardList, 2));
+        assert (!shelf.canInsert(cardList, 3));
+        assert (!shelf.canInsert(cardList, 4));
+        assert (shelf.maxFreeSpace()==1);
+        assert (!shelf.isFull());
+
+        cardList.add(game);
+        assert (shelf.canInsert(cardList, 2));
+        shelf.insert(cardList,2);
+        assert (!shelf.canInsert(cardList, 2));
+        assert (shelf.maxFreeSpace()==1);
+        assert (!shelf.isFull());
+
+        assert (!shelf.canInsert(cardList, 0));
+        assert (!shelf.canInsert(cardList, 1));
+        assert (!shelf.canInsert(cardList, 2));
+        assert (shelf.canInsert(cardList, 3));
+        assert (!shelf.canInsert(cardList, 4));
+        assert (shelf.maxFreeSpace()==1);
+        assert (!shelf.isFull());
+
+        cardList.add(plant);
+        assert (!shelf.canInsert(cardList, 3));
+        cardList.clear();
+        cardList.add(frame);
+        assert (shelf.canInsert(cardList, 3));
+        shelf.insert(cardList,3);
+        assert (!shelf.canInsert(cardList, 3));
+        cardList.clear();
+        assert (!shelf.canInsert(cardList, 3));
+        assert (shelf.maxFreeSpace()==0);
+        assert (shelf.isFull());
+
+
+    }
+
+
+
+
+
 }
