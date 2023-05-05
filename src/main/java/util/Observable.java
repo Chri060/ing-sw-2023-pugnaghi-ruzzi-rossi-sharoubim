@@ -66,9 +66,8 @@ public class Observable<Arg extends NetworkMessage> {
         changed = false;
     }
 
-
-
-
-
-
+    public void setChangedAndNotifyObservers(Arg message) {
+        setChanged();
+        notifyObservers(message);
+    }
 }

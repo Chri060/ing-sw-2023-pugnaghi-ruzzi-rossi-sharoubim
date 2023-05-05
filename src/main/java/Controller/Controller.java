@@ -34,8 +34,7 @@ public class Controller {
             }
             try {
                 model.joinPlayer(playerName);
-                System.out.println(playerName + " joined the room");
-                if (model.getRoomSize() == model.getTargetRoomSIze()) {
+                if (model.getRoomSize() == model.getTargetRoomSize()) {
                     model.start();
                     updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
                 }
@@ -45,8 +44,10 @@ public class Controller {
             }
         }
     }
-    public void setRoomSize(int size) {
-        model.setRoomSize(size);
+    public void setRoomSize(int size, String playerName) {
+        if (playerName.equals(model.getRoomLeader())) {
+            model.setTargetRoomSize(size);
+        }
     }
     public void leave(String playerName) {
         synchronized (model) {
@@ -164,7 +165,7 @@ public class Controller {
     }
     public void endgame() {
         //TODO foreach player gives shelfPoints
-        model.givePlayersPrivatePoints();
+        //TODO foreach player gives privateObjectivePoints
         model.sortWinners(new Comparator<Player>() {
             @Override
             public int compare(Player p1, Player p2) {

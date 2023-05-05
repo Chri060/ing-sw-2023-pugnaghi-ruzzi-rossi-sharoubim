@@ -8,4 +8,5 @@ import java.io.Serializable;
 public interface ClientMessage extends NetworkMessage{
 
     void execute(Controller controller);
+    String getAuth();
 }

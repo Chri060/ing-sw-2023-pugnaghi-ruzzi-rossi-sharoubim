@@ -38,7 +38,7 @@ public class Player {
     public List<Point> getPoints() {
         return points;
     }
-    public void givePoints(Point point) {
+    public void givePoint(Point point) {
         points.add(point);
     }
     public boolean hasAlreadyGotCommonPoints(int ID) {

@@ -1,4 +1,8 @@
 package View;
 
-public class TextualIU implements View {
+import Distributed.Messages.clientMessages.ClientMessage;
+import util.Observable;
+
+public class TextualIU extends View {
+
 }

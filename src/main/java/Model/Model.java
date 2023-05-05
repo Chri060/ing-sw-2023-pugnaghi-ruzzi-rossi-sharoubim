@@ -1,22 +1,19 @@
 package Model;
 
-import Distributed.Messages.NetworkMessage;
+import Distributed.Messages.serverMessages.ServerMessage;
+import Distributed.Messages.serverMessages.TestMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.entities.*;
 import Model.entities.commonObjectives.CommonObjective;
-import Model.entities.commonObjectives.CommonObjective7;
 import util.Config;
 import util.Generator;
 import util.Observable;
 import util.PlanarCoordinate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-public class Model extends Observable<NetworkMessage> {
+public class Model extends Observable<ServerMessage> {
 
     public enum GameStatus {
         PREMATCH,
@@ -30,6 +27,9 @@ public class Model extends Observable<NetworkMessage> {
         INSERTING,
         ENDED
     }
+
+    private int roomSize;
+    private String roomLeader;
 
     private GameStatus gameStatus;
     private TurnStatus turnStatus;
@@ -50,19 +50,43 @@ public class Model extends Observable<NetworkMessage> {
         this.playerNames = new ArrayList<>();
     }
 
+    public void setTargetRoomSize(int roomSize) {
+        this.roomSize = roomSize;
+        System.out.println("Room size setted to " + roomSize + " by " + roomLeader);
+        setChangedAndNotifyObservers(new TestMessage("Room size setted to " + roomSize));
+    }
+    public int getTargetRoomSize() {
+        return roomSize;
+    }
+    public int getRoomSize() {
+        return this.playerNames.size();
+    }
+    public void setRoomLeader(String playerName) {
+        roomLeader = playerName;
+    }
+    public String getRoomLeader() {
+        return roomLeader;
+    }
+
     public void joinPlayer(String playerName) throws InvalidActionException {
         synchronized (playerNames) {
             if (this.playerNames.contains(playerName)) {
                 throw new InvalidActionException(playerName + " joining the room", "somebody with the same name being already in lobby");
             }
             this.playerNames.add(playerName);
-            setChanged();
+            setChangedAndNotifyObservers(new TestMessage(playerName + "joined the room "));
+            if (playerNames.size() == 1) {
+                roomLeader = playerName;
+                //TODO notifyObservers -> send set room size message
+                setChangedAndNotifyObservers(new TestMessage( "Set room size: "));
+            }
+            //TODO notifyObservers
         }
     }
     public void removePlayer(String playerName) {
         synchronized (playerNames) {
             this.playerNames.remove(playerName);
-            setChanged();
+            setChangedAndNotifyObservers(new TestMessage(playerName + "left the room"));
         }
     }
 
@@ -81,16 +105,17 @@ public class Model extends Observable<NetworkMessage> {
     }
 
     public String getCurrentPlayer() {return currentPlayer;}
+    public String getNextPlayer() {
+        int i = playerNames.indexOf(getCurrentPlayer());
+        return playerNames.get((i + 1) % playerNames.size());
+    }
+
+
+
     public void setCurrentPlayer(String playerName) {
         this.currentPlayer = playerName;
     }
     public String getChairPlayer() {return chairPlayer;}
-
-    public int getRoomSize() {
-        synchronized (playerNames) {
-            return this.playerNames.size();
-        }
-    }
 
     //Initialises the game
     public void start() throws InvalidActionException {
@@ -130,25 +155,49 @@ public class Model extends Observable<NetworkMessage> {
             return null;
         }
     }
-    public void insert(String playerName, int column) throws InvalidArgumentException {
+    public boolean canInsert(String playerName, int column) throws InvalidArgumentException {
         Player player = getPlayer(playerName);
         if (player != null) {
-            player.getShelf().insert(withdrawnCards, column);
+            return player.getShelf().canInsert(withdrawnCards, column);
         }
         else {
             throw new InvalidArgumentException(playerName + " not found in this lobby");
         }
     }
+    public void insert(String playerName, int column) throws InvalidArgumentException {
+        Player player = getPlayer(playerName);
+        if (player != null) {
+            if (!player.getShelf().canInsert(withdrawnCards, column)) {
+                //TODO setchangedandnotify
+                return;
+            }
+            player.getShelf().insert(withdrawnCards, column);
+            withdrawnCards.clear();
+        }
+        else {
+            throw new InvalidArgumentException(playerName + " not found in this lobby");
+        }
+    }
+    public int getPlayerMaxFreeSpace(String playerName) throws InvalidArgumentException {
+        Player player = getPlayer(playerName);
+        if (player != null) {
+            return player.getShelf().maxFreeSpace();
+        }
+        else {
+            throw new InvalidArgumentException(playerName + " not found in this lobby");
+        }
+    }
+
     public boolean isLastTurn() {
         return playerList.stream().anyMatch(x -> x.getShelf().isFull());
     }
     public boolean endGame() {
         return isLastTurn() && playerList.stream().reduce((a, b) -> b).get().equals(currentPlayer);
     }
+
     public List<Integer> getCommonObjectivesID() {
         return commonObjectiveList.stream().map(x -> x.getID()).toList();
     }
-
     public boolean verifyCommonObj(String playerName, int ID) throws InvalidArgumentException {
         Player player = getPlayer(playerName);
         if (player != null) {
@@ -184,8 +233,8 @@ public class Model extends Observable<NetworkMessage> {
         }
     }
 
-    public void givePoints(String playerName, Point point) {
-        getPlayer(playerName).givePoints(point);
+    public void givePoint(String playerName, Point point) {
+        getPlayer(playerName).givePoint(point);
     }
     public List<Point> getPlayerPoints(String playerName) {
         return this.getPlayer(playerName).getPoints();
@@ -201,9 +250,16 @@ public class Model extends Observable<NetworkMessage> {
         return dashboard.canWithdraw(coordinateList);
     }
     public void withdraw(List<PlanarCoordinate> coordinateList) {
+        if (!canWithdraw(coordinateList)) {
+            //TODO setchangedandnotify
+            return;
+        }
         withdrawnCards = dashboard.withdraw(coordinateList);
+        //TODO setchangedandnotify
     }
 
-
+    public void sortWinners(Comparator comparator) {
+        playerList.sort(comparator);
+    }
 
 }
