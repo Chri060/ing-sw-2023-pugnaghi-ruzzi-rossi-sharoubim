@@ -1,6 +1,8 @@
 package Model.entities;
 
-public class Point {
+import java.io.Serializable;
+
+public class Point implements Serializable {
         private int value;
         private String origin;
 

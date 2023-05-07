@@ -1,11 +1,14 @@
 package Model;
 
+import Distributed.Messages.serverMessages.ModelViewMessage;
 import Distributed.Messages.serverMessages.ServerMessage;
 import Distributed.Messages.serverMessages.TestMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.entities.*;
 import Model.entities.commonObjectives.CommonObjective;
+import Model.viewEntities.CommonObjectiveView;
+import Model.viewEntities.PlayerView;
 import util.Config;
 import util.Generator;
 import util.Observable;
@@ -52,8 +55,7 @@ public class Model extends Observable<ServerMessage> {
 
     public void setTargetRoomSize(int roomSize) {
         this.roomSize = roomSize;
-        System.out.println("Room size setted to " + roomSize + " by " + roomLeader);
-        setChangedAndNotifyObservers(new TestMessage("Room size setted to " + roomSize));
+        setChangedAndNotifyObservers(new TestMessage("Room size set to " + roomSize, roomLeader));
     }
     public int getTargetRoomSize() {
         return roomSize;
@@ -69,25 +71,28 @@ public class Model extends Observable<ServerMessage> {
     }
 
     public void joinPlayer(String playerName) throws InvalidActionException {
-        synchronized (playerNames) {
-            if (this.playerNames.contains(playerName)) {
-                throw new InvalidActionException(playerName + " joining the room", "somebody with the same name being already in lobby");
-            }
-            this.playerNames.add(playerName);
-            setChangedAndNotifyObservers(new TestMessage(playerName + "joined the room "));
-            if (playerNames.size() == 1) {
-                roomLeader = playerName;
-                //TODO notifyObservers -> send set room size message
-                setChangedAndNotifyObservers(new TestMessage( "Set room size: "));
-            }
-            //TODO notifyObservers
+        if (this.playerNames.contains(playerName)) {
+            setChangedAndNotifyObservers(new TestMessage(playerName + "is already in the room", playerName));
+            throw new InvalidActionException(playerName + " joining the room", "somebody with the same name being already in lobby");
         }
+        this.playerNames.add(playerName);
+        setChangedAndNotifyObservers(new TestMessage(playerName + " joined the room "));
+        if (playerNames.size() == 1) {
+            roomLeader = playerName;
+            //TODO notifyObservers -> send set room size message
+            setChangedAndNotifyObservers(new TestMessage( "Set room size: "));
+        }
+        //TODO notifyObservers
     }
     public void removePlayer(String playerName) {
-        synchronized (playerNames) {
-            this.playerNames.remove(playerName);
-            setChangedAndNotifyObservers(new TestMessage(playerName + "left the room"));
-        }
+        this.playerNames.remove(playerName);
+            if (playerNames.size() != 0) {
+                roomLeader = playerNames.get(0);
+            }
+            else {
+                roomLeader = null;
+            }
+            setChangedAndNotifyObservers(new TestMessage(playerName + " left the room"));
     }
 
     public GameStatus getGameStatus() {
@@ -142,6 +147,8 @@ public class Model extends Observable<ServerMessage> {
             currentPlayer = chairPlayer;
             gameStatus = GameStatus.RUNNING;
             turnStatus = TurnStatus.DRAWING;
+            setChangedAndNotifyObservers(new TestMessage("Match started"));
+            setChangedAndNotifyObservers(new ModelViewMessage(getModelView()));
         }
     }
 
@@ -252,6 +259,7 @@ public class Model extends Observable<ServerMessage> {
     public void withdraw(List<PlanarCoordinate> coordinateList) {
         if (!canWithdraw(coordinateList)) {
             //TODO setchangedandnotify
+            setChangedAndNotifyObservers(new TestMessage( currentPlayer + " drew Cards @ " + coordinateList));
             return;
         }
         withdrawnCards = dashboard.withdraw(coordinateList);
@@ -262,4 +270,32 @@ public class Model extends Observable<ServerMessage> {
         playerList.sort(comparator);
     }
 
+    public ModelView getModelView() {
+        ModelView modelView = new ModelView();
+
+        modelView.setDashboard(dashboard.asMatrix());
+        List<PlayerView> playerViewList = new ArrayList<>();
+        for (Player player : playerList) {
+            PlayerView playerView = new PlayerView();
+            playerView.setName(player.getName());
+            playerView.setShelf(player.getShelf().asMatrix());
+            playerView.setPoint(player.getTotalPoints());
+            playerViewList.add(playerView);
+            //TODO aggiungere obiettivi privati
+        }
+        modelView.setPlayerViews(playerViewList);
+
+        List<CommonObjectiveView> commonObjectiveViewList = new ArrayList<>();
+        for (CommonObjective commonObjective : commonObjectiveList) {
+            CommonObjectiveView commonObjectiveView = new CommonObjectiveView();
+            commonObjectiveView.setID(commonObjective.getID());
+            commonObjectiveView.setMaxPoint(commonObjective.checkMaxPoints());
+            commonObjectiveViewList.add(commonObjectiveView);
+        }
+        modelView.setCommonObjectiveViews(commonObjectiveViewList);
+
+        modelView.setWithdrawnCards(withdrawnCards);
+
+        return modelView;
+    }
 }

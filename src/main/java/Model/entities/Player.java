@@ -22,9 +22,8 @@ public class Player {
         return this.name;
     }
 
-    public Point getAllPoints() {
-        int totPoints = points.stream().mapToInt(x -> x.getValue()).sum();
-        return new Point(totPoints, name + "'s total points");
+    public Point getTotalPoints() {
+        return new Point(this.getPoints().stream().mapToInt(x -> x.getValue()).sum(), name + "'s points");
     }
 
     public List<Integer> getPrivateObjectivesID() {
@@ -49,9 +48,6 @@ public class Player {
     }
     public Point getTotalPrivatePoints() {
         return new Point(this.getPrivatePoint().stream().mapToInt(x -> x.getValue()).sum(), name + "'s private objectives points");
-    }
-    public Point getTotalPoints() {
-        return new Point(this.getPoints().stream().mapToInt(x -> x.getValue()).sum(), name + "'s private objectives points");
     }
 
     public boolean equals(Player player) {

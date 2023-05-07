@@ -11,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements Client{
 
     public View view;
+    private String token;
 
     public ClientImpl(Server server) throws RemoteException {
         super();
@@ -26,19 +27,29 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         super(port, csf, ssf);
     }
 
-    @Override
+    public void setToken(String token) throws RemoteException {
+        this.token = token;
+    }
+
     public void initialise(Server server) throws RemoteException {
     server.register(this, view.getName());
     view.addObserver((o, message) -> {
         try {
             server.update(this, message);
         } catch (RemoteException e) {
-            System.err.println("Couldn't update the server");}});
+            System.err.println("Couldn't update the server");
+        }
+    });
     }
 
 
     @Override
     public void update(ServerMessage message) {
-        message.execute(view);
+        if (message.isBroadcast()) {
+            message.execute(view);
+        }
+        else if (message.getReceiver().contains(view.getName())) {
+            message.execute(view);
+        }
     }
 }

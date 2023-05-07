@@ -2,6 +2,7 @@ package Distributed;
 
 import Controller.Controller;
 import Distributed.Messages.clientMessages.ClientMessage;
+import Distributed.Messages.serverMessages.*;
 import Model.Model;
 
 import java.rmi.RemoteException;
@@ -15,7 +16,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     Controller controller;
     Model model;
-    Map<Client, String> clientNames;
+    Map<String, Client> clientNames;
+
 
     public ServerImpl() throws RemoteException {
         super();
@@ -35,22 +37,26 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void register(Client client, String auth) throws RemoteException{
-        clientNames.put(client, auth);
-        model.addObserver((o, message) -> {
-            try {
-                client.update(message);
-            } catch (RemoteException e) {
-                System.err.println("Couldn't contact client");
-            }
-        });
+        if (!clientNames.containsKey(auth)) {
+            clientNames.put(auth, client);
+            model.addObserver((o, message) -> {
+                try {
+                    client.update(message);
+                } catch (RemoteException e) {
+                    System.err.println("Couldn't contact client" + e.getMessage());
+                }
+            });
+        }
+        else {
+            client.update(new TestMessage("Name already in use in the room"));
+        }
     }
 
 
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
-        if (message.getAuth().equals(clientNames.get(client))) {
-            message.execute(this.controller);
-
+        if (client.equals(clientNames.get(message.getAuth()))) {
+            message.execute(controller);
         }
     }
 }

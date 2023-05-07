@@ -29,6 +29,9 @@ abstract public class CommonObjective {
     public Point getMaxPoints() {
         return availablePoints.pop();
     }
+    public Point checkMaxPoints() {
+        return availablePoints.peek();
+    }
 
     public static int getNumberOfAvailableObjectives() {
         return numberOfAvailableObjectives;
