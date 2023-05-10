@@ -1,18 +1,24 @@
 package Controller;
 
+import Distributed.Messages.serverMessages.ServerMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.Model;
 import Model.entities.Player;
 import Model.entities.Point;
+import util.Observable;
+import util.Observer;
 import util.PlanarCoordinate;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Controller {
 
     private Model model;
+
 
     public Controller(Model model) {
         this.model = model;
@@ -34,7 +40,7 @@ public class Controller {
             }
             try {
                 model.joinPlayer(playerName);
-                if (model.getRoomSize() == model.getTargetRoomSize()) {
+                if (model.getRoomSize() == model.getTargetRoomSize() && model.getRoomSize() > 1) {
                     model.start();
                     updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
                 }
@@ -44,10 +50,16 @@ public class Controller {
             }
         }
     }
+
     public void setRoomSize(int size, String playerName) {
-        if (playerName.equals(model.getRoomLeader())) {
-            model.setTargetRoomSize(size);
+        if (!playerName.equals(model.getRoomLeader())) {
+            return;
         }
+        if (size < 2) {
+            return;
+        }
+        model.setTargetRoomSize(size);
+
     }
     public void leave(String playerName) {
         synchronized (model) {
@@ -109,9 +121,19 @@ public class Controller {
                 return;
             }
             model.withdraw(planarCoordinateList);
-            updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
+            updateStates(Model.TurnStatus.ORDERING, Model.GameStatus.RUNNING);
         }
     }
+
+    public void changeOrderOfCards(List<Integer> orderList) {
+        if (model.getTurnStatus() != Model.TurnStatus.ORDERING) {
+            //TOOD
+            return;
+        }
+        model.sortWithdrawnCards(orderList);
+        updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
+    }
+
     public void insert(String playerName, int column) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
@@ -165,7 +187,8 @@ public class Controller {
     }
     public void endgame() {
         //TODO foreach player gives shelfPoints
-        //TODO foreach player gives privateObjectivePoints
+        //TODO foreach player gives privateObjectivePoints: fatto
+        model.givePrivatePoints();
         model.sortWinners(new Comparator<Player>() {
             @Override
             public int compare(Player p1, Player p2) {

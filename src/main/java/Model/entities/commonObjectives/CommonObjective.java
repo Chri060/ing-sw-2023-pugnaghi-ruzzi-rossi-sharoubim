@@ -15,6 +15,7 @@ abstract public class CommonObjective {
         this.ID = ID;
         int[] points = Config.getCommonPoints();
         availablePoints = new Stack<>();
+        availablePoints.push(new Point(0, "Common Objective " + this.ID));
         for (int i = points.length - 1; i >= 0; i--) {
             availablePoints.push(new Point(points[i], "Common Objective " + this.ID));
         }

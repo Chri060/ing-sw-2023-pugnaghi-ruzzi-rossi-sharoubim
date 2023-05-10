@@ -8,15 +8,13 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ClientImpl extends UnicastRemoteObject implements Client{
+public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
 
     public View view;
-    private String token;
 
-    public ClientImpl(Server server) throws RemoteException {
+    public ClientImpl() throws RemoteException {
         super();
-        view = new TextualIU();
-        initialise(server);
+        view = new TextualUI();
     }
 
     protected ClientImpl(int port) throws RemoteException {
@@ -27,29 +25,30 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         super(port, csf, ssf);
     }
 
-    public void setToken(String token) throws RemoteException {
-        this.token = token;
-    }
-
-    public void initialise(Server server) throws RemoteException {
-    server.register(this, view.getName());
-    view.addObserver((o, message) -> {
-        try {
-            server.update(this, message);
-        } catch (RemoteException e) {
-            System.err.println("Couldn't update the server");
-        }
-    });
+    public void init(Server server) throws RemoteException {
+        view.addObserver((o, message) -> {
+            try {
+                server.update(this, message);
+            } catch (RemoteException e) {
+                System.err.println("Error while notify Server");
+            }
+        });
+        server.register(this, view.getName());
     }
 
 
     @Override
-    public void update(ServerMessage message) {
-        if (message.isBroadcast()) {
-            message.execute(view);
-        }
-        else if (message.getReceiver().contains(view.getName())) {
-            message.execute(view);
-        }
+    public void update(ServerMessage message) throws RemoteException {
+        message.execute(this);
+    }
+
+    @Override
+    public void executeOnView(ServerMessage message) throws RemoteException {
+        message.execute(view);
+    }
+
+    @Override
+    public void run() {
+        view.run();
     }
 }

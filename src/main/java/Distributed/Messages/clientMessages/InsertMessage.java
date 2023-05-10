@@ -6,20 +6,21 @@ import Distributed.Server;
 
 import java.rmi.RemoteException;
 
-public class JoinMessage extends ClientMessageAbs{
-    public JoinMessage(String name) {
+public class InsertMessage extends ClientMessageAbs{
+
+    private int column;
+
+    public InsertMessage(String name, int column) {
         super(name);
+        this.column = column;
     }
 
     @Override
     public void execute(Server server, Client client) {
-        try {
-        server.register(client, getAuth());
-    } catch (RemoteException e) {}
     }
 
     @Override
     public void execute(Controller controller) {
+        controller.insert(name, column);
     }
-
 }

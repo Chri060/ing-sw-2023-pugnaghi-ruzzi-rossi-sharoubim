@@ -48,4 +48,8 @@ public class PrivateObjective {
         return new Point(points[hits], "Private Objective " + this.ID);
     }
 
+    public Card.Type[][] getPattern() {
+        return pattern.getShelfPattern();
+    }
+
 }

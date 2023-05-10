@@ -1,8 +1,10 @@
 package Distributed.Messages.serverMessages;
 
+import Distributed.Client;
 import Model.ModelView;
 import View.View;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class ModelViewMessage extends ServerMessageAbs{
@@ -14,12 +16,12 @@ public class ModelViewMessage extends ServerMessageAbs{
         this.modelView = modelView;
     }
 
-    public ModelViewMessage(boolean broadcast, String receiver) {
-        super(broadcast, receiver);
-    }
 
-    public ModelViewMessage(boolean broadcast, List<String> receivers) {
-        super(broadcast, receivers);
+    @Override
+    public void execute(Client client) {
+        try {
+            client.executeOnView(this);
+        } catch (RemoteException e) {}
     }
 
     @Override

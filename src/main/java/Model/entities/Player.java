@@ -50,6 +50,12 @@ public class Player {
         return new Point(this.getPrivatePoint().stream().mapToInt(x -> x.getValue()).sum(), name + "'s private objectives points");
     }
 
+    public List<Card.Type[][]> getPrivateObjectivePattern() {
+        List<Card.Type[][]> result = new ArrayList<>();
+        privateObjectives.forEach(x -> result.add(x.getPattern()));
+        return result;
+    }
+
     public boolean equals(Player player) {
         return player.getName().equals(this.name);
     }

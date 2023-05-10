@@ -51,4 +51,18 @@ public class PrivateObjectivePattern {
         return this.items[i];
     }
 
+    public Card.Type[][] getShelfPattern() {
+        int shelfRows = Config.getShelfRows();
+        int shelfColumns = Config.getShelfColumns();
+
+        Card.Type[][] result = new Card.Type[shelfRows][shelfColumns];
+
+        for (int i = 0; i < numberOfItems; i++) {
+            int row = coordinates[i].getRow();
+            int column = coordinates[i].getColumn();
+            result[row][column] = items[i];
+        }
+        return result;
+    }
+
 }

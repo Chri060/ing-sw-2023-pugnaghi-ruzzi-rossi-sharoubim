@@ -27,6 +27,7 @@ public class Model extends Observable<ServerMessage> {
 
     public enum TurnStatus {
         DRAWING,
+        ORDERING,
         INSERTING,
         ENDED
     }
@@ -54,8 +55,15 @@ public class Model extends Observable<ServerMessage> {
     }
 
     public void setTargetRoomSize(int roomSize) {
+        if (this.roomSize != 0) {
+            setChangedAndNotifyObservers(new TestMessage("Room size already set"));
+            return;
+        }
         this.roomSize = roomSize;
-        setChangedAndNotifyObservers(new TestMessage("Room size set to " + roomSize, roomLeader));
+        setChangedAndNotifyObservers(new TestMessage("Room size set to " + roomSize));
+        if (roomSize == getRoomSize()) {
+            start();
+        }
     }
     public int getTargetRoomSize() {
         return roomSize;
@@ -71,16 +79,13 @@ public class Model extends Observable<ServerMessage> {
     }
 
     public void joinPlayer(String playerName) throws InvalidActionException {
-        if (this.playerNames.contains(playerName)) {
-            setChangedAndNotifyObservers(new TestMessage(playerName + "is already in the room", playerName));
-            throw new InvalidActionException(playerName + " joining the room", "somebody with the same name being already in lobby");
-        }
         this.playerNames.add(playerName);
+        System.out.println(playerName + " joined the match");
         setChangedAndNotifyObservers(new TestMessage(playerName + " joined the room "));
         if (playerNames.size() == 1) {
             roomLeader = playerName;
             //TODO notifyObservers -> send set room size message
-            setChangedAndNotifyObservers(new TestMessage( "Set room size: "));
+            setChangedAndNotifyObservers(new TestMessage( "You're the first player, use size command to set room size "));
         }
         //TODO notifyObservers
     }
@@ -91,6 +96,7 @@ public class Model extends Observable<ServerMessage> {
             }
             else {
                 roomLeader = null;
+                setTargetRoomSize(0);
             }
             setChangedAndNotifyObservers(new TestMessage(playerName + " left the room"));
     }
@@ -123,7 +129,7 @@ public class Model extends Observable<ServerMessage> {
     public String getChairPlayer() {return chairPlayer;}
 
     //Initialises the game
-    public void start() throws InvalidActionException {
+    public void start() {
         synchronized (Config.class) {
             Config.initialise(this.playerNames.size());
             this.gameStatus = GameStatus.STARTING;
@@ -142,7 +148,9 @@ public class Model extends Observable<ServerMessage> {
             commonObjectiveList = Generator.getCommonObjectives(numberOfCommonObjectives, availableCommonObjectives);
             dashboard = new Dashboard();
             bag = new Bag();
-            dashboard.refill(bag);
+            try {
+                dashboard.refill(bag);
+            } catch (InvalidActionException e) {/**/}
             chairPlayer = playerNames.get(0);
             currentPlayer = chairPlayer;
             gameStatus = GameStatus.RUNNING;
@@ -180,6 +188,7 @@ public class Model extends Observable<ServerMessage> {
             }
             player.getShelf().insert(withdrawnCards, column);
             withdrawnCards.clear();
+            setChangedAndNotifyObservers(new ModelViewMessage(getModelView()));
         }
         else {
             throw new InvalidArgumentException(playerName + " not found in this lobby");
@@ -221,6 +230,13 @@ public class Model extends Observable<ServerMessage> {
         }
     }
 
+    public void givePrivatePoints() {
+        playerList.stream().forEach(x -> {
+            Point point = x.getTotalPrivatePoints();
+            x.givePoint(point);
+        });
+    }
+
     public List<Boolean> verifyCommonObj(String playerName) throws InvalidArgumentException {
         List<Boolean> result = new ArrayList<>();
         List<Integer> IDList = this.getCommonObjectivesID();
@@ -259,13 +275,36 @@ public class Model extends Observable<ServerMessage> {
     public void withdraw(List<PlanarCoordinate> coordinateList) {
         if (!canWithdraw(coordinateList)) {
             //TODO setchangedandnotify
-            setChangedAndNotifyObservers(new TestMessage( currentPlayer + " drew Cards @ " + coordinateList));
             return;
         }
         withdrawnCards = dashboard.withdraw(coordinateList);
+        setChangedAndNotifyObservers(new TestMessage( currentPlayer + " drew Cards " + withdrawnCards.stream().map(x -> x.getType()).toList()));
         //TODO setchangedandnotify
     }
+    public void sortWithdrawnCards(List<Integer> orderList) {
+        if (orderList == null) {
+            //TODO
+            return;
+        }
+        if (orderList.size() != withdrawnCards.size()) {
+            //TODO ordine non valido
+            return;
+        }//se si lascia = sul maggiore l'ordine va da 0 se lo si mette sul minore va da 1
+        if (orderList.stream().anyMatch(x -> x >= withdrawnCards.size() || x < 0)) {
+            //TODO valori non validi
+            return;
+        }
+        if (orderList.stream().distinct().count() < withdrawnCards.size()) {
+            //TODO valori non validi
+            return;
+        }
+        List<Card> newList = new ArrayList<>();
+        for (Integer i : orderList) {
+            newList.add(withdrawnCards.get(i));
+        }
+        withdrawnCards = newList;
 
+    }
     public void sortWinners(Comparator comparator) {
         playerList.sort(comparator);
     }
@@ -280,6 +319,7 @@ public class Model extends Observable<ServerMessage> {
             playerView.setName(player.getName());
             playerView.setShelf(player.getShelf().asMatrix());
             playerView.setPoint(player.getTotalPoints());
+            playerView.setPrivateObjectivePattern(player.getPrivateObjectivePattern());
             playerViewList.add(playerView);
             //TODO aggiungere obiettivi privati
         }
