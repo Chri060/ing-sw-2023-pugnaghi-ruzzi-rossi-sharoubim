@@ -8,6 +8,8 @@ import org.json.simple.parser.ParseException;
 import util.patterns.privateObj.PrivateObjectivePattern;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Config {
@@ -58,6 +60,9 @@ public class Config {
     private static int[] fourPlayersCommonPoints = {8, 6, 4, 2};
     private static int[] customCommonPoints;
 
+    private static int[] shelfPoints = {0, 0, 2, 3, 5, 8};
+    private static int[] customShelfPoints;
+
     private static int numberOfCommonObjectives;
     private static int numberOfPrivateObjectives;
 
@@ -68,13 +73,20 @@ public class Config {
 
 
     public static void initialise(int numberOfPlayers) {
-            //Parses Shelf size
+            //Parses Shelf size and shelf points
             try {
                 Parser parser = new Parser("src/main/resources/Model/shelfConfig.json");
                 shelfRows = parser.getInt("rows");
                 shelfColumns = parser.getInt("columns");
                 if (shelfColumns <= 0 || shelfRows <= 0) {
                     throw new BadJSONFormatException("Shelf Rows and Columns cannot be negative");
+                }
+                customShelfPoints = parser.getIntArray("shelfPoints");
+                if (customShelfPoints.length < 1) {
+                    throw new BadJSONFormatException("Not enough shelf points defined");
+                }
+                if (Arrays.stream(customShelfPoints).anyMatch(x -> x < 0)) {
+                    throw new BadJSONFormatException("ShelfPoints can't be negative");
                 }
             } catch (IOException | ParseException | BadJSONFormatException e) {
                 System.err.println("Custom config loading failed while loading shelf config:");
@@ -180,6 +192,7 @@ public class Config {
         }
 
     //Uses default config defined for the game
+
     public static void defaultInitialise(int playerNumber) {
 
         System.out.println("Using default config for " + playerNumber + " players");
@@ -188,6 +201,7 @@ public class Config {
 
             shelfRows = 6;
             shelfColumns = 5;
+            customShelfPoints = shelfPoints;
 
             dashboardRows = 9;
             dashboardColumns = 9;
@@ -221,7 +235,6 @@ public class Config {
 
     }
 
-
     public static int getNumberOfCardsOfEachType() {
         return numberOfCardsOfEachType;
     }
@@ -229,8 +242,12 @@ public class Config {
     public static int getShelfRows() {
         return shelfRows;
     }
+
     public static int getShelfColumns() {
         return shelfColumns;
+    }
+    public static int[] getCustomShelfPoints() {
+        return customShelfPoints;
     }
 
     public static int getDashboardColumns() {

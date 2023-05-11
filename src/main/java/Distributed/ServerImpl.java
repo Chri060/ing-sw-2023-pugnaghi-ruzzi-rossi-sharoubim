@@ -63,7 +63,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
         System.out.println("Received a new message");
-        if (clientNames.get(message.getAuth()) != null && client.equals(clientNames.get(message.getAuth()))) {
+        if (clientNames.get(message.getAuth()) == null || client.equals(clientNames.get(message.getAuth()))) {
             message.execute(controller);
             return;
         }

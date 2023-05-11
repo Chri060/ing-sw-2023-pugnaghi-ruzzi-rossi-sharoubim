@@ -8,6 +8,7 @@ import util.Iterators.Iterator;
 import util.Iterators.MatrixIterator;
 import util.PlanarCoordinate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Shelf implements Iterable {
@@ -99,6 +100,50 @@ public class Shelf implements Iterable {
         }
         return max;
     }
+
+    /**
+     * Returns the sizes of the groups of adjacent cards in the shelf that are of the same type.
+     * The size of the list represents the number of groups in the shelf and the value of each element of the result list
+     * is the size of a group found
+     * @return List<Integer></Integer>
+     */
+    public List<Integer> getAdjacentGroupsSizes() {
+        List<Integer> result = new ArrayList<>();
+        Card[][] shelfMatrix = asMatrix();
+
+        for (int i = 0; i < shelfMatrix.length; i++) {
+            for (int j = 0; j < shelfMatrix[0].length; j++) {
+                if (shelfMatrix[i][j] != null) {
+                    int groupSize = getGroupSize(shelfMatrix, new PlanarCoordinate(i, j), shelfMatrix[i][j].getType());
+                    if (groupSize > 0) {
+                        result.add(groupSize);
+                    }
+                }
+            }
+        }
+        return result;
+
+    }
+
+
+
+    int getGroupSize(Card[][] shelfMatrix, PlanarCoordinate actual, Card.Type actualType) {
+        if (!Checker.shelfCoordinatesAreValid(actual)) {
+            return 0;
+        }
+        if (shelfMatrix[actual.getRow()][actual.getColumn()] == null) {
+            return 0;
+        }
+        if (!shelfMatrix[actual.getRow()][actual.getColumn()].equalsType(actualType)) {
+            return 0;
+        }
+        shelfMatrix[actual.getRow()][actual.getColumn()] = null;
+        return 1 + getGroupSize(shelfMatrix, actual.getRight(), actualType) +
+                getGroupSize(shelfMatrix, actual.getLeft(), actualType) +
+                getGroupSize(shelfMatrix, actual.getUp(), actualType) +
+                getGroupSize(shelfMatrix, actual.getDown(), actualType);
+    }
+
 
     @Override
     public Iterator getIterator() {

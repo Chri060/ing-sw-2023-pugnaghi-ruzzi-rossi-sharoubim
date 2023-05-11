@@ -5,6 +5,7 @@ import Model.entities.Card;
 import Model.entities.Shelf;
 import Model.entities.commonObjectives.CommonObjective;
 import util.Checker;
+import util.Observer;
 import util.PlanarCoordinate;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ import java.util.List;
 
 abstract public class GroupCommonObjective extends CommonObjective {
 
+    private int groupSize;
+
     public GroupCommonObjective(int ID) {
         super(ID);
+        this.groupSize = groupSize;
     }
-
-    //Returns an int matrix the same size as shelfMatrix in witch the value of the cell is the number of adjacent
-    //cells that contains the same type of card of the cell
 
 
 }

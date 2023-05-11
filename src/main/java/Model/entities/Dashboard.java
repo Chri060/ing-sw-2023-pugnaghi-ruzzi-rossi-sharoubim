@@ -149,7 +149,6 @@ public class Dashboard implements Iterable {
         }
         return true;*/
     }
-
     public void refill(Bag bag) throws InvalidActionException {
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
@@ -159,11 +158,12 @@ public class Dashboard implements Iterable {
             }
         }
     }
-
     public boolean isCellAvailable(PlanarCoordinate planarCoordinate) {
+        if (!Checker.dashboardCoordinatesAreValid(planarCoordinate)) {
+            return false;
+        }
         return taps[planarCoordinate.getRow()][planarCoordinate.getColumn()];
     }
-
     public Card checkCell(PlanarCoordinate planarCoordinate) throws InvalidArgumentException {
         if (planarCoordinate == null) {
             throw new InvalidArgumentException("Coordinates cannot be null");
@@ -173,7 +173,6 @@ public class Dashboard implements Iterable {
         }
         return dashboard[planarCoordinate.getRow()][planarCoordinate.getColumn()];
     }
-
     public Card[][] asMatrix() {
         Card[][] result = new Card[this.getRows()][this.getColumns()];
 
@@ -185,7 +184,6 @@ public class Dashboard implements Iterable {
 
         return result;
     }
-
     @Override
     public Iterator getIterator() {
         return new MatrixIterator(this.rows, this.columns);

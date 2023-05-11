@@ -1,6 +1,7 @@
 package Model.entities;
 
 import Exceptions.InvalidArgumentException;
+import Model.ModelView;
 import org.junit.jupiter.api.Test;
 import util.Config;
 import util.PlanarCoordinate;
@@ -92,6 +93,7 @@ class ShelfTest {
         assert (shelf.isFull());
 
 
+        assert(shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(0,0), shelf.asMatrix()[0][0].getType()) == 30);
 
     }
 
@@ -247,10 +249,107 @@ class ShelfTest {
         assert (shelf.isFull());
 
 
+
     }
 
+    @Test
+    void GroupTest() {
+        Config.initialise(2);
+        Shelf shelf = new Shelf();
+        List<Card> carte = new ArrayList<>();
+
+        carte.add(new Card(Card.Type.CAT, 0));
+        carte.add(new Card(Card.Type.CAT, 0));
+        carte.add(new Card(Card.Type.CAT, 0));
+
+        shelf.insert(carte, 0);
+
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(5, 0), shelf.asMatrix()[5][0].getType()) == 3);
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(4, 0), shelf.asMatrix()[4][0].getType()) == 3);
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(3, 0), shelf.asMatrix()[3][0].getType()) == 3);
+
+        shelf = new Shelf();
+        carte.clear();
+        carte.add(new Card(Card.Type.TROPHY, 0));
+        carte.add(new Card(Card.Type.BOOK, 0));
+        carte.add(new Card(Card.Type.GAME, 0));
+        carte.add(new Card(Card.Type.FRAME, 0));
+        carte.add(new Card(Card.Type.CAT, 0));
+        carte.add(new Card(Card.Type.PLANT, 0));
+        shelf.insert(carte, 0);
+        carte.clear();
+        carte.add(new Card(Card.Type.CAT, 2));
+        carte.add(new Card(Card.Type.BOOK, 1));
+        carte.add(new Card(Card.Type.GAME, 2));
+        carte.add(new Card(Card.Type.GAME, 1));
+        carte.add(new Card(Card.Type.GAME, 3));
+        carte.add(new Card(Card.Type.TROPHY, 1));
+        shelf.insert(carte, 1);
+        carte.clear();
+        carte.add(new Card(Card.Type.FRAME, 2));
+        carte.add(new Card(Card.Type.PLANT, 2));
+        carte.add(new Card(Card.Type.GAME, 4));
+        carte.add(new Card(Card.Type.GAME, 5));
+        carte.add(new Card(Card.Type.GAME, 6));
+        carte.add(new Card(Card.Type.TROPHY, 3));
+        shelf.insert(carte, 2);
+        carte.clear();
+        carte.add(new Card(Card.Type.CAT, 7));
+        carte.add(new Card(Card.Type.GAME, 8));
+        carte.add(new Card(Card.Type.PLANT, 3));
+        carte.add(new Card(Card.Type.BOOK, 4));
+        carte.add(new Card(Card.Type.PLANT, 5));
+        carte.add(new Card(Card.Type.PLANT, 6));
+        shelf.insert(carte, 3);
+        carte.clear();
+        carte.add(new Card(Card.Type.GAME, 9));
+        carte.add(new Card(Card.Type.GAME, 10));
+        carte.add(new Card(Card.Type.FRAME, 4));
+        carte.add(new Card(Card.Type.PLANT, 9));
+        carte.add(new Card(Card.Type.BOOK, 5));
+        carte.add(new Card(Card.Type.GAME, 11));
+        shelf.insert(carte, 4);
 
 
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(0, 0), Card.Type.PLANT) == 1);
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(0, 1), Card.Type.TROPHY) == 2);
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(0, 2), Card.Type.TROPHY) == 2);
+
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(2, 2), Card.Type.GAME) == 7);
+
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(5, 4), Card.Type.GAME) == 3);
+
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(5, 4), Card.Type.TROPHY) == 0);
+
+        assert (shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(5, 4), Card.Type.CAT) == 0);
 
 
+        List<Integer> result = shelf.getAdjacentGroupsSizes();
+
+        assert (result.size() == 19);
+
+        assert (result.get(0) == 1);
+        assert (result.get(1) == 2);
+        assert (result.get(2) == 2);
+        assert (result.get(3) == 1);
+        assert (result.get(4) == 1);
+        assert (result.get(5) == 7);
+        assert (result.get(6) == 1);
+        assert (result.get(7) == 1);
+        assert (result.get(8) == 1);
+        assert (result.get(9) == 1);
+        assert (result.get(10) == 1);
+        assert (result.get(11) == 1);
+        assert (result.get(12) == 2);
+        assert (result.get(13) == 1);
+        assert (result.get(14) == 3);
+        assert (result.get(15) == 1);
+        assert (result.get(16) == 1);
+        assert (result.get(17) == 1);
+        assert (result.get(18) == 1);
+
+
+        assert (result.stream().mapToInt(x -> x).sum() == 30);
+
+    }
 }

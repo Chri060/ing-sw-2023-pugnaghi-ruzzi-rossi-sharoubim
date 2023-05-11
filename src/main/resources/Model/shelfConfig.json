@@ -1,4 +1,5 @@
 {
   "columns": 5,
-  "rows": 6
+  "rows": 6,
+  "shelfPoints" : [0, 0, 2, 3, 5, 8]
 }

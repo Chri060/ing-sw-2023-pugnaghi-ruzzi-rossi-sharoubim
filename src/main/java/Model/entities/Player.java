@@ -56,6 +56,9 @@ public class Player {
         return result;
     }
 
+    public List<Integer> getShelfGroups() {
+        return shelf.getAdjacentGroupsSizes();
+    }
     public boolean equals(Player player) {
         return player.getName().equals(this.name);
     }

@@ -187,6 +187,7 @@ public class Controller {
     }
     public void endgame() {
         //TODO foreach player gives shelfPoints
+        model.giveShelfPoints();
         //TODO foreach player gives privateObjectivePoints: fatto
         model.givePrivatePoints();
         model.sortWinners(new Comparator<Player>() {

@@ -237,6 +237,21 @@ public class Model extends Observable<ServerMessage> {
         });
     }
 
+    public void giveShelfPoints() {
+        int[] points = Config.getCustomShelfPoints();
+        playerList.stream().forEach(x -> {
+        List<Integer> groupsSizes = x.getShelfGroups();
+        groupsSizes.stream().forEach(y -> {
+            if (y >= points.length) {
+                x.givePoint(new Point(points[points.length - 1], "Shelf Point"));
+            }
+            else {
+                x.givePoint(new Point(points[y - 1], "Shelf Point"));
+            }
+        });
+        });
+    }
+
     public List<Boolean> verifyCommonObj(String playerName) throws InvalidArgumentException {
         List<Boolean> result = new ArrayList<>();
         List<Integer> IDList = this.getCommonObjectivesID();
