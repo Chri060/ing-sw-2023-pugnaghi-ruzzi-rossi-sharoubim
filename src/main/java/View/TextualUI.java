@@ -13,6 +13,15 @@ import java.util.Scanner;
 public class TextualUI extends View {
 
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\033[1;91m";
+    public static final String ANSI_GREEN = "\033[1;92m";
+    public static final String ANSI_YELLOW = "\033[1;93m";
+    public static final String ANSI_BLUE = "\033[1;94m";
+    public static final String ANSI_CYAN = "\033[1;96m";
+    public static final String ANSI_WHITE = "\033[1;97m";
+
+
     @Override
     public void printDashboard() {
         Card[][] dashboard = this.model.getDashboard();
@@ -72,19 +81,13 @@ public class TextualUI extends View {
                     System.out.print(" ");
                 }
                 else {
-                    switch (matrix[i][j].getType()) {
-                        case PLANT -> System.out.print("P");
-                        case CAT -> System.out.print("C");
-                        case TROPHY -> System.out.print("T");
-                        case BOOK -> System.out.print("B");
-                        case FRAME -> System.out.print("F");
-                        case GAME -> System.out.print("G");
-                    }
+                    printCard(matrix[i][j].getType());
                 }
             }
             System.out.println("|");
         }
-    }    private void printMatrix(Card.Type[][] matrix) {
+    }
+    private void printMatrix(Card.Type[][] matrix) {
         int rows = matrix.length;
         int columns = matrix[0].length;
 
@@ -97,19 +100,7 @@ public class TextualUI extends View {
             System.out.print(i);
             for (int j = 0; j < columns; j++) {
                 System.out.print("|");
-                if (matrix[i][j] == null) {
-                    System.out.print(" ");
-                }
-                else {
-                    switch (matrix[i][j]) {
-                        case PLANT -> System.out.print("P");
-                        case CAT -> System.out.print("C");
-                        case TROPHY -> System.out.print("T");
-                        case BOOK -> System.out.print("B");
-                        case FRAME -> System.out.print("F");
-                        case GAME -> System.out.print("G");
-                    }
-                }
+                printCard(matrix[i][j]);
             }
             System.out.println("|");
         }
@@ -129,6 +120,9 @@ public class TextualUI extends View {
                 case ("w") -> setChangedAndNotifyObservers(new WithdrawMessage(readCords() ,name));
                 case ("i") -> setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
                 case ("o") -> setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
+                case ("l") -> setChangedAndNotifyObservers(new LeaveMessage(name));
+                case ("j") -> setChangedAndNotifyObservers(new JoinMessage(name));
+                case ("n") -> name = (scanner.nextLine());
             }
         }
     }
@@ -163,6 +157,22 @@ public class TextualUI extends View {
         System.out.println("Select a column");
         int column = new Scanner(System.in).nextInt();
         return column;
+    }
+
+
+    void printCard(Card.Type type) {
+        if (type == null) {
+            System.out.print(" ");
+            return;
+        }
+        switch (type) {
+            case PLANT -> System.out.print(ANSI_RED + "P" + ANSI_RESET);
+            case CAT -> System.out.print(ANSI_GREEN + "C"+ ANSI_RESET);
+            case TROPHY -> System.out.print(ANSI_CYAN + "T" + ANSI_RESET);
+            case BOOK -> System.out.print(ANSI_WHITE + "B"+ ANSI_RESET);
+            case FRAME -> System.out.print(ANSI_BLUE + "F" + ANSI_RESET);
+            case GAME -> System.out.print(ANSI_YELLOW + "G" + ANSI_RESET);
+        }
     }
 
 }

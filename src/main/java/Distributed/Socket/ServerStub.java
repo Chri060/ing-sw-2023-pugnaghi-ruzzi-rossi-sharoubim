@@ -3,6 +3,7 @@ package Distributed.Socket;
 import Distributed.Client;
 import Distributed.Messages.clientMessages.ClientMessage;
 import Distributed.Messages.clientMessages.JoinMessage;
+import Distributed.Messages.clientMessages.LeaveMessage;
 import Distributed.Messages.serverMessages.ServerMessage;
 import Distributed.Server;
 
@@ -35,9 +36,17 @@ public class ServerStub implements Server {
     public void register(Client client, String name) throws RemoteException {
         try {
             outputStream.writeObject(new JoinMessage(name));
-            System.out.println("Sent join message");
         } catch (IOException e) {
             System.out.println("Unable to update the server (registration)");
+        }
+    }
+
+    @Override
+    public void leave(Client client, String name) throws RemoteException {
+        try {
+            outputStream.writeObject(new LeaveMessage(name));
+        } catch (IOException e) {
+            System.out.println("Unable to update the server (leave)");
         }
     }
 

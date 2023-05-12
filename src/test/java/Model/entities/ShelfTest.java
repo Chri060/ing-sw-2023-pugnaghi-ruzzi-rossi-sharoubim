@@ -348,8 +348,10 @@ class ShelfTest {
         assert (result.get(17) == 1);
         assert (result.get(18) == 1);
 
+        int[] points = Config.getCustomShelfPoints();
 
         assert (result.stream().mapToInt(x -> x).sum() == 30);
+
 
     }
 }

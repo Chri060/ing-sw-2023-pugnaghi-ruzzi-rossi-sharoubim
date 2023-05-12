@@ -5,7 +5,7 @@ import Model.entities.commonObjectives.GroupCommonObjective.GroupCommonObjective
 
 public class CommonObjective5 extends GroupCommonObjective {
     public CommonObjective5(int ID) {
-        super(ID);
+        super(ID, 4);
     }
 
     //TODO implementare

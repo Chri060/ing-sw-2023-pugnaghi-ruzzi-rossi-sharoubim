@@ -11,7 +11,7 @@ public class ClientSocket {
         ClientImpl client = new ClientImpl();
         client.view.setName();
 
-        ServerStub serverStub = new ServerStub("localhost", 5555);
+        ServerStub serverStub = new ServerStub("5.95.187.51", 18301);
 
         new Thread(() -> serverStub.receive(client)).start();
 

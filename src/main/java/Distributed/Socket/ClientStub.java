@@ -2,6 +2,7 @@ package Distributed.Socket;
 
 import Distributed.Client;
 import Distributed.Messages.clientMessages.ClientMessage;
+import Distributed.Messages.clientMessages.LeaveMessage;
 import Distributed.Messages.serverMessages.ServerMessage;
 import Distributed.Server;
 
@@ -42,7 +43,7 @@ public class ClientStub implements Client {
                     server.update(this, clientMessage);
                 }
                 catch (IOException e) {
-                    System.err.println("Socket error");
+                    System.err.println("Client disconnected");
                     return;
                 }
                 catch (ClassNotFoundException e) {

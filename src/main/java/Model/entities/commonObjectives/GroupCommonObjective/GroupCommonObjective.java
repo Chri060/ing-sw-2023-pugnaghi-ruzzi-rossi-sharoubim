@@ -15,7 +15,7 @@ abstract public class GroupCommonObjective extends CommonObjective {
 
     private int groupSize;
 
-    public GroupCommonObjective(int ID) {
+    public GroupCommonObjective(int ID, int groupSize) {
         super(ID);
         this.groupSize = groupSize;
     }

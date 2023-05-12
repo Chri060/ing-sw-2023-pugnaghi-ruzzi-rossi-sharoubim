@@ -8,6 +8,7 @@ import Model.Model;
 import util.Observable;
 import util.Observer;
 
+import java.beans.PropertyEditorManager;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -41,7 +42,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void register(Client client, String name) throws RemoteException {
-        System.out.println("Registering...");
+        System.out.println("Registering" + name + "...");
         if (clientNames.containsKey(name)) {
             client.update(new TestMessage("Name already in use"));
             return;
@@ -59,13 +60,26 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         controller.join(name);
     }
 
+    @Override
+    public void leave(Client client, String name) throws RemoteException {
+        System.out.println(name + " wants to leave");
+        if (client.equals(clientNames.get(name))) {
+            System.out.println("Auth passed");
+            model.deleteObserver(observers.get(name));
+            controller.leave(name);
+            observers.remove(name);
+            clientNames.remove(name);
+            client.update(new TestMessage("Lobby left"));
+        }
+
+    }
+
 
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
         System.out.println("Received a new message");
-        if (clientNames.get(message.getAuth()) == null || client.equals(clientNames.get(message.getAuth()))) {
+        if (client.equals(clientNames.get(message.getAuth()))) {
             message.execute(controller);
-            return;
         }
         message.execute(this, client);
         /*if (!clientNames.containsKey(message.getAuth())) {
