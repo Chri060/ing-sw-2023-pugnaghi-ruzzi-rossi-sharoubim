@@ -1,7 +1,6 @@
 package Distributed;
 
 import Controller.Controller;
-import Distributed.Messages.NetworkMessage;
 import Distributed.Messages.clientMessages.ClientMessage;
 import Distributed.Messages.serverMessages.*;
 import Exceptions.InvalidArgumentException;
@@ -44,16 +43,21 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void register(Client client, String name) throws RemoteException {
-        System.out.println("Registering " + name + "...");
         try {
             if (!associator.isNameAvailable(name)) {
                 client.update(new TestMessage("Name already in use"));
-                System.out.println("Connection refuse");
+                return;
+            }
+            if (name.equals("")) {
+                client.update(new TestMessage("Name cannot be empty"));
+                return;
+            }
+            if (associator.contains(client)) {
+                client.update(new TestMessage("You are already in this lobby"));
                 return;
             }
         } catch (NullPointerException e) {
             client.update(new TestMessage("Name cannot be null"));
-            System.out.println("Connection refuse");
         }
         Observer<Observable<ServerMessage>, ServerMessage> obs = getObserver(client);
         model.addObserver(obs);
@@ -129,7 +133,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                             wait(1000);
                         } catch (RemoteException e) {
                             model.deleteObserver(associator.getObserver(client));
-                            model.setChangedAndNotifyObservers(new TestMessage(associator.getName(client) + "Disconnected"));
+                            model.setChangedAndNotifyObservers(new TestMessage(associator.getName(client) + " Disconnected"));
                             System.out.println(associator.getName(client) + " disconnected");
                             controller.leave(associator.getName(client));
                             associator.delete(client);

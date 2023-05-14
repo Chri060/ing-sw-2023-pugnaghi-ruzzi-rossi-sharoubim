@@ -20,7 +20,7 @@ public class ClientApp {
                     try {
                         runRMI();
                     } catch (RemoteException e) {
-                        System.out.println("RMI might not be available, can still retryRMI");
+                        System.out.println("RMI might not be available, can still retry");
                     }
                 }
                 case "Socket" ->{
@@ -28,7 +28,7 @@ public class ClientApp {
                         runSocket();
                     }
                     catch (RemoteException e) {
-                        System.out.println("Socket might not be available, can still retryRMI");
+                        System.out.println("Socket might not be available, can still retry");
                     }
                 }
                 case "x" -> {
@@ -41,28 +41,30 @@ public class ClientApp {
     public static void runSocket() throws RemoteException {
 
         ClientImpl client = new ClientImpl();
-        client.view.setName();
-        ServerStub serverStub = new ServerStub("localhost", 55555);
-        Thread receiver = new Thread(() -> serverStub.receive(client));
-
-
-        client.init(serverStub);
-
-        Thread view = new Thread(() -> client.run());
-
         try {
-            receiver.start();
-            view.start();
-            receiver.join();
-            view.join();
-        } catch (InterruptedException e) {
+            ServerStub serverStub = new ServerStub("localhost", 55555);
+            Thread receiver = new Thread(() -> serverStub.receive(client));
+
+
+            client.init(serverStub);
+
+            Thread view = new Thread(() -> client.run());
+
+            try {
+                receiver.start();
+                view.start();
+                receiver.join();
+                view.join();
+            } catch (InterruptedException e) {
+            }
+        } catch (RemoteException e) {
+            throw new RemoteException("Server Socket KO");
         }
 
     }
     public static void runRMI() throws RemoteException {
 
         ClientImpl client = new ClientImpl();
-        client.view.setName();
 
         try {
             Registry registry = LocateRegistry.getRegistry();

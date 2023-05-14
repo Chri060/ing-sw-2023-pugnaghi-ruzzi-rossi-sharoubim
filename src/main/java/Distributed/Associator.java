@@ -61,6 +61,10 @@ public class Associator {
         return isSpectator.get(index);
     }
 
+    public boolean contains(Client client) {
+        return clientList.contains(client);
+    }
+
     public boolean isNameAvailable(String name) throws NullPointerException {
         if (name == null) {
             throw new NullPointerException();

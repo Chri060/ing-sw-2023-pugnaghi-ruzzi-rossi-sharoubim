@@ -18,7 +18,7 @@ public class ServerStub implements Server {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
-    public ServerStub(String ip, int port) {
+    public ServerStub(String ip, int port) throws RemoteException{
         try {
             Socket socket = new Socket(ip, port);
             try {
@@ -28,7 +28,7 @@ public class ServerStub implements Server {
                 System.err.println("Failed to open socket streams");
             }
         } catch (IOException e) {
-            System.err.println("Failed to start socket");
+            throw new RemoteException("Failed to open streams");
         }
     }
 
@@ -37,7 +37,7 @@ public class ServerStub implements Server {
         try {
             outputStream.writeObject(new JoinMessage(name));
         } catch (IOException e) {
-            System.out.println("Unable to update the server (registration)");
+            throw new RemoteException("Unable to update the server (registration)");
         }
     }
 
@@ -46,7 +46,7 @@ public class ServerStub implements Server {
         try {
             outputStream.writeObject(new LeaveMessage(name));
         } catch (IOException e) {
-            System.out.println("Unable to update the server (leave)");
+            throw new RemoteException("Unable to update the server (leave)");
         }
     }
 
@@ -55,7 +55,7 @@ public class ServerStub implements Server {
         try {
             outputStream.writeObject(message);
         } catch (IOException e) {
-            System.out.println("Unable to update the server");
+            throw new RemoteException("Unable to update the server");
         }
     }
 
