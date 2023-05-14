@@ -4,11 +4,11 @@ import Controller.Controller;
 import Distributed.Messages.NetworkMessage;
 import Distributed.Messages.clientMessages.ClientMessage;
 import Distributed.Messages.serverMessages.*;
+import Exceptions.InvalidArgumentException;
 import Model.Model;
 import util.Observable;
 import util.Observer;
 
-import java.beans.PropertyEditorManager;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -20,6 +20,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     Controller controller;
     Model model;
+
+    Associator associator;
     Map<String, Client> clientNames;
     Map<String, Observer<Observable<ServerMessage>, ServerMessage>> observers;
 
@@ -29,6 +31,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         this.controller = new Controller(model);
         observers = new HashMap<>();
         clientNames = new HashMap<>();
+        associator = new Associator();
     }
 
     protected ServerImpl(int port) throws RemoteException {
@@ -39,62 +42,105 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         super(port, csf, ssf);
     }
 
-
     @Override
     public void register(Client client, String name) throws RemoteException {
-        System.out.println("Registering" + name + "...");
-        if (clientNames.containsKey(name)) {
-            client.update(new TestMessage("Name already in use"));
-            return;
-        }
-        clientNames.put(name, client);
-        Observer<Observable<ServerMessage>, ServerMessage> obs = (o, message) -> {
-            try {
-                client.update(message);
-            } catch (RemoteException e) {
-                System.err.println("Error while notify client");
+        System.out.println("Registering " + name + "...");
+        try {
+            if (!associator.isNameAvailable(name)) {
+                client.update(new TestMessage("Name already in use"));
+                System.out.println("Connection refuse");
+                return;
             }
-        };
+        } catch (NullPointerException e) {
+            client.update(new TestMessage("Name cannot be null"));
+            System.out.println("Connection refuse");
+        }
+        Observer<Observable<ServerMessage>, ServerMessage> obs = getObserver(client);
         model.addObserver(obs);
-        observers.put(name, obs);
         controller.join(name);
+        try {
+            boolean spectator;
+            if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
+                spectator = !model.isInGame(name);
+            }
+            else {
+                spectator = false;
+            }
+            Pinger pinger;
+            if (!spectator) {
+                pinger = getPinger(client);
+                pinger.start();
+            }
+            else {
+                pinger = null;
+            }
+            associator.add(spectator, name, client, obs, pinger);
+        } catch (InvalidArgumentException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
+        @Override
     public void leave(Client client, String name) throws RemoteException {
-        System.out.println(name + " wants to leave");
-        if (client.equals(clientNames.get(name))) {
-            System.out.println("Auth passed");
-            model.deleteObserver(observers.get(name));
+        if (name.equals(associator.getName(client))) {
+            model.deleteObserver(associator.getObserver(client));
             controller.leave(name);
-            observers.remove(name);
-            clientNames.remove(name);
+            associator.delete(client);
             client.update(new TestMessage("Lobby left"));
         }
-
     }
 
 
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
-        System.out.println("Received a new message");
-        if (client.equals(clientNames.get(message.getAuth()))) {
+        System.out.println("Received a new message: " + message.getClass());
+        if (message.getAuth().equals(associator.getName(client))) {
             message.execute(controller);
         }
         message.execute(this, client);
-        /*if (!clientNames.containsKey(message.getAuth())) {
-            System.out.println("Executing a message from an unknown");
-            message.execute(this, client);
-            return;
-        }
-        if (!clientNames.get(message.getAuth()).equals(client)) {
-            client.update(new TestMessage("Name not available"));
-            return;
-        }
-        System.out.println("Executing a message from " + message.getAuth());
-        System.out.println("Message Type: " + message);
-        message.execute(controller);*/
-
-
     }
+
+    private Observer<Observable<ServerMessage>, ServerMessage> getObserver(Client client) {
+        return new Observer<>() {
+            @Override
+            public void update(Observable o, ServerMessage message) {
+                try {
+                    client.update(message);
+                } catch (RemoteException e) {
+                    System.err.println("Error while notify client");
+                    if (associator.isSpectator(client)) {
+                        model.deleteObserver(associator.getObserver(client));
+                    }
+                    else {
+                        model.notifyObservers(new TestMessage(associator.getName(client) + "Disconnected"));
+                    }
+                }
+            }
+        };
+    }
+    private Pinger getPinger(Client client) {
+        return new Pinger() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    while (!needsToStop()) {
+                        try {
+                            client.update(new PingClientMessage());
+                            wait(1000);
+                        } catch (RemoteException e) {
+                            model.deleteObserver(associator.getObserver(client));
+                            model.setChangedAndNotifyObservers(new TestMessage(associator.getName(client) + "Disconnected"));
+                            System.out.println(associator.getName(client) + " disconnected");
+                            controller.leave(associator.getName(client));
+                            associator.delete(client);
+                            return;
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+
 }

@@ -52,10 +52,11 @@ public class Model extends Observable<ServerMessage> {
     public Model() {
         this.gameStatus = GameStatus.PREMATCH;
         this.playerNames = new ArrayList<>();
+        this.roomSize = - 1;
     }
 
     public void setTargetRoomSize(int roomSize) {
-        if (this.roomSize != 0) {
+        if (this.roomSize != - 1) {
             setChangedAndNotifyObservers(new TestMessage("Room size already set"));
             return;
         }
@@ -78,6 +79,10 @@ public class Model extends Observable<ServerMessage> {
         return roomLeader;
     }
 
+    public boolean isInGame(String name) {
+        return playerNames.contains(name);
+    }
+
     public void joinPlayer(String playerName) throws InvalidActionException {
         this.playerNames.add(playerName);
         System.out.println(playerName + " joined the match");
@@ -96,7 +101,7 @@ public class Model extends Observable<ServerMessage> {
             }
             else {
                 roomLeader = null;
-                setTargetRoomSize(0);
+                roomSize = - 1;
             }
             setChangedAndNotifyObservers(new TestMessage(playerName + " left the room"));
     }

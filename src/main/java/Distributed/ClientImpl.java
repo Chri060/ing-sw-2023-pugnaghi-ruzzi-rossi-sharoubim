@@ -33,7 +33,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
                 System.err.println("Error while notify Server");
             }
         });
-        server.register(this, view.getName());
+        //server.register(this, view.getName());
     }
 
 

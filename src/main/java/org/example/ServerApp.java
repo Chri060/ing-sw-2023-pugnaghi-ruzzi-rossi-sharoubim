@@ -12,11 +12,15 @@ import java.rmi.registry.Registry;
 
 public class ServerApp {
     public static void main(String[] args) throws RemoteException {
+
         Server server = new ServerImpl();
 
-        Registry registry = LocateRegistry.getRegistry();
-        registry.rebind("server", server);
-
+        try {
+            Registry registry = LocateRegistry.getRegistry();
+            registry.rebind("server", server);
+        } catch (RemoteException e) {
+            System.err.println("RMI KO");
+        }
         new Thread(() -> runSocket(server)).start();
 
 
@@ -24,7 +28,7 @@ public class ServerApp {
 
    public static void runSocket(Server server) {
        try {
-           ServerSocket serverSocket = new ServerSocket(5555);
+           ServerSocket serverSocket = new ServerSocket(55555);
            while (true) {
                 try {
                     Socket socket = serverSocket.accept();

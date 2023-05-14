@@ -31,7 +31,8 @@ public class ClientStub implements Client {
         try {
             outputStream.writeObject(message);
         } catch (IOException e) {
-            System.out.println("Unable to update a client");
+            //System.out.println("Unable to update a client");
+            throw new RemoteException("Unable to update a client");
         }
     }
 
@@ -43,7 +44,7 @@ public class ClientStub implements Client {
                     server.update(this, clientMessage);
                 }
                 catch (IOException e) {
-                    System.err.println("Client disconnected");
+                    //System.err.println("Client disconnected");
                     return;
                 }
                 catch (ClassNotFoundException e) {
