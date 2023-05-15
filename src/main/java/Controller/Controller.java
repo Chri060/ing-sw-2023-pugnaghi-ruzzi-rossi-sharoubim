@@ -1,6 +1,7 @@
 package Controller;
 
 import Distributed.Messages.serverMessages.ServerMessage;
+import Distributed.Messages.serverMessages.TestMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.Model;
@@ -31,8 +32,8 @@ public class Controller {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
                 //TODO notifies the match has already started
+                model.setPlayerOnline(playerName);
                 return;
-
             }
             if (playerName == null) {
                 //TODO notifies the name is invalid
@@ -63,12 +64,39 @@ public class Controller {
     }
     public void leave(String playerName) {
         synchronized (model) {
-            if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
-                //TODO notifies the match has already started
-                return;
-            }
             if (playerName == null) {
                 //TODO notifies the name is invalid
+                return;
+            }
+            if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
+                model.setPlayerOffline(playerName);
+                if (playerName.equals(model.getCurrentPlayer())) {
+                    model.setCurrentPlayer(model.getNextPlayer());
+                    model.setTurnStatus(Model.TurnStatus.DRAWING);
+                }
+                if (model.getOnlinePlayersCount() == 1) {
+                    model.setGameStatus(Model.GameStatus.PAUSED);
+                    model.setChangedAndNotifyObservers(new TestMessage("Only you left, automatic win in:"));
+                    new Thread(() -> {
+                        synchronized (model) {
+                            for (int i = 5; i > 0; i--) {
+                                model.setChangedAndNotifyObservers(new TestMessage(("" + i)));
+                                if (model.getOnlinePlayersCount() > 1) {
+                                    model.notifyObservers(new TestMessage("New connection game restarting"));
+                                    model.setGameStatus(Model.GameStatus.RUNNING);
+                                    return;
+                                }
+                                try {
+                                    model.wait(1000);
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                            model.setChangedAndNotifyObservers(new TestMessage("Only you left, congrats stinky butt you won!"));
+                            model.setGameStatus(Model.GameStatus.ENDED);
+                        }
+                    }).start();
+                    //TODO timer decreta vittoria
+                }
                 return;
             }
             model.removePlayer(playerName);

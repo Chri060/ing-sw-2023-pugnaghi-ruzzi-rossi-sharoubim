@@ -22,6 +22,7 @@ public class Model extends Observable<ServerMessage> {
         PREMATCH,
         STARTING,
         RUNNING,
+        PAUSED,
         ENDED
     }
 
@@ -72,17 +73,12 @@ public class Model extends Observable<ServerMessage> {
     public int getRoomSize() {
         return this.playerNames.size();
     }
-    public void setRoomLeader(String playerName) {
-        roomLeader = playerName;
-    }
     public String getRoomLeader() {
         return roomLeader;
     }
-
     public boolean isInGame(String name) {
         return playerNames.contains(name);
     }
-
     public void joinPlayer(String playerName) throws InvalidActionException {
         this.playerNames.add(playerName);
         System.out.println(playerName + " joined the match");
@@ -105,31 +101,50 @@ public class Model extends Observable<ServerMessage> {
             }
             setChangedAndNotifyObservers(new TestMessage(playerName + " left the room"));
     }
-
     public GameStatus getGameStatus() {
         return gameStatus;
     }
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
     }
-
     public TurnStatus getTurnStatus() {
         return turnStatus;
     }
     public void setTurnStatus(TurnStatus turnStatus) {
         this.turnStatus = turnStatus;
     }
-
     public String getCurrentPlayer() {return currentPlayer;}
     public String getNextPlayer() {
         int i = playerNames.indexOf(getCurrentPlayer());
-        return playerNames.get((i + 1) % playerNames.size());
+        String nextPlayer;
+        do {
+            i++;
+            nextPlayer = playerNames.get((i) % playerNames.size());
+        } while (!getPlayer(nextPlayer).isConnected());
+        return nextPlayer;
     }
-
-
-
+    public void setPlayerOffline(String playerName) {
+        Player player = getPlayer(playerName);
+        if (player != null) {
+            player.setOffline();
+            setChangedAndNotifyObservers(new TestMessage(playerName + " disconnected"));
+            setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
+        }
+    }
+    public void setPlayerOnline(String playerName) {
+        Player player = getPlayer(playerName);
+        if (player != null) {
+            player.setOnline();
+            setChangedAndNotifyObservers(new TestMessage(playerName + " connected"));
+            setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
+        }
+    }
+    public int getOnlinePlayersCount() {
+        return (int) playerList.stream().filter(x -> x.isConnected()).count();
+    }
     public void setCurrentPlayer(String playerName) {
         this.currentPlayer = playerName;
+        setChangedAndNotifyObservers(new TestMessage(getCurrentPlayer() + "'s turn"));
     }
     public String getChairPlayer() {return chairPlayer;}
 
@@ -155,16 +170,16 @@ public class Model extends Observable<ServerMessage> {
             bag = new Bag();
             try {
                 dashboard.refill(bag);
-            } catch (InvalidActionException e) {/**/}
+            } catch (InvalidActionException e) {/*Never Thrown*/}
             chairPlayer = playerNames.get(0);
             currentPlayer = chairPlayer;
             gameStatus = GameStatus.RUNNING;
             turnStatus = TurnStatus.DRAWING;
             setChangedAndNotifyObservers(new TestMessage("Match started"));
             setChangedAndNotifyObservers(new ModelViewMessage(getModelView()));
+            setChangedAndNotifyObservers(new TestMessage(getCurrentPlayer() + "'s turn"));
         }
     }
-
 
     private Player getPlayer(String playerName) {
         Optional<Player> player = playerList.stream().filter(x -> x.equals(playerName)).findAny();

@@ -34,6 +34,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
             }
         });
         //server.register(this, view.getName());
+
     }
 
 
@@ -50,5 +51,9 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
     @Override
     public void run() {
         view.run();
+    }
+
+    private Pinger getPinger(Server server) {
+        return null;
     }
 }

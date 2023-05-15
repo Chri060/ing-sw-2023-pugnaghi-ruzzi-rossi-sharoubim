@@ -9,6 +9,7 @@ public class Player {
     private Shelf shelf;
     private List<PrivateObjective> privateObjectives;
     private List<Point> points;
+    private boolean isConnected;
 
     public Player(String name, List<PrivateObjective> privateObjective) {
         this.name = name;
@@ -16,6 +17,17 @@ public class Player {
         this.privateObjectives = new ArrayList<>();
         this.privateObjectives.addAll(privateObjective);
         this.points = new ArrayList<>();
+        isConnected = true;
+    }
+
+    public void setOnline() {
+        isConnected = true;
+    }
+    public void setOffline() {
+        isConnected = false;
+    }
+    public boolean isConnected() {
+        return isConnected;
     }
 
     public String getName() {
