@@ -108,6 +108,7 @@ public class TextualUI extends View {
 
     @Override
     public void run() {
+        try {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String choice = scanner.nextLine();
@@ -123,7 +124,13 @@ public class TextualUI extends View {
                 case ("l") -> setChangedAndNotifyObservers(new LeaveMessage(name));
                 case ("j") -> setChangedAndNotifyObservers(new JoinMessage(name));
                 case ("n") -> name = (scanner.nextLine());
+                case ("c") -> setChangedAndNotifyObservers(getMessage());
+                case ("x") -> throw new Exception();
+                case ("f") -> {new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();}
             }
+        }
+        } catch (Exception e) {
+            setChangedAndNotifyObservers(new LeaveMessage(name));
         }
     }
 
@@ -175,4 +182,15 @@ public class TextualUI extends View {
         }
     }
 
+    ChatMessage getMessage() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Message:");
+        String message = scanner.nextLine();
+        System.out.println("Receiver:");
+        String receiver = scanner.nextLine();
+        List<String> receivers = new ArrayList<>();
+        receivers.add(receiver);
+        return new ChatMessage(name, receivers, message);
+    }
 }
+

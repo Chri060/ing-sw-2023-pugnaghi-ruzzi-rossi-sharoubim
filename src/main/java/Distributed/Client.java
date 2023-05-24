@@ -11,5 +11,4 @@ import java.rmi.RemoteException;
 
 public interface Client extends Remote {
     void update(ServerMessage message)  throws RemoteException;
-    void executeOnView(ServerMessage message) throws RemoteException;
-}
+ }

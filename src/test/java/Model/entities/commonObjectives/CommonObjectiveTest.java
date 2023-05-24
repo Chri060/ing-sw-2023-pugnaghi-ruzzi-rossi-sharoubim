@@ -2643,5 +2643,28 @@ public class CommonObjectiveTest {
         shelf.insert(carte,4);
         Assertions.assertFalse(obiettivo12.verify(shelf), "Common Objective Twelve is not verified on this shelf");
     }
+    @Test
+    void ComObjTwelveVerified_7() {
+        CommonObjective12 objective12 = new CommonObjective12(0);
+        carte.add(new Card(Card.Type.CAT, 0));
+        shelf.insert(carte, 4);
+        carte.add(new Card(Card.Type.CAT, 0));
+        shelf.insert(carte, 3);
+        carte.add(new Card(Card.Type.CAT, 0));
+        shelf.insert(carte, 2);
+        carte.add(new Card(Card.Type.CAT, 0));
+        shelf.insert(carte, 1);
+        carte.add(new Card(Card.Type.CAT, 0));
+        shelf.insert(carte, 0);
+
+        assert (objective12.verify(shelf));
+
+        carte.clear();
+
+        carte.add(new Card(Card.Type.CAT, 0));
+        shelf.insert(carte, 1);
+        assert (!objective12.verify(shelf));
+
+    }
 
 }

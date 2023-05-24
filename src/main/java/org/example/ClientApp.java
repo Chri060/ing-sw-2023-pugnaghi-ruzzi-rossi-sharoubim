@@ -1,8 +1,7 @@
 package org.example;
 
-import Distributed.ClientImpl;
-import Distributed.Server;
-import Distributed.Socket.ServerStub;
+import Distributed.*;
+import Distributed.Socket.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -12,6 +11,24 @@ import java.util.Scanner;
 
 public class ClientApp {
     public static void main(String[] args) {
+
+        System.out.println("\n" +
+                "\033[0;36m" +
+                "=====================================================================\n" +
+                "=  =====  ==  ====  ===      ===  ============  ====    =============\n" +
+                "=   ===   ==   ==   ==  ====  ==  ============  ===  ==  ============\n" +
+                "=  =   =  ===  ==  ===  ====  ==  ============  ===  ================\n" +
+                "=  == ==  ===  ==  ====  =======  ======   ===  ==    =====  ===   ==\n" +
+                "=  =====  ====    =======  =====    ===  =  ==  ===  ==========  =  =\n" +
+                "=  =====  =====  ==========  ===  =  ==     ==  ===  ======  ==     =\n" +
+                "=  =====  =====  =====  ====  ==  =  ==  =====  ===  ======  ==  ====\n" +
+                "=  =====  =====  =====  ====  ==  =  ==  =  ==  ===  ======  ==  =  =\n" +
+                "=  =====  =====  ======      ===  =  ===   ===  ===  ======  ===   ==\n" +
+                "=====================================================================\n" +
+                "\033[0m" +
+                "\n");
+
+
         while (true) {
             System.out.println("Chose a protocol RMI or Socket. Use x to exit");
             String choice = (new Scanner(System.in)).nextLine();
@@ -42,7 +59,7 @@ public class ClientApp {
 
         ClientImpl client = new ClientImpl();
         try {
-            ServerStub serverStub = new ServerStub("localhost", 55555);
+            ServerStub serverStub = new ServerStub("carlosharu.ddns.net", 55555);
             Thread receiver = new Thread(() -> serverStub.receive(client));
 
 

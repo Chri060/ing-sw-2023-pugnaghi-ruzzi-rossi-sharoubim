@@ -14,14 +14,14 @@ public abstract class ServerMessageAbs implements  ServerMessage {
         this.broadcast = true;
     }
 
-    public ServerMessageAbs(boolean broadcast, String receiver) {
-        this.broadcast = broadcast;
+    public ServerMessageAbs(String receiver) {
+        this.broadcast = false;
         this.receivers = new ArrayList<>();
         this.receivers.add(receiver);
     }
 
-    public ServerMessageAbs(boolean broadcast, List<String> receivers) {
-        this.broadcast = broadcast;
+    public ServerMessageAbs(List<String> receivers) {
+        this.broadcast = false;
         this.receivers = new ArrayList<>(receivers);
     }
 

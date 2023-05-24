@@ -11,23 +11,20 @@ public class TestMessage extends ServerMessageAbs{
     private String s;
 
     public TestMessage(String s) {
-        super(true, (String) null);
+        super();
         this.s = s;
     }
     public TestMessage(String s, String receiver) {
-        super(false, receiver);
+        super(receiver);
         this.s = s;
     }
     public TestMessage(String s, List<String> receivers) {
-        super(false, receivers);
+        super(receivers);
         this.s = s;
     }
 
     @Override
     public void execute(Client client) {
-        try {
-            client.executeOnView(this);
-        } catch (RemoteException e) {}
     }
 
     @Override

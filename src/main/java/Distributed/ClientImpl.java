@@ -41,10 +41,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
     @Override
     public void update(ServerMessage message) throws RemoteException {
         message.execute(this);
-    }
-
-    @Override
-    public void executeOnView(ServerMessage message) throws RemoteException {
         message.execute(view);
     }
 

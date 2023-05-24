@@ -1,8 +1,6 @@
 package Model;
 
-import Distributed.Messages.serverMessages.ModelViewMessage;
-import Distributed.Messages.serverMessages.ServerMessage;
-import Distributed.Messages.serverMessages.TestMessage;
+import Distributed.Messages.serverMessages.*;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.entities.*;
@@ -338,8 +336,20 @@ public class Model extends Observable<ServerMessage> {
             newList.add(withdrawnCards.get(i));
         }
         withdrawnCards = newList;
+    }
+
+    public void sendChatMessage(String playerName, List<String> receivers, String message) {
+        ChatMessage chatMessage;
+        if (receivers.contains("")) {
+            chatMessage = new ChatMessage(playerName, message);
+        }
+        else {
+            chatMessage = new ChatMessage(playerName, receivers, message);
+        }
+        setChangedAndNotifyObservers(chatMessage);
 
     }
+
     public void sortWinners(Comparator comparator) {
         playerList.sort(comparator);
     }

@@ -7,12 +7,14 @@ import util.PlanarCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Abstract Class to implement a common objective pattern
+ * It includes an internal iterator to iterate the patterns cells*/
 public abstract class CommonObjectivePattern {
 
     protected boolean[][] pattern;
     protected int iteratorStatus;
-   protected int patternLength;
+    protected int patternLength;
     protected PlanarCoordinate iteratorCellStatus;
 
     protected int getRowLength() {
@@ -33,12 +35,21 @@ public abstract class CommonObjectivePattern {
         }
 
     }
+
+    /**
+     * Returns true if the actual cell is not the last: Using this function to iterate on the pattern will skip the last cell iteration
+     * */
     protected boolean hasNext() {
         return this.iteratorStatus < this.patternLength;
     }
+    /**
+     * Returns the actual cell where the iterator is set*/
     protected PlanarCoordinate get() {
         return iteratorCellStatus;
     }
+    /**
+     * Sets the actual cell to the next cell if it is not the last
+     * Does nothing otherwise*/
     protected void next() {
         if (!hasNext()) {
             return;

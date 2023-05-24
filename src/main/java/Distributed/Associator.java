@@ -65,6 +65,14 @@ public class Associator {
         return clientList.contains(client);
     }
 
+    public Client getClient(String name) throws NullPointerException{
+        int index = nameList.indexOf(name);
+        if (index == - 1) {
+            throw new NullPointerException("No such name");
+        }
+        return clientList.get(index);
+    }
+
     public boolean isNameAvailable(String name) throws NullPointerException {
         if (name == null) {
             throw new NullPointerException();

@@ -76,13 +76,13 @@ public class Controller {
                 }
                 if (model.getOnlinePlayersCount() == 1) {
                     model.setGameStatus(Model.GameStatus.PAUSED);
-                    model.setChangedAndNotifyObservers(new TestMessage("Only you left, automatic win in:"));
+                    model.setChangedAndNotifyObservers(new TestMessage("Only you left, automatic win in:", model.getCurrentPlayer()));
                     new Thread(() -> {
                         synchronized (model) {
-                            for (int i = 5; i > 0; i--) {
-                                model.setChangedAndNotifyObservers(new TestMessage(("" + i)));
+                            for (int i = 10; i > 0; i--) {
+                                model.setChangedAndNotifyObservers(new TestMessage("" + i, model.getCurrentPlayer()));
                                 if (model.getOnlinePlayersCount() > 1) {
-                                    model.notifyObservers(new TestMessage("New connection game restarting"));
+                                    model.notifyObservers(new TestMessage("New connection game restarting", model.getCurrentPlayer()));
                                     model.setGameStatus(Model.GameStatus.RUNNING);
                                     return;
                                 }
@@ -104,6 +104,12 @@ public class Controller {
         }
     }
 
+    public void chatMessage(String playerName, List<String> receivers, String message) {
+        if (playerName == null || receivers == null || message == null) {
+            return;
+        }
+        model.sendChatMessage(playerName, receivers, message);
+    }
 
     private boolean isYourTurn(String playerName) {
         synchronized (model) {

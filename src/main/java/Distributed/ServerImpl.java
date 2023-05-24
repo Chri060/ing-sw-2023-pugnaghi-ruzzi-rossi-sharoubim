@@ -59,7 +59,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         } catch (NullPointerException e) {
             client.update(new TestMessage("Name cannot be null"));
         }
-        Observer<Observable<ServerMessage>, ServerMessage> obs = getObserver(client);
+        Observer<Observable<ServerMessage>, ServerMessage> obs = getObserver(client, name);
         model.addObserver(obs);
         controller.join(name);
         try {
@@ -77,14 +77,14 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
             }
             else {
                 pinger = null;
+                client.update(new TestMessage("You are a spectator", name));
             }
             associator.add(spectator, name, client, obs, pinger);
         } catch (InvalidArgumentException e) {
             throw new RuntimeException(e);
         }
     }
-
-        @Override
+    @Override
     public void leave(Client client, String name) throws RemoteException {
         if (name.equals(associator.getName(client))) {
             model.deleteObserver(associator.getObserver(client));
@@ -93,7 +93,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
             client.update(new TestMessage("Lobby left"));
         }
     }
-
 
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
@@ -104,22 +103,24 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         message.execute(this, client);
     }
 
-    private Observer<Observable<ServerMessage>, ServerMessage> getObserver(Client client) {
+    private Observer<Observable<ServerMessage>, ServerMessage> getObserver(Client client, String name) {
         return new Observer<>() {
             @Override
-            public void update(Observable o, ServerMessage message) {
-                try {
-                    client.update(message);
-                } catch (RemoteException e) {
-                    System.err.println("Error while notify client");
-                    if (associator.isSpectator(client)) {
-                        model.deleteObserver(associator.getObserver(client));
-                    }
-                    else {
-                        model.notifyObservers(new TestMessage(associator.getName(client) + "Disconnected"));
+            public void update(Observable<ServerMessage> o, ServerMessage message) {
+                if (message.isBroadcast() || message.getReceiver().contains(name)) {
+                    try {
+                        client.update(message);
+                    } catch (RemoteException e) {
+                        System.err.println("Error while notify client");
+                        if (associator.isSpectator(client)) {
+                            model.deleteObserver(associator.getObserver(client));
+                        } else {
+                            model.notifyObservers(new TestMessage(associator.getName(client) + "Disconnected"));
+                        }
                     }
                 }
             }
+
         };
     }
     private Pinger getPinger(Client client) {

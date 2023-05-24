@@ -16,7 +16,6 @@ public class Shelf implements Iterable {
     private int rows;
     private int columns;
     private Card[][] shelf;
-
     public Shelf() {
         rows = Config.getShelfRows();
         columns = Config.getShelfColumns();
@@ -100,7 +99,6 @@ public class Shelf implements Iterable {
         }
         return max;
     }
-
     /**
      * Returns the sizes of the groups of adjacent cards in the shelf that are of the same type.
      * The size of the list represents the number of groups in the shelf and the value of each element of the result list
@@ -124,9 +122,6 @@ public class Shelf implements Iterable {
         return result;
 
     }
-
-
-
     int getGroupSize(Card[][] shelfMatrix, PlanarCoordinate actual, Card.Type actualType) {
         if (!Checker.shelfCoordinatesAreValid(actual)) {
             return 0;
@@ -143,8 +138,6 @@ public class Shelf implements Iterable {
                 getGroupSize(shelfMatrix, actual.getUp(), actualType) +
                 getGroupSize(shelfMatrix, actual.getDown(), actualType);
     }
-
-
     @Override
     public Iterator getIterator() {
         return new MatrixIterator(this.rows, this.columns);

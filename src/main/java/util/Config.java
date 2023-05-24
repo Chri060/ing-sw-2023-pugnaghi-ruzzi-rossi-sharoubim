@@ -92,6 +92,7 @@ public class Config {
                 System.err.println("Custom config loading failed while loading shelf config:");
                 System.out.println(e.getMessage());
                 defaultInitialise(numberOfPlayers);
+                return;
             }
 
             //Parses dashBoard size and pattern
@@ -113,6 +114,7 @@ public class Config {
                 System.err.println("Custom config loading failed while loading dashboard config:");
                 System.out.println(e.getMessage());
                 defaultInitialise(numberOfPlayers);
+                return;
             }
 
             //Parses number of cards for each type of cards
@@ -129,6 +131,7 @@ public class Config {
                 System.err.println("Custom config loading failed while loading bag config:");
                 System.out.println(e.getMessage());
                 defaultInitialise(numberOfPlayers);
+                return;
             }
 
             //Parses common objectives points
@@ -142,6 +145,7 @@ public class Config {
                 System.err.println("Custom config loading failed while loading common objective config:");
                 System.out.println(e.getMessage());
                 defaultInitialise(numberOfPlayers);
+                return;
             }
 
             //Parses Private objective patterns
@@ -172,6 +176,7 @@ public class Config {
                 System.err.println("Custom config loading failed while loading private Objective config:");
                 System.out.println(e.getMessage());
                 defaultInitialise(numberOfPlayers);
+                return;
             }
             //Parses number of objectives
             try {
@@ -188,6 +193,7 @@ public class Config {
                 System.err.println("Custom config loading failed while loading game objective config:");
                 System.out.println(e.getMessage());
                 defaultInitialise(numberOfPlayers);
+                return;
             }
         }
 

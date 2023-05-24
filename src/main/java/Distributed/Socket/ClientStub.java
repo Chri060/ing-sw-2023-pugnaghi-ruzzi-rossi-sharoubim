@@ -53,8 +53,4 @@ public class ClientStub implements Client {
             }
         }).start();
     }
-    @Override
-    public void executeOnView(ServerMessage message) throws RemoteException {
-        //Does nothing
-    }
 }

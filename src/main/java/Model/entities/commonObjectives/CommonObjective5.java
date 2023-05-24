@@ -3,6 +3,8 @@ package Model.entities.commonObjectives;
 import Model.entities.Shelf;
 import Model.entities.commonObjectives.GroupCommonObjective.GroupCommonObjective;
 
+import java.util.List;
+
 public class CommonObjective5 extends GroupCommonObjective {
     public CommonObjective5(int ID) {
         super(ID, 4);
@@ -11,6 +13,7 @@ public class CommonObjective5 extends GroupCommonObjective {
     //TODO implementare
     @Override
     public boolean verify(Shelf shelf) {
-        return false;
+        List<Integer> groups = shelf.getAdjacentGroupsSizes();
+        return groups.stream().mapToInt(x -> x / 4).sum() >= 4;
     }
 }

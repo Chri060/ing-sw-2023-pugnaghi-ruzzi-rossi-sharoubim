@@ -19,9 +19,6 @@ public class ModelViewMessage extends ServerMessageAbs{
 
     @Override
     public void execute(Client client) {
-        try {
-            client.executeOnView(this);
-        } catch (RemoteException e) {}
     }
 
     @Override
