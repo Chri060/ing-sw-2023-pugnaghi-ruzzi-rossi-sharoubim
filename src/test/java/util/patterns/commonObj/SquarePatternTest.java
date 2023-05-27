@@ -1,6 +1,7 @@
 package util.patterns.commonObj;
 
 import org.junit.jupiter.api.Test;
+import util.Iterators.Iterator;
 import util.PlanarCoordinate;
 
 class SquarePatternTest {
@@ -12,33 +13,33 @@ class SquarePatternTest {
         assert (squarePattern.getColumnLength() == 2);
         assert (squarePattern.getRowLength() == 2);
 
-        squarePattern.restart();
+        Iterator patternIterator = squarePattern.getIterator();
 
-        assert (squarePattern.hasNext());
 
-        PlanarCoordinate helper = squarePattern.get();
+        PlanarCoordinate helper = patternIterator.getActual();
         assert (helper.getRow() == 0);
         assert (helper.getColumn() == 0);
 
-        assert (squarePattern.hasNext());
-        squarePattern.next();
-        helper = squarePattern.get();
+        assert (!patternIterator.iterationCompleted());
+        patternIterator.next();
+        helper = patternIterator.getActual();
         assert (helper.getRow() == 0);
         assert (helper.getColumn() == 1);
 
-        assert (squarePattern.hasNext());
-        squarePattern.next();
-        helper = squarePattern.get();
+        assert (!patternIterator.iterationCompleted());
+        patternIterator.next();
+        helper = patternIterator.getActual();
         assert (helper.getRow() == 1);
         assert (helper.getColumn() == 0);
 
-        assert (squarePattern.hasNext());
-        squarePattern.next();
-        helper = squarePattern.get();
+        assert (!patternIterator.iterationCompleted());
+        patternIterator.next();
+        helper = patternIterator.getActual();
         assert (helper.getRow() == 1);
         assert (helper.getColumn() == 1);
 
-        assert (!squarePattern.hasNext());
+        patternIterator.next();
+        assert (patternIterator.iterationCompleted());
 
 
 

@@ -2,6 +2,7 @@ package util.patterns.commonObj;
 
 import org.junit.jupiter.api.Test;
 import util.Config;
+import util.Iterators.Iterator;
 
 class XPatternTest {
 
@@ -12,50 +13,46 @@ class XPatternTest {
 
         CommonObjectivePattern xPattern = new XPattern(3);
 
-        xPattern.restart();
+        Iterator patternIterator = xPattern.getIterator();
 
-        assert (xPattern.hasNext());
 
         assert (xPattern.getRowLength() == 3);
         assert (xPattern.getColumnLength() == 3);
 
 
-        assert (xPattern.get().getRow() == 0);
-        assert (xPattern.get().getColumn() == 0);
+        assert (patternIterator.getActual().getRow() == 0);
+        assert (patternIterator.getActual().getColumn() == 0);
 
-        xPattern.next();
-
-
-        assert (xPattern.get().getRow() == 0);
-        assert (xPattern.get().getColumn() == 2);
+        patternIterator.next();
 
 
-        xPattern.next();
+        assert (patternIterator.getActual().getRow() == 0);
+        assert (patternIterator.getActual().getColumn() == 2);
 
 
-        assert (xPattern.get().getRow() == 1);
-        assert (xPattern.get().getColumn() == 1);
-
-        assert (xPattern.hasNext());
+        patternIterator.next();
 
 
-        xPattern.next();
+        assert (patternIterator.getActual().getRow() == 1);
+        assert (patternIterator.getActual().getColumn() == 1);
+
+        assert (!patternIterator.iterationCompleted());
 
 
-        assert (xPattern.get().getRow() == 2);
-        assert (xPattern.get().getColumn() == 0);
-
-        assert (xPattern.hasNext());
+        patternIterator.next();
 
 
-        xPattern.next();
+        assert (patternIterator.getActual().getRow() == 2);
+        assert (patternIterator.getActual().getColumn() == 0);
 
-        assert (!xPattern.hasNext());
+        patternIterator.next();
 
-        assert (xPattern.get().getRow() == 2);
-        assert (xPattern.get().getColumn() == 2);
+        assert (patternIterator.getActual().getRow() == 2);
+        assert (patternIterator.getActual().getColumn() == 2);
 
-        assert (!xPattern.hasNext());
+        patternIterator.next();
+
+        assert (patternIterator.iterationCompleted());
 
     }
 }

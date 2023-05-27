@@ -28,6 +28,9 @@ public class MatrixIterator implements Iterator{
 
     @Override
     public void next() {
+        if (iterationCompleted()) {
+            return;
+        }
         status++;
         if (actual.getColumn() < columns - 1) {
             actual = new PlanarCoordinate(actual.getRow(), actual.getColumn() + 1);

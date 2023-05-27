@@ -18,6 +18,6 @@ public class RowPattern extends CommonObjectivePattern{
     }
     @Override
     public int verifyPatternWithOneCard(Card[][] shelfMatrix) {
-        return this.patternWithOneCard(shelfMatrix);
+        return this.verifyPatternWithOneCardCore(shelfMatrix);
     }
 }

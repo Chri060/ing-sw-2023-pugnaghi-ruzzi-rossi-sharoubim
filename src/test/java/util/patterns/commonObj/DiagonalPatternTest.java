@@ -2,6 +2,7 @@ package util.patterns.commonObj;
 
 import org.junit.jupiter.api.Test;
 import util.Config;
+import util.Iterators.Iterator;
 
 class DiagonalPatternTest {
 
@@ -15,15 +16,15 @@ class DiagonalPatternTest {
         assert (diagonalPattern.getColumnLength() == size);
         assert (diagonalPattern.patternLength == size);
 
-        diagonalPattern.restart();
+        Iterator patternIterator = diagonalPattern.getIterator();
 
         for (int i = 0; i < size; i++) {
-            assert(diagonalPattern.get().getColumn() == i);
-            assert(diagonalPattern.get().getRow() == i);
-            diagonalPattern.next();
+            assert(patternIterator.getActual().getColumn() == i);
+            assert(patternIterator.getActual().getRow() == i);
+            patternIterator.next();
         }
 
-        assert(!diagonalPattern.hasNext());
+        assert(patternIterator.iterationCompleted());
 
 
 

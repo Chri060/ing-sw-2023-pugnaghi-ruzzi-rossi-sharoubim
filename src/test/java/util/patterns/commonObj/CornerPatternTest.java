@@ -2,6 +2,7 @@ package util.patterns.commonObj;
 
 import org.junit.jupiter.api.Test;
 import util.Config;
+import util.Iterators.Iterator;
 
 class CornerPatternTest {
 
@@ -11,39 +12,40 @@ class CornerPatternTest {
 
         CommonObjectivePattern cornerPattern = new CornerPattern();
 
-        cornerPattern.restart();
+        Iterator patternIterator = cornerPattern.getIterator();
 
-        assert (cornerPattern.hasNext());
+        assert (!patternIterator.iterationCompleted());
 
         assert (cornerPattern.getRowLength() == Config.getShelfRows());
         assert (cornerPattern.getColumnLength() == Config.getShelfColumns());
 
 
-        assert (cornerPattern.get().getRow() == 0);
-        assert (cornerPattern.get().getColumn() == 0);
+        assert (patternIterator.getActual().getRow() == 0);
+        assert (patternIterator.getActual().getColumn() == 0);
 
-        cornerPattern.next();
-
-
-        assert (cornerPattern.get().getRow() == 0);
-        assert (cornerPattern.get().getColumn() == Config.getShelfColumns() - 1);
-
-        cornerPattern.next();
+        patternIterator.next();
 
 
-        assert (cornerPattern.get().getRow() == Config.getShelfRows() - 1);
-        assert (cornerPattern.get().getColumn() == 0);
+        assert (patternIterator.getActual().getRow() == 0);
+        assert (patternIterator.getActual().getColumn() == Config.getShelfColumns() - 1);
 
-        assert (cornerPattern.hasNext());
-
-
-        cornerPattern.next();
+        patternIterator.next();
 
 
-        assert (cornerPattern.get().getRow() == Config.getShelfRows() - 1);
-        assert (cornerPattern.get().getColumn() == Config.getShelfColumns() - 1);
+        assert (patternIterator.getActual().getRow() == Config.getShelfRows() - 1);
+        assert (patternIterator.getActual().getColumn() == 0);
 
-        assert (!cornerPattern.hasNext());
+        assert (!patternIterator.iterationCompleted());
+
+
+        patternIterator.next();
+
+
+        assert (patternIterator.getActual().getRow() == Config.getShelfRows() - 1);
+        assert (patternIterator.getActual().getColumn() == Config.getShelfColumns() - 1);
+
+        patternIterator.next();
+        assert (patternIterator.iterationCompleted());
 
 
     }

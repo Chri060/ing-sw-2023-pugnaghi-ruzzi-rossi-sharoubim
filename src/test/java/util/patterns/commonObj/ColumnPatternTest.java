@@ -2,6 +2,7 @@ package util.patterns.commonObj;
 
 import org.junit.jupiter.api.Test;
 import util.Config;
+import util.Iterators.Iterator;
 import util.PlanarCoordinate;
 
 class ColumnPatternTest {
@@ -15,42 +16,45 @@ class ColumnPatternTest {
         assert (columnPattern.getColumnLength() == 1);
         assert (columnPattern.getRowLength() == Config.getShelfRows());
 
-        columnPattern.restart();
-        assert (columnPattern.hasNext());
+        Iterator patternIterator = columnPattern.getIterator();
+        assert (!patternIterator.iterationCompleted());
 
-        planarCoordinate = columnPattern.get();
+        planarCoordinate = patternIterator.getActual();
         assert (planarCoordinate.getColumn() == 0);
         assert (planarCoordinate.getRow() == 0);
 
-        columnPattern.next();
-        assert (columnPattern.hasNext());
-        planarCoordinate = columnPattern.get();
+        patternIterator.next();
+        assert (!patternIterator.iterationCompleted());
+        planarCoordinate = patternIterator.getActual();
         assert (planarCoordinate.getColumn() == 0);
         assert (planarCoordinate.getRow() == 1);
 
-        columnPattern.next();
-        assert (columnPattern.hasNext());
-        planarCoordinate = columnPattern.get();
+        patternIterator.next();
+        assert (!patternIterator.iterationCompleted());
+        planarCoordinate = patternIterator.getActual();
         assert (planarCoordinate.getColumn() == 0);
         assert (planarCoordinate.getRow() == 2);
 
-        columnPattern.next();
-        assert (columnPattern.hasNext());
-        planarCoordinate = columnPattern.get();
+        patternIterator.next();
+        assert (!patternIterator.iterationCompleted());
+        planarCoordinate = patternIterator.getActual();
         assert (planarCoordinate.getColumn() == 0);
         assert (planarCoordinate.getRow() == 3);
 
-        columnPattern.next();
-        assert (columnPattern.hasNext());
-        planarCoordinate = columnPattern.get();
+        patternIterator.next();
+        assert (!patternIterator.iterationCompleted());
+        planarCoordinate = patternIterator.getActual();
         assert (planarCoordinate.getColumn() == 0);
         assert (planarCoordinate.getRow() == 4);
 
-        columnPattern.next();
-        assert (!columnPattern.hasNext());
-        planarCoordinate = columnPattern.get();
+        patternIterator.next();
+        assert (!patternIterator.iterationCompleted());
+        planarCoordinate = patternIterator.getActual();
         assert (planarCoordinate.getColumn() == 0);
         assert (planarCoordinate.getRow() == 5);
+
+        patternIterator.next();
+        assert (patternIterator.iterationCompleted());
     }
 
 }

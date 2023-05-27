@@ -1,165 +1,113 @@
 package util.patterns.commonObj;
 
 import Model.entities.Card;
-import Model.entities.Shelf;
-import util.Checker;
+import util.Iterators.Iterable;
+import util.Iterators.Iterator;
+import util.Iterators.PatternIterator;
 import util.PlanarCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;
 /**
  * Abstract Class to implement a common objective pattern
- * It includes an internal iterator to iterate the patterns cells*/
-public abstract class CommonObjectivePattern {
+ * Includes many methods that can be overridden if needed*/
+public abstract class CommonObjectivePattern implements Iterable {
 
     protected boolean[][] pattern;
-    protected int iteratorStatus;
-    protected int patternLength;
-    protected PlanarCoordinate iteratorCellStatus;
 
+    protected int patternLength;
+
+    /**
+     * Returns a PatternIterator to iterate on the pattern*/
+    public Iterator getIterator() {
+        return new PatternIterator(pattern);
+    }
+    /**
+     * Returns the row size of the pattern*/
     protected int getRowLength() {
         return pattern.length;
     }
+    /**
+     * Returns the column size of the pattern*/
     protected int getColumnLength() {
         return pattern[0].length;
     }
-    protected void restart() {
-        for (int i = 0; i < this.getRowLength(); i++) {
-            for (int j = 0; j < this.getColumnLength(); j++) {
-                if (pattern[i][j]) {
-                    iteratorCellStatus = new PlanarCoordinate(i, j);
-                    iteratorStatus = 1;
-                    return;
-                }
-            }
-        }
-
-    }
 
     /**
-     * Returns true if the actual cell is not the last: Using this function to iterate on the pattern will skip the last cell iteration
-     * */
-    protected boolean hasNext() {
-        return this.iteratorStatus < this.patternLength;
-    }
-    /**
-     * Returns the actual cell where the iterator is set*/
-    protected PlanarCoordinate get() {
-        return iteratorCellStatus;
-    }
-    /**
-     * Sets the actual cell to the next cell if it is not the last
-     * Does nothing otherwise*/
-    protected void next() {
-        if (!hasNext()) {
-            return;
-        }
-        //Starts from last pattern cell visited
-        int j = iteratorCellStatus.getColumn() + 1;
-
-        //Checks for the next true value in the matrix -> updates iterator status
-        for (int i = iteratorCellStatus.getRow(); i < this.getRowLength(); i++) {
-            while (j < this.getColumnLength()) {
-                if (pattern[i][j]) {
-                    iteratorCellStatus = new PlanarCoordinate(i, j);
-                    iteratorStatus++;
-                    return;
-                }
-                j++;
-            }
-            j = 0;
-        }
-    }
-
-
-    //Checks that the given card matrix satisfies this.pattern with at most maxDifferentTypes different types of cards
-    //NOTE each time the pattern can be completed by different types of cards but everytime they need to be less than
-    //maxDifferentTypes different types of cards
-    //In any case the pattern found will be removed from shelfMatrix (sets cards to null).
-    //NOTE if the pattern is bigger than the shelf it will always return 0
-    //NOTE if the pattern is not complete (in at least one of the pattern's cell there's no card)
-    //the pattern won't be satisfied
+     * Returns how many times the given card matrix satisfies the pattern with at most maxDifferentTypes different types of cards
+     * NOTE: each time the pattern can be completed by different types of cards but everytime they need to be less than
+     * maxDifferentTypes different types of cards
+     * NOTE: if the pattern is bigger than the shelf it will always return 0.
+     * NOTE: if the pattern is not complete (in at least one of the pattern's cell there's no card).
+     * the pattern won't be satisfied*/
     public int verifyWithSameType(Card[][] shelfMatrix, int maxDifferentTypes) {
         List<Card.Type> typeList = new ArrayList<>();
-        PlanarCoordinate helper;
         Card.Type type;
         int hits = 0;
-        //Iterates in the shelf while there's enough space for the pattern
+        Iterator patternIterator = this.getIterator();
         for (int i = 0; i + this.getRowLength() <= shelfMatrix.length; i++) {
             for (int j = 0; j + this.getColumnLength() <= shelfMatrix[0].length; j++) {
-                //Restarts internal pattern Iterator
-                this.restart();
-                //Clears types found in the previous exploration
+                patternIterator.reset();
                 typeList.clear();
-                //Iterates the pattern while it's not ended
-                int k; //k will be used to determine if the pattern exploration was completed or not
-                for (k = 0; k < this.patternLength; k++) {
-                    //Gets offset of the actual cell of the pattern
-                    helper = this.get();
-                    int rowOffset = helper.getRow();
-                    int columnOffset = helper.getColumn();
-                    //Gets the type of the actual cell
+                while (!patternIterator.iterationCompleted()) {
+                    int rowOffset = patternIterator.getActual().getRow();
+                    int columnOffset = patternIterator.getActual().getColumn();
                     Card card = shelfMatrix[i + rowOffset][j + columnOffset];
-                    //If the cell is empty pattern cannot be satisfied
                     if (card == null) {
                         break;
                     }
-                    //Gets type and checks
                     type = card.getType();
-                    //If the typeList contains (including type) more than maxDifferentTypes the pattern can't be satisfied
                     if (!verifyListMaxTypes(typeList, type, maxDifferentTypes)) {
                         break;
                     }
-                    //Otherwise keeps the exploration
-                    else {
-                        this.next();
-                    }
+                    patternIterator.next();
                 }
-                //Once the exploration is done check if the pattern was completed or not
-                if (k == this.patternLength) {
-                    //if the exploration ended due to the pattern being fully explored
+                if (patternIterator.iterationCompleted()) {
                     hits++;
-                    //clears the cells that formed the pattern
                     removeFoundPattern(shelfMatrix, new PlanarCoordinate(i, j));
                 }
             }
         }
         return hits;
     }
-    //Checks that the given type and the types in the list are at most maxDifferentTypes different types
-    //If the type is not found it will be added to the list
-    //NOTE the list can't contain the same type twice
+
+    /**
+     * Checks that the given type and the types in the list are at most maxDifferentTypes different types.
+     * If the type is not found it will be added to the list.
+     * NOTE the list can't contain the same type twice*/
     private boolean verifyListMaxTypes(List<Card.Type> typeList, Card.Type type, int maxDifferentTypes) {
         if (!typeList.contains(type)) {
             typeList.add(type);
         }
         return typeList.size() <= maxDifferentTypes;
     }
-    //Removes the tiles from shelfMatrix following this.pattern completely starting fromm offset coordinates
+    /**
+     * Removes completely the tiles from shelfMatrix following the pattern starting fromm offset coordinates
+     */
     private void removeFoundPattern(Card[][] shelfMatrix, PlanarCoordinate offset) {
-        PlanarCoordinate planarCoordinate;
         int rowOffset = offset.getRow();
         int columnOffset = offset.getColumn();
-
-        this.restart();
-        for (int k = 0; k < this.patternLength; k++) {
-            planarCoordinate = this.get();
-            int row = rowOffset + planarCoordinate.getRow();
-            int column = columnOffset + planarCoordinate.getColumn();
+        Iterator patternIterator = this.getIterator();
+        while (!patternIterator.iterationCompleted()) {
+            int row = rowOffset + patternIterator.getActual().getRow();
+            int column = columnOffset + patternIterator.getActual().getColumn();
             shelfMatrix[row][column] = null;
-            this.next();
-            ;
+            patternIterator.next();
         }
     }
-    //Does verifyWithSameType but with the pattern mirrored vertically
+    /**
+    * Does verifyWithSameType but with the pattern mirrored vertically
+    */
     public int verifyWithSameTypeMirrored(Card[][] shelfMatrix, int maxDifferentTypes) {
         this.mirrorPatternVertically();
         int result = this.verifyWithSameType(shelfMatrix, maxDifferentTypes);
         this.mirrorPatternVertically();
         return result;
     }
-    //Mirrors the pattern vertically
-    //NOTE: in order to not mess up the pattern remember to use this function always an even number times in your methods
+    /**
+     * Mirrors the pattern vertically
+     * NOTE: in order to not mess up the pattern remember to use this function always an even number times in your methods
+     * */
     private void mirrorPatternVertically() {
         boolean temp;
         int rows = this.getRowLength();
@@ -180,43 +128,27 @@ public abstract class CommonObjectivePattern {
     //the pattern won't be satisfied
     public int verifyWithDifferentType(Card[][] shelfMatrix, int minDifferentTypes) {
         List<Card.Type> typeList = new ArrayList<>();
-        PlanarCoordinate helper;
         Card.Type type;
         int hits = 0;
-
-        //Iterates in the shelf while there's enough space for the pattern
+        Iterator patternIterator = this.getIterator();
         for (int i = 0; i + this.getRowLength() <= shelfMatrix.length; i++) {
             for (int j = 0; j + this.getColumnLength() <= shelfMatrix[0].length; j++) {
-                //Restarts internal pattern Iterator
-                this.restart();
-                //Clears types found in the previous exploration
+                patternIterator.reset();
                 typeList.clear();
-                //iterates on the pattern
-                int k;
-                for (k = 0; k < this.patternLength; k++) {
-                    //Gets offset of the actual cell of the pattern
-                    helper = this.get();
-                    int rowOffset = helper.getRow();
-                    int columnOffset = helper.getColumn();
-                    //gets the card to check
+                while (!patternIterator.iterationCompleted()) {
+                    int rowOffset = patternIterator.getActual().getRow();
+                    int columnOffset = patternIterator.getActual().getColumn();
                     Card card = shelfMatrix[i + rowOffset][j + columnOffset];
-                    //If the cell is empty pattern cannot be satisfied
                     if (card == null) {
                         break;
                     }
-                    //Gets type and checks
                     type = card.getType();
-                    //Checks if in the current exploration of the pattern minDifferentTypes types of cards were found already
-                    if (verifyListMinTypes(typeList, type, minDifferentTypes)) {
-                        //pattern satisfied
-                        hits++;
-                        //clears the cells that formed the pattern
-                        removeFoundPattern(shelfMatrix, new PlanarCoordinate(i, j));
-                        break;
-                    }
-                    else {
-                        this.next();
-                    }
+                    verifyListMinTypes(typeList, type, minDifferentTypes);
+                    patternIterator.next();
+                }
+                if (patternIterator.iterationCompleted() && verifyListMinTypes(typeList, null, minDifferentTypes)) {
+                    hits++;
+                    removeFoundPattern(shelfMatrix, new PlanarCoordinate(i, j));
                 }
             }
         }
@@ -225,41 +157,14 @@ public abstract class CommonObjectivePattern {
     //Checks that the given type and the types in the list are at least minDifferentTypes different types
     //If the type is not found it will be added to the list
     //NOTE the list can't contain the same type twice
-    private boolean verifyListMinTypes(List<Card.Type> typeList, Card.Type type, int minDifferentTypes) {
-        if (!typeList.contains(type)) {
+    protected boolean verifyListMinTypes(List<Card.Type> typeList, Card.Type type, int minDifferentTypes) {
+        if (type != null && !typeList.contains(type)) {
             typeList.add(type);
         }
         return typeList.size() >= minDifferentTypes;
     }
 
-    //Returns true only if the pattern is satisfied with empty cells
-    public boolean verifyEmptyPattern(Card[][] shelfMatrix) {
-        this.invertPattern();
-        this.restart();
-
-        for (int k = 0; k < this.patternLength; k++) {
-            PlanarCoordinate actual = this.get();
-            int actualRow = actual.getRow();
-            int actualColumn = actual.getColumn();
-            if (shelfMatrix[actualRow][actualColumn] != null) {
-                return false;
-            }
-            this.next();
-        }
-        this.invertPattern();
-
-        return true;
-
-    }
-
-    //Returns true only if the mirrored pattern is satisfied with empty cells
-    public boolean verifyEmptyPatternMirrored(Card[][] shelfMatrix) {
-        this.mirrorPatternVertically();
-        boolean result = verifyEmptyPattern(shelfMatrix);
-        this.mirrorPatternVertically();
-        return result;
-    }
-    private void invertPattern() {
+    protected void invertPattern() {
         for (int i = 0; i < this.getRowLength(); i++) {
             for (int j = 0; j < this.getColumnLength(); j++) {
                 this.pattern[i][j] = !this.pattern[i][j];
@@ -268,32 +173,98 @@ public abstract class CommonObjectivePattern {
         this.patternLength = this.getRowLength() * this.getColumnLength() - this.patternLength;
     }
 
-    //Returns the maximum amount of times a pattern can be completed with the same type of card
-    public int patternWithOneCard(Card[][] shelfMatrix) {
-        int hits;
-        int maxHits = 0;
-        //For each type of card
-        for (Card.Type type : Card.Type.values()) {
-            //for every cell of the shelf
-            hits = 0;
-            for (int i = 0; i + this.getRowLength() <= shelfMatrix.length; i++) {
-                for (int j = 0; j + this.getColumnLength() <= shelfMatrix[0].length; j++) {
-                    this.restart();
-                    int k;
-                    //checks if the pattern is satisfied
-                    for (k = 0; k < this.patternLength; k++) {
-                        PlanarCoordinate coordinate = this.get();
-                        if (Checker.shelfCoordinatesAreValid(coordinate)) {
-                            int row = i + coordinate.getRow();
-                            int column = j + coordinate.getColumn();
-                            Card card = shelfMatrix[row][column];
-                            if (card == null || !card.equalsType(type)) {
+    /**
+     * Returns true if the given matrix contains cards of any type only in the pattern
+     * For example if the pattern is a stair pattern checks that cards form the stair and all other spaces are empty
+     * NOTE this method will also check for the pattern mirrored vertically. If you don't want that you can use the Core version
+     */
+    public boolean verifyPatternAndAntiPattern(Card[][] shelfMatrix) {
+        boolean result;
+        result = verifyPatternAndAntiPatternCore(shelfMatrix);
+        mirrorPatternVertically();
+        result = result || verifyPatternAndAntiPatternCore(shelfMatrix);
+        mirrorPatternVertically();
+        return result;
+    }
+
+    /**
+     * Returns true if the given matrix contains cards of any type only in the pattern
+     * For example if the pattern is a stair pattern checks that cards form the stair and all other spaces are empty
+     * NOTE this method won't check for the pattern mirrored vertically. If you do want that you can use the not Core version
+     */
+    public boolean verifyPatternAndAntiPatternCore(Card[][] shelfMatrix) {
+        Iterator patternIterator = this.getIterator();
+        invertPattern();
+        Iterator antiPatternIterator = this.getIterator();
+        invertPattern();
+
+        for (int i = 0; i + this.getRowLength() <= shelfMatrix.length; i++) {
+            for (int j = 0; j + this.getColumnLength() <= shelfMatrix[0].length; j++) {
+                patternIterator.reset();
+                antiPatternIterator.reset();
+                while (!patternIterator.iterationCompleted()) {
+                    int rowOffset = patternIterator.getActual().getRow();
+                    int columnOffset = patternIterator.getActual().getColumn();
+                    if (shelfMatrix[i + rowOffset][j + columnOffset] == null) {
+                        break;
+                    }
+                    patternIterator.next();
+                }
+                while (!antiPatternIterator.iterationCompleted()) {
+                    int rowOffset = antiPatternIterator.getActual().getRow();
+                    int columnOffset = antiPatternIterator.getActual().getColumn();
+                    if (shelfMatrix[i + rowOffset][j + columnOffset] != null) {
+                        break;
+                    }
+                    antiPatternIterator.next();
+                }
+                if (patternIterator.iterationCompleted() && antiPatternIterator.iterationCompleted()) {
+                    //As the pattern does not define an empty row on its top we need to do this check manually
+                    //If the pattern doesn't start from the first row we check that the above row is empty
+                    if (i == 0) {
+                        return true;
+                    }
+                    else {
+                        int k;
+                        for (k = 0; k < this.getRowLength(); k++) {
+                            if (shelfMatrix[i -1][j + k] != null) {
                                 break;
                             }
                         }
-                        this.next();
+                        if (k == this.getRowLength()) {
+                            return true;
+                        }
                     }
-                    if (k == this.patternLength) {
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the maximum amount of times a pattern can be completed with the same type of card
+     * Only use this method for patterns that can't be rotated such as columns and rows.
+     * For symmetric patterns such as squares or Xes use the not Core version as this method might not find the maximum appearance value
+     * */
+    public int verifyPatternWithOneCardCore(Card[][] shelfMatrix) {
+        int hits;
+        int maxHits = 0;
+        Iterator patternIterator = getIterator();
+        for (Card.Type type : Card.Type.values()) {
+            hits = 0;
+            for (int i = 0; i + this.getRowLength() <= shelfMatrix.length; i++) {
+                for (int j = 0; j + this.getColumnLength() <= shelfMatrix[0].length; j++) {
+                    patternIterator.reset();
+                    while (!patternIterator.iterationCompleted()) {
+                        int rowOffset = patternIterator.getActual().getRow();
+                        int columnOffset = patternIterator.getActual().getColumn();
+                        Card card = shelfMatrix[i + rowOffset][j + columnOffset];
+                        if (card == null || !card.equalsType(type)) {
+                            break;
+                        }
+                        patternIterator.next();
+                    }
+                    if (patternIterator.iterationCompleted()) {
                         hits++;
                         removeFoundPattern(shelfMatrix, new PlanarCoordinate(i, j));
                     }
@@ -303,9 +274,12 @@ public abstract class CommonObjectivePattern {
         }
         return maxHits;
     }
-    //As some pattern might be overlapped and exploration from the left up corner might not find the max amount of appearance
-    //of that pattern. To fix this method flips the matrix 4 times to explore all the possible combinations
-    //NOTE for patterns that are not symmetric by 90° rotations such as columns and rows do not use this method
+    /**
+     * Does verifyPatternWithOneCard but As some pattern might be overlapped and exploration from the left up corner
+     * might not find the max amount of appearance of that pattern.
+     * To fix this method rotate the matrix 4 times to explore all the possible combinations
+     * NOTE for patterns that are not symmetric by 90° rotations such as columns and rows do not use this method
+     * */
     public int verifyPatternWithOneCard(Card[][] shelfMatrix) {
         //Will be rotated
         Card[][] temp;
@@ -313,7 +287,7 @@ public abstract class CommonObjectivePattern {
 
         for (int i = 0; i < 4; i++) {
             temp = cloneMatrix(shelfMatrix);
-            max = Math.max(max, patternWithOneCard(temp));
+            max = Math.max(max, verifyPatternWithOneCardCore(temp));
             shelfMatrix = rotateMatrix(shelfMatrix);
         }
         return max;

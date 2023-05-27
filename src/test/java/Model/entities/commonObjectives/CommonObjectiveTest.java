@@ -2662,7 +2662,7 @@ public class CommonObjectiveTest {
         carte.clear();
 
         carte.add(new Card(Card.Type.CAT, 0));
-        shelf.insert(carte, 1);
+        shelf.insert(carte, 0);
         assert (!objective12.verify(shelf));
 
     }
