@@ -84,7 +84,8 @@ public class Model extends Observable<ServerMessage> {
         if (playerNames.size() == 1) {
             roomLeader = playerName;
             //TODO notifyObservers -> send set room size message
-            setChangedAndNotifyObservers(new TestMessage( "You're the first player, use size command to set room size "));
+            setChangedAndNotifyObservers(new setRoomSizeMessage(roomLeader));
+            //setChangedAndNotifyObservers(new TestMessage( "You're the first player, use size command to set room size "));
         }
         //TODO notifyObservers
     }
