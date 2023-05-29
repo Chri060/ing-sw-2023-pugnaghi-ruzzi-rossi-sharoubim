@@ -40,5 +40,6 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
     abstract public void printAllShelfs();
     abstract public void printCommonObjectives();
     abstract public void update();
+    abstract public void setRoomSize ();
 
 }

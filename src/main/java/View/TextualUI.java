@@ -8,6 +8,7 @@ import util.PlanarCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class TextualUI extends View {
@@ -109,29 +110,49 @@ public class TextualUI extends View {
     @Override
     public void run() {
         try {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            String choice = scanner.nextLine();
-            switch (choice) {
-                case ("size") -> {
-                    System.out.print("Set room size: ");
-                    int roomSize = scanner.nextInt();
-                    setChangedAndNotifyObservers(new SetRoomSizeMessage(name, roomSize));
-                }
-                case ("w") -> setChangedAndNotifyObservers(new WithdrawMessage(readCords() ,name));
-                case ("i") -> setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
-                case ("o") -> setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
-                case ("l") -> setChangedAndNotifyObservers(new LeaveMessage(name));
-                case ("j") -> setChangedAndNotifyObservers(new JoinMessage(name));
-                case ("n") -> name = (scanner.nextLine());
-                case ("c") -> setChangedAndNotifyObservers(getMessage());
-                case ("x") -> throw new Exception();
-                case ("f") -> {new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();}
+            Scanner scanner = new Scanner(System.in);
+
+            do {
+                System.out.print("Set your username:\n");
+                name = scanner.nextLine();
+            } while (false /*TODO: nome già presente*/);
+
+
+            String input;
+            do {
+                System.out.print("The username selected is available, write join to enter the lobby\n");
+                input = scanner.nextLine();
+            } while (!Objects.equals(input, "join"));
+            setChangedAndNotifyObservers(new JoinMessage(name));
+
+
+
+
+            while(true) {
+
             }
-        }
+            /*
+
+            while (true) {
+                System.out.print("It's your turn, use the command 'withdraw':\n");
+                input = scanner.nextLine();
+                switch (input) {
+                    case ("leave") -> setChangedAndNotifyObservers(new LeaveMessage(name));
+                    case ("message") -> setChangedAndNotifyObservers(getMessage());
+                    case ("withdraw") -> {
+                        setChangedAndNotifyObservers(new WithdrawMessage(readCords(), name));
+                        System.out.print("Select the order of the cards with the command 'order':\n");
+                        setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
+                        System.out.print("Select the column with the command 'column':\n");
+                        setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
+                    }
+                }
+            }
+            */
         } catch (Exception e) {
             setChangedAndNotifyObservers(new LeaveMessage(name));
         }
+
     }
 
     private List<Integer> readIntList() {
@@ -192,5 +213,24 @@ public class TextualUI extends View {
         receivers.add(receiver);
         return new ChatMessage(name, receivers, message);
     }
-}
 
+    @Override
+    public void setRoomSize() {
+        String input;
+        Scanner scanner= new Scanner(System.in);
+        System.out.print("Use the command size to set the room size:\n");
+        input = scanner.nextLine();
+        while (!Objects.equals(input, "size")) {
+            if (Objects.equals(input, "leave")) {
+                setChangedAndNotifyObservers(new LeaveMessage(name));
+            }
+            input = scanner.nextLine();
+        }
+        int roomSize;
+        do {
+            System.out.print("Insert the size of the room:\n");
+            roomSize = scanner.nextInt();
+        } while (roomSize < 2);
+        setChangedAndNotifyObservers(new SetRoomSizeMessage(name, roomSize));
+    }
+}
