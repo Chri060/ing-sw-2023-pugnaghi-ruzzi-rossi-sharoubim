@@ -9,16 +9,20 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 
+import static View.TextualUI.*;
+
 public class ClientApp {
     public static void main(String[] args) {
 
         System.out.println("\n" +
+
                 "███╗   ███╗██╗   ██╗    ███████╗██╗  ██╗███████╗██╗     ███████╗██╗███████╗\n" +
                 "████╗ ████║╚██╗ ██╔╝    ██╔════╝██║  ██║██╔════╝██║     ██╔════╝██║██╔════╝\n" +
                 "██╔████╔██║ ╚████╔╝     ███████╗███████║█████╗  ██║     █████╗  ██║█████╗  \n" +
                 "██║╚██╔╝██║  ╚██╔╝      ╚════██║██╔══██║██╔══╝  ██║     ██╔══╝  ██║██╔══╝  \n" +
                 "██║ ╚═╝ ██║   ██║       ███████║██║  ██║███████╗███████╗██║     ██║███████╗\n" +
-                "╚═╝     ╚═╝   ╚═╝       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝\n");
+                "╚═╝     ╚═╝   ╚═╝       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝\n"
+        + ANSI_RESET);
 
 
         while (true) {
@@ -27,14 +31,14 @@ public class ClientApp {
             switch (choice) {
                 case "RMI" -> {
                     try {
-                        runRMI();
+                        runRMI(args[0]);
                     } catch (RemoteException e) {
                         System.out.println("RMI might not be available, can still retry");
                     }
                 }
                 case "Socket" ->{
                     try {
-                        runSocket();
+                        runSocket(args[0]);
                     }
                     catch (RemoteException e) {
                         System.out.println("Socket might not be available, can still retry");
@@ -47,11 +51,11 @@ public class ClientApp {
         }
     }
 
-    public static void runSocket() throws RemoteException {
+    public static void runSocket(String ip) throws RemoteException {
 
         ClientImpl client = new ClientImpl();
         try {
-            ServerStub serverStub = new ServerStub("carlosharu.ddns.net", 55555);
+            ServerStub serverStub = new ServerStub(ip, 55555);
             Thread receiver = new Thread(() -> serverStub.receive(client));
 
 
@@ -70,12 +74,12 @@ public class ClientApp {
         }
 
     }
-    public static void runRMI() throws RemoteException {
+    public static void runRMI(String ip) throws RemoteException {
 
         ClientImpl client = new ClientImpl();
 
         try {
-            Registry registry = LocateRegistry.getRegistry("carlosharu.ddns.net", 1099);
+            Registry registry = LocateRegistry.getRegistry(ip, 44444);
             Server server = (Server) registry.lookup("server");
 
             client.init(server);

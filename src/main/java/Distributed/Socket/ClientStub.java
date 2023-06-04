@@ -17,12 +17,12 @@ public class ClientStub implements Client {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
-    public ClientStub(Socket socket) {
+    public ClientStub(Socket socket) throws RemoteException{
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            System.err.println("Error while opening I/O streams");
+            throw new RemoteException("Failed to open streams");
         }
     }
 
