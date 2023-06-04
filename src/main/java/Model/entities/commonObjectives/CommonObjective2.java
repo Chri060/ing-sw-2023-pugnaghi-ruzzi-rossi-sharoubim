@@ -14,8 +14,6 @@ public class CommonObjective2 extends PatternCommonObjective {
     }
     @Override
     public boolean verify(Shelf shelf) {
-        return (pattern.verifyWithSameType(shelf.asMatrix(), 1) > 0
-        || pattern.verifyWithSameTypeMirrored(shelf.asMatrix(), 1) > 0);
-
+        return pattern.verifyPatternWithOneCard(shelf.asMatrix()) > 0;
     }
 }

@@ -275,7 +275,7 @@ public abstract class CommonObjectivePattern implements Iterable {
         return maxHits;
     }
     /**
-     * Does verifyPatternWithOneCard but As some pattern might be overlapped and exploration from the left up corner
+     * Does verifyPatternWithOneCardCore but As some pattern might be overlapped and exploration from the left up corner
      * might not find the max amount of appearance of that pattern.
      * To fix this method rotate the matrix 4 times to explore all the possible combinations
      * NOTE for patterns that are not symmetric by 90° rotations such as columns and rows do not use this method
