@@ -148,7 +148,7 @@ public class Model extends Observable<ServerMessage> {
     public String getChairPlayer() {return chairPlayer;}
 
     //Initialises the game
-    public void start() {
+    public synchronized void start() {
         synchronized (Config.class) {
             Config.initialise(this.playerNames.size());
             this.gameStatus = GameStatus.STARTING;
@@ -357,7 +357,6 @@ public class Model extends Observable<ServerMessage> {
 
     public ModelView getModelView() {
         ModelView modelView = new ModelView();
-
         modelView.setDashboard(dashboard.asMatrix());
         List<PlayerView> playerViewList = new ArrayList<>();
         for (Player player : playerList) {

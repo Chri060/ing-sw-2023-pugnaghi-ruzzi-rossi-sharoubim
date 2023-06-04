@@ -4,10 +4,8 @@ import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import util.Checker;
 import util.Config;
-import util.Iterators.CrossIterator;
+import util.Iterators.*;
 import util.Iterators.Iterable;
-import util.Iterators.Iterator;
-import util.Iterators.MatrixIterator;
 import util.PlanarCoordinate;
 
 import java.util.ArrayList;
@@ -186,6 +184,7 @@ public class Dashboard implements Iterable {
     }
     @Override
     public Iterator getIterator() {
-        return new MatrixIterator(this.rows, this.columns);
+        //return new MatrixIterator(this.rows, this.columns);
+        return new PatternIterator(taps);
     }
 }

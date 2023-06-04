@@ -155,17 +155,16 @@ public class Controller {
                 return;
             }
             model.withdraw(planarCoordinateList);
-            updateStates(Model.TurnStatus.ORDERING, Model.GameStatus.RUNNING);
+            updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
         }
     }
 
     public void changeOrderOfCards(List<Integer> orderList) {
-        if (model.getTurnStatus() != Model.TurnStatus.ORDERING) {
+        if (model.getTurnStatus() != Model.TurnStatus.INSERTING) {
             //TOOD
             return;
         }
         model.sortWithdrawnCards(orderList);
-        updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
     }
 
     public void insert(String playerName, int column) {
@@ -236,9 +235,5 @@ public class Controller {
                 return 0;
             }
         });
-    }
-
-    public void print(String print) {
-        System.out.println(print);
     }
 }
