@@ -31,6 +31,6 @@ public class ChatMessage extends ServerMessageAbs{
 
     @Override
     public void execute(View view) {
-        view.print("[" + sender + "]:" + message);
+        view.showChatMessage(sender, message);
     }
 }

@@ -45,11 +45,11 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public void register(Client client, String name) throws RemoteException {
         try {
             if (!associator.isNameAvailable(name)) {
-                client.update(new TestMessage("Name already in use"));
+                client.update(new NameAvailableMessage(false));
                 return;
             }
             if (name.equals("")) {
-                client.update(new TestMessage("Name cannot be empty"));
+                client.update(new NameAvailableMessage(false));
                 return;
             }
             if (associator.contains(client)) {
@@ -57,8 +57,9 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 return;
             }
         } catch (NullPointerException e) {
-            client.update(new TestMessage("Name cannot be null"));
+            client.update(new NameAvailableMessage(false));
         }
+        client.update(new NameAvailableMessage(true));
         Observer<Observable<ServerMessage>, ServerMessage> obs = getObserver(client, name);
         model.addObserver(obs);
         controller.join(name);

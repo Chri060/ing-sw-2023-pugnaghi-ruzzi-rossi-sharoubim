@@ -14,13 +14,18 @@ public class ServerApp {
     public static void main(String[] args) throws RemoteException {
 
         Server server = new ServerImpl();
-
+        Registry registry;
         try {
-            Registry registry = LocateRegistry.getRegistry();
+            try {
+                registry = LocateRegistry.createRegistry(44444);
+            } catch (RemoteException e) {
+                registry = LocateRegistry.getRegistry(44444);
+            }
             registry.rebind("server", server);
         } catch (RemoteException e) {
             System.err.println("RMI KO");
         }
+
         new Thread(() -> runSocket(server)).start();
 
 
@@ -35,8 +40,7 @@ public class ServerApp {
                     ClientStub clientStub = new ClientStub(socket);
                     new Thread(() -> clientStub.receive(server)).start();
                 } catch (IOException e) {
-                    System.err.println("Socket client disconnected");
-                    return;
+                    System.err.println("Socket error, connection discarded");
                 }
            }
        } catch (IOException e) {
