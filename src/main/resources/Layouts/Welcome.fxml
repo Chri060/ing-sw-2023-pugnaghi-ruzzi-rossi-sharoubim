@@ -9,38 +9,31 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ImageView fitHeight="540.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../resources/Images/background.jpg" />
-         </image>
-      </ImageView>
-      <Label layoutX="15.0" layoutY="104.0" text="Username:">
-         <font>
-            <Font name="System Bold" size="21.0" />
-         </font>
-      </Label>
-      <TextField layoutX="13.0" layoutY="208.0" prefHeight="26.0" prefWidth="71.0" />
-      <ImageView fitHeight="376.0" fitWidth="967.0" layoutX="-7.0" layoutY="261.0" pickOnBounds="true" preserveRatio="true">
+    <children>
+        <ImageView fitHeight="540.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../resources/Images/background.jpg" />
+            </image>
+        </ImageView>
+      <ImageView fitHeight="288.0" fitWidth="960.0" layoutY="263.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../resources/Images/banner.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="131.0" fitWidth="381.0" layoutX="285.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="131.0" fitWidth="381.0" layoutX="288.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../resources/Images/title.png" />
          </image>
       </ImageView>
+      <Label layoutX="11.0" layoutY="173.0" text="Username:">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>+
+      </Label>
+      <TextField layoutX="14.0" layoutY="209.0" prefHeight="26.0" prefWidth="335.0" />
       <Button layoutX="424.0" layoutY="443.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="106.0" text="JOIN">
          <font>
             <Font name="System Bold" size="12.0" />
-         </font>
-      </Button>
-      <TextField layoutX="13.0" layoutY="139.0" prefHeight="26.0" prefWidth="286.0" />
-      <Label layoutX="14.0" layoutY="171.0" text="Number of players:">
-         <font>
-            <Font name="System Bold" size="21.0" />
-         </font>
-      </Label>
-   </children>
+         </font></Button>
+    </children>
 </AnchorPane>
