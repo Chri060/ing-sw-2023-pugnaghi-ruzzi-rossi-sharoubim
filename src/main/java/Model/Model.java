@@ -91,14 +91,14 @@ public class Model extends Observable<ServerMessage> {
     }
     public void removePlayer(String playerName) {
         this.playerNames.remove(playerName);
-            if (playerNames.size() != 0) {
-                roomLeader = playerNames.get(0);
-            }
-            else {
-                roomLeader = null;
-                roomSize = - 1;
-            }
-            setChangedAndNotifyObservers(new TestMessage(playerName + " left the room"));
+        if (playerNames.size() != 0) {
+            roomLeader = playerNames.get(0);
+        }
+        else {
+            roomLeader = null;
+            roomSize = - 1;
+        }
+        setChangedAndNotifyObservers(new LeaveAck(playerName));
     }
     public GameStatus getGameStatus() {
         return gameStatus;
@@ -175,9 +175,9 @@ public class Model extends Observable<ServerMessage> {
             gameStatus = GameStatus.RUNNING;
             turnStatus = TurnStatus.DRAWING;
             setChangedAndNotifyObservers(new TestMessage("Match started"));
-            setChangedAndNotifyObservers(new ModelViewMessage(getModelView()));
             setChangedAndNotifyObservers(new TestMessage(getCurrentPlayer() + "'s turn"));
         }
+        sendModelViewData();
     }
 
     private Player getPlayer(String playerName) {
@@ -207,7 +207,6 @@ public class Model extends Observable<ServerMessage> {
             }
             player.getShelf().insert(withdrawnCards, column);
             withdrawnCards.clear();
-            setChangedAndNotifyObservers(new ModelViewMessage(getModelView()));
         }
         else {
             throw new InvalidArgumentException(playerName + " not found in this lobby");
@@ -351,36 +350,60 @@ public class Model extends Observable<ServerMessage> {
 
     }
 
-    public void sortWinners(Comparator comparator) {
-        playerList.sort(comparator);
+    public void sortWinners() {
+        playerList.sort((p1, p2) -> {
+            if (p1.getTotalPoints().getValue() < p2.getTotalPoints().getValue()) {
+                return -1;
+            }
+            if (p1.getTotalPoints().getValue() > p2.getTotalPoints().getValue()) {
+                return 1;
+            }
+            return 0;
+        });
+        sendRank();
     }
 
-    public ModelView getModelView() {
-        ModelView modelView = new ModelView();
-        modelView.setDashboard(dashboard.asMatrix());
-        List<PlayerView> playerViewList = new ArrayList<>();
-        for (Player player : playerList) {
-            PlayerView playerView = new PlayerView();
-            playerView.setName(player.getName());
-            playerView.setShelf(player.getShelf().asMatrix());
-            playerView.setPoint(player.getTotalPoints());
-            playerView.setPrivateObjectivePattern(player.getPrivateObjectivePattern());
-            playerViewList.add(playerView);
-            //TODO aggiungere obiettivi privati
+    public void sendRank() {
+        List<PlayerView> ranking = new ArrayList<>();
+        for (int i = playerList.size() - 1; i >= 0; i--) {
+            Player player = playerList.get(i);
+            PlayerView p = new PlayerView();
+            p.setName(player.getName());
+            p.setPoint(player.getTotalPoints());
+            ranking.add(p);
         }
-        modelView.setPlayerViews(playerViewList);
+        setChangedAndNotifyObservers(new RankingMessage(ranking));
+    }
 
-        List<CommonObjectiveView> commonObjectiveViewList = new ArrayList<>();
-        for (CommonObjective commonObjective : commonObjectiveList) {
-            CommonObjectiveView commonObjectiveView = new CommonObjectiveView();
-            commonObjectiveView.setID(commonObjective.getID());
-            commonObjectiveView.setMaxPoint(commonObjective.checkMaxPoints());
-            commonObjectiveViewList.add(commonObjectiveView);
+
+    public void sendModelViewData() {
+
+        for(Player p : playerList.stream().filter(x -> x.isConnected()).toList()) {
+            ModelViewData modelViewData = new ModelViewData();
+            modelViewData.setDashboard(dashboard.asMatrix());
+            List<PlayerView> playerViewList = new ArrayList<>();
+            for (Player player : playerList) {
+                PlayerView playerView = new PlayerView();
+                playerView.setName(player.getName());
+                playerView.setShelf(player.getShelf().asMatrix());
+                playerView.setPoint(player.getTotalPoints());
+                playerViewList.add(playerView);
+                if (p.equals(player)) {
+                    playerView.setPrivateObjectivePattern(player.getPrivateObjectivePattern());
+                }
+                //TODO aggiungere obiettivi privati
+            }
+            modelViewData.setPlayerViews(playerViewList);
+            List<CommonObjectiveView> commonObjectiveViewList = new ArrayList<>();
+            for (CommonObjective commonObjective : commonObjectiveList) {
+                CommonObjectiveView commonObjectiveView = new CommonObjectiveView();
+                commonObjectiveView.setID(commonObjective.getID());
+                commonObjectiveView.setMaxPoint(commonObjective.checkMaxPoints());
+                commonObjectiveViewList.add(commonObjectiveView);
+            }
+            modelViewData.setCommonObjectiveViews(commonObjectiveViewList);
+            modelViewData.setChairPlayer(chairPlayer);
+            setChangedAndNotifyObservers(new ModelViewMessage(modelViewData, p.getName()));
         }
-        modelView.setCommonObjectiveViews(commonObjectiveViewList);
-
-        modelView.setWithdrawnCards(withdrawnCards);
-
-        return modelView;
     }
 }

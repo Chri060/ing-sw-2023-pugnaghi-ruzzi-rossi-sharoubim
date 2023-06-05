@@ -2,6 +2,7 @@ package Distributed.Messages.serverMessages;
 
 import Distributed.Client;
 import Model.ModelView;
+import Model.ModelViewData;
 import View.View;
 
 import java.rmi.RemoteException;
@@ -9,10 +10,10 @@ import java.util.List;
 
 public class ModelViewMessage extends ServerMessageAbs{
 
-    ModelView modelView;
+    ModelViewData modelView;
 
-    public ModelViewMessage(ModelView modelView) {
-        super();
+    public ModelViewMessage(ModelViewData modelView, String player) {
+        super(player);
         this.modelView = modelView;
     }
 
@@ -23,7 +24,7 @@ public class ModelViewMessage extends ServerMessageAbs{
 
     @Override
     public void execute(View view) {
-        view.setModel(this.modelView);
+        view.initialiseModelView(modelView);
         view.update();
     }
 }

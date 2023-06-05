@@ -3,16 +3,16 @@ package View;
 import Distributed.Messages.clientMessages.ClientMessage;
 import Distributed.Messages.clientMessages.JoinMessage;
 import Model.ModelView;
+import Model.ModelViewData;
+import Model.entities.Card;
 import util.Observable;
 
-import java.io.Serializable;
 import java.util.Scanner;
-import java.util.concurrent.*;
 
 public abstract class View extends Observable<ClientMessage> implements Runnable {
 
     String name;
-    ModelView model;
+    public ModelView model;
 
     public int getCardsNum() {
         return cardsNum;
@@ -33,6 +33,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
 
     public View() {
         name = "";
+        model = new ModelView();
     }
 
     public State getState () {
@@ -64,13 +65,17 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
         System.out.println(s);
     }
 
-    public void setModel(ModelView model) {
-        this.model = model;
+    public void initialiseModelView(ModelViewData modelData) {
+        this.model = new ModelView(modelData);
+    }
+
+    public void updateDashboard(Card[][] dashBoard) {
+        this.model.updateDashboard(dashBoard);
     }
 
     abstract public void printDashboard();
     abstract public void printMyShelf();
-    abstract public void printAllShelfs();
+    abstract public void printAllShelves();
     abstract public void printCommonObjectives();
     abstract public void update();
     abstract public void setRoomSize();
@@ -85,6 +90,15 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
                 System.out.println("The username is already selected, please try with a new one.");
             }
         }
+    }
+
+
+    public void joinUpdate(String playerName) {
+        model.addPlayerName(playerName);
+    }
+
+    public void leaveUpdate(String playerName) {
+        model.removePlayerName(playerName);
     }
 
     public void showChatMessage(String sender, String message) {

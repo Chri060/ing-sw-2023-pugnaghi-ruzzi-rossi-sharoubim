@@ -67,6 +67,7 @@ public class ServerStub implements Server {
                     client.update(serverMessage);
                 } catch (IOException e) {
                     System.err.println("Error while receiving");
+                    System.out.println(e.getMessage());
                     return;
                 } catch (ClassNotFoundException e) {
                     System.err.println("Error while receiving: not a message");

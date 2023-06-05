@@ -1,7 +1,8 @@
 package org.example;
 
-import Distributed.*;
-import Distributed.Socket.*;
+import Distributed.ClientImpl;
+import Distributed.Server;
+import Distributed.Socket.ServerStub;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -10,7 +11,6 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 import static View.TextualUI.*;
-import static util.AnsiColor.*;
 
 public class ClientApp {
     public static void main(String[] args) {
