@@ -7,20 +7,85 @@ import Model.viewEntities.PlayerView;
 import util.PlanarCoordinate;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import static util.AnsiColor.*;
+
 public class TextualUI extends View {
+    @Override
+    public void run() {
+        try {
+            setName();
+            if (/*roomLeader*/ true) {
+                roomLeader();
+            }
 
+            if (/*partita iniziata e attiva*/ true) {
+                command();
+            }
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\033[1;91m";
-    public static final String ANSI_GREEN = "\033[1;92m";
-    public static final String ANSI_YELLOW = "\033[1;93m";
-    public static final String ANSI_BLUE = "\033[1;94m";
-    public static final String ANSI_CYAN = "\033[1;96m";
-    public static final String ANSI_WHITE = "\033[1;97m";
+            if (/*la partita è finita*/ true) {
+                endGame();
+            }
 
+        } catch (Exception e) {
+            setChangedAndNotifyObservers(new LeaveMessage(name));
+        }
+    }
+
+    public void roomLeader () {
+        int roomSize;
+        do {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                roomSize = scanner.nextInt();
+                if (roomSize >=2 && roomSize <= 4) break;
+                else System.out.println("Wrong value, it must be between 2 and 4, please retry.");
+            } catch (InputMismatchException e) {
+                System.out.println("Wrong value, it must be between 2 and 4, please retry.");
+            }
+        } while (true);
+        setChangedAndNotifyObservers(new SetRoomSizeMessage(name, roomSize));
+    }
+
+    public void command() {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                System.out.println("Use the command " + ANSI_GREEN + "withdraw" + ANSI_RESET + " if it's your turn, "
+                                   + ANSI_GREEN + "message" + ANSI_RESET + " or "
+                                   + ANSI_GREEN + "leave" + ANSI_RESET + ".");
+                switch ((scanner.nextLine()).toLowerCase()) {
+                    case ("leave") -> {
+                        setChangedAndNotifyObservers(new LeaveMessage(name));
+                        System.exit(0);
+                    }
+                    case ("message") ->
+                            setChangedAndNotifyObservers(getMessage());
+                    case ("withdraw") -> {
+                        setChangedAndNotifyObservers(new WithdrawMessage(readCords(), name));
+                        setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
+                        setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            setChangedAndNotifyObservers(new LeaveMessage(name));
+        }
+    }
+
+    public void endGame() {
+        System.out.print("The final rank is the following:\n");
+        //TODO: while that prints the players in descendent order
+        for (int i = 0; i == 4; i++) {
+            if (i == 0) { System.out.print(ANSI_YELLOW + "1. " + ANSI_RESET); }
+            else { System.out.print((i + 1) + ". "); }
+            System.out.print("name");
+        }
+        System.out.println("The game has ended");
+    }
 
     public void printDashboard() {
         Card[][] dashboard = this.model.getDashboard().dashboard;
@@ -102,67 +167,76 @@ public class TextualUI extends View {
         }
     }
 
-    @Override
-    public void run() {
-        try {
-            setName();
-            Scanner scanner = new Scanner(System.in);
-            while (true) {
-                String choice = scanner.nextLine();
-                switch (choice) {
-                    case ("size") -> {
-                        System.out.print("Set room size: ");
-                        int roomSize = scanner.nextInt();
-                        setChangedAndNotifyObservers(new SetRoomSizeMessage(name, roomSize));
-                    }
-                    case ("w") -> setChangedAndNotifyObservers(new WithdrawMessage(readCords() ,name));
-                    case ("i") -> setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
-                    case ("o") -> setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
-                    case ("x") -> {setChangedAndNotifyObservers(new LeaveMessage(name));
-                                    return;
-                    }
-                    case ("j") -> setChangedAndNotifyObservers(new JoinMessage(name));
-                    case ("n") -> name = (scanner.nextLine());
-                    case ("c") -> setChangedAndNotifyObservers(getMessage());
-                }
-            }
-        } catch (Exception e) {
-            setChangedAndNotifyObservers(new LeaveMessage(name));
-        }
-    }
-
     private List<Integer> readIntList() {
         List<Integer> result = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("How many cards did you withdraw?");
-        int cardsNum = scanner.nextInt();
-        System.out.println("Set the new order");
-        for (int i = 0; i < cardsNum; i++) {
-            int x = scanner.nextInt();
-            result.add(x);
+        System.out.println("Write the card number in the order that you want");
+        for (int i = 0; i < getCardsNum(); i++) {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                int x = scanner.nextInt();
+                if (result.contains(x) || x < 1 || x > getCardsNum()) {
+                    System.out.println("Wrong input, insert the numbers again.");
+                    result.clear();;
+                    i = 0;
+                }
+                result.add(x);
+            } catch (InputMismatchException e) {
+                System.out.println("Wrong input, insert the numbers again.");
+                result.clear();
+                i = 0;
+            }
         }
         return result;
     }
 
     private List<PlanarCoordinate> readCords() {
         List<PlanarCoordinate> result = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("How many cards do you want to withdraw?");
-        int cardsNum = scanner.nextInt();
-        for (int i = 0; i < cardsNum; i++) {
-            int row = scanner.nextInt();
-            int column = scanner.nextInt();
-            result.add(new PlanarCoordinate(row, column));
+        System.out.println("Insert the number of cards that you want to withdraw.");
+        do {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                setCardsNum(scanner.nextInt());
+            } catch (InputMismatchException e) {
+                System.out.println("Wrong input, insert the name again.");
+                setCardsNum(-1);
+            }
+        } while (getCardsNum() < 0 || getCardsNum() > 3);
+        System.out.println("Write the coordinates (row column) of the card that you want to withdraw.");
+        for (int i = 0; i < getCardsNum(); i++) {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                int row = scanner.nextInt();
+                int column = scanner.nextInt();
+                if (row < 0 || column < 0 || row > model.getDashboard().dashboard.length || column > model.getDashboard().dashboard[0].length) {
+                    System.out.println("Wrong card selected, insert all the cards again.");
+                    result.clear();
+                    i = 0;
+                }
+                result.add(new PlanarCoordinate(row, column));
+            }
+            catch (InputMismatchException e) {
+                System.out.println("Wrong card selected, insert all the cards again.");
+                result.clear();
+                i = 0;
+            }
         }
         return result;
     }
 
     private int readColumn() {
-        System.out.println("Select a column");
-        int column = new Scanner(System.in).nextInt();
+        System.out.println("Select the column where you want to insert the cards");
+        int column;
+        while (true) {
+            try {
+                column = new Scanner(System.in).nextInt();
+                if (column < 0 || column > model.getDashboard().dashboard[0].length) System.out.println("Wrong column selected, insert all the cards again.");
+                else break;
+            } catch (InputMismatchException e) {
+                System.out.println("Wrong card selected, insert all the cards again.");
+            }
+        }
         return column;
     }
-
 
     void printCard(Card.Type type) {
         if (type == null) {
@@ -181,19 +255,17 @@ public class TextualUI extends View {
 
     ChatMessage getMessage() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Message:");
-        String message = scanner.nextLine();
-        System.out.println("Receiver:");
-        String receiver = scanner.nextLine();
+        System.out.println("Write the username of the receiver and then press enter.");
+        String receiver = (scanner.nextLine()).toLowerCase();
+        System.out.println("Write the message that you want to send and then press enter.");
+        String message = (scanner.nextLine()).toLowerCase();
         List<String> receivers = new ArrayList<>();
         receivers.add(receiver);
         return new ChatMessage(name, receivers, message);
     }
 
     @Override
-    public void setRoomSize(){
-        System.out.println("You are the first to join, use \033[1;92msize\u001B[0m to set the room size");
+    public void setRoomSize() {
+        System.out.println("You are the first to join: set the room size (2 up to 4).");
     }
-
 }
-

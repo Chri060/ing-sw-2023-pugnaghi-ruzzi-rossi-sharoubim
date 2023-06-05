@@ -11,6 +11,7 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 import static View.TextualUI.*;
+import static util.AnsiColor.*;
 
 public class ClientApp {
     public static void main(String[] args) {
@@ -49,6 +50,8 @@ public class ClientApp {
                 case "exit" -> {
                     return;
                 }
+                default ->
+                    System.out.println("Wrong command, please retry.");
             }
         }
     }
@@ -57,7 +60,7 @@ public class ClientApp {
 
         ClientImpl client = new ClientImpl();
         try {
-            ServerStub serverStub = new ServerStub(ip, 55555);
+            ServerStub serverStub = new ServerStub(ip, 55556);
             Thread receiver = new Thread(() -> serverStub.receive(client));
 
 
