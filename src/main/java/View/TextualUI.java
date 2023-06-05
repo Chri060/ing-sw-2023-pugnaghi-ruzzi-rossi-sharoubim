@@ -8,7 +8,6 @@ import util.PlanarCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class TextualUI extends View {
@@ -23,13 +22,11 @@ public class TextualUI extends View {
     public static final String ANSI_WHITE = "\033[1;97m";
 
 
-    @Override
     public void printDashboard() {
-        Card[][] dashboard = this.model.getDashboard();
+        Card[][] dashboard = this.model.getDashboard().dashboard;
         printMatrix(dashboard);
     }
 
-    @Override
     public void printMyShelf() {
         List<PlayerView> playerViewList = model.getPlayerViews();
         System.out.println("My Shelf");
@@ -39,8 +36,7 @@ public class TextualUI extends View {
         });
     }
 
-    @Override
-    public void printAllShelfs() {
+    public void printAllShelves() {
         List<PlayerView> playerViewList = model.getPlayerViews();
         playerViewList.stream().filter(x -> !x.getName().equals(name)).forEach(x -> {
             System.out.println(x.getName() +"'s Shelf " + " Points: " + x.getPoint().getValue());
@@ -48,7 +44,6 @@ public class TextualUI extends View {
         });
     }
 
-    @Override
     public void printCommonObjectives() {
         List<CommonObjectiveView> objectiveViewList = model.getCommonObjectiveViews();
         objectiveViewList.forEach(x -> {
@@ -62,7 +57,7 @@ public class TextualUI extends View {
         printDashboard();
         printCommonObjectives();
         printMyShelf();
-        printAllShelfs();
+        printAllShelves();
     }
 
     private void printMatrix(Card[][] matrix) {
@@ -110,49 +105,30 @@ public class TextualUI extends View {
     @Override
     public void run() {
         try {
+            setName();
             Scanner scanner = new Scanner(System.in);
-
-            do {
-                System.out.print("Set your username:\n");
-                name = scanner.nextLine();
-            } while (false /*TODO: nome già presente*/);
-
-
-            String input;
-            do {
-                System.out.print("The username selected is available, write join to enter the lobby\n");
-                input = scanner.nextLine();
-            } while (!Objects.equals(input, "join"));
-            setChangedAndNotifyObservers(new JoinMessage(name));
-
-
-
-
-            while(true) {
-
-            }
-            /*
-
             while (true) {
-                System.out.print("It's your turn, use the command 'withdraw':\n");
-                input = scanner.nextLine();
-                switch (input) {
-                    case ("leave") -> setChangedAndNotifyObservers(new LeaveMessage(name));
-                    case ("message") -> setChangedAndNotifyObservers(getMessage());
-                    case ("withdraw") -> {
-                        setChangedAndNotifyObservers(new WithdrawMessage(readCords(), name));
-                        System.out.print("Select the order of the cards with the command 'order':\n");
-                        setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
-                        System.out.print("Select the column with the command 'column':\n");
-                        setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
+                String choice = scanner.nextLine();
+                switch (choice) {
+                    case ("size") -> {
+                        System.out.print("Set room size: ");
+                        int roomSize = scanner.nextInt();
+                        setChangedAndNotifyObservers(new SetRoomSizeMessage(name, roomSize));
                     }
+                    case ("w") -> setChangedAndNotifyObservers(new WithdrawMessage(readCords() ,name));
+                    case ("i") -> setChangedAndNotifyObservers(new InsertMessage(name, readColumn()));
+                    case ("o") -> setChangedAndNotifyObservers(new OrderMessage(name, readIntList()));
+                    case ("x") -> {setChangedAndNotifyObservers(new LeaveMessage(name));
+                                    return;
+                    }
+                    case ("j") -> setChangedAndNotifyObservers(new JoinMessage(name));
+                    case ("n") -> name = (scanner.nextLine());
+                    case ("c") -> setChangedAndNotifyObservers(getMessage());
                 }
             }
-            */
         } catch (Exception e) {
             setChangedAndNotifyObservers(new LeaveMessage(name));
         }
-
     }
 
     private List<Integer> readIntList() {
@@ -215,22 +191,9 @@ public class TextualUI extends View {
     }
 
     @Override
-    public void setRoomSize() {
-        String input;
-        Scanner scanner= new Scanner(System.in);
-        System.out.print("Use the command size to set the room size:\n");
-        input = scanner.nextLine();
-        while (!Objects.equals(input, "size")) {
-            if (Objects.equals(input, "leave")) {
-                setChangedAndNotifyObservers(new LeaveMessage(name));
-            }
-            input = scanner.nextLine();
-        }
-        int roomSize;
-        do {
-            System.out.print("Insert the size of the room:\n");
-            roomSize = scanner.nextInt();
-        } while (roomSize < 2);
-        setChangedAndNotifyObservers(new SetRoomSizeMessage(name, roomSize));
+    public void setRoomSize(){
+        System.out.println("You are the first to join, use \033[1;92msize\u001B[0m to set the room size");
     }
+
 }
+

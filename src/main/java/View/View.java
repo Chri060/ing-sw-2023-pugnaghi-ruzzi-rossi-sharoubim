@@ -73,10 +73,6 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
         this.model.updateDashboard(dashBoard);
     }
 
-    abstract public void printDashboard();
-    abstract public void printMyShelf();
-    abstract public void printAllShelves();
-    abstract public void printCommonObjectives();
     abstract public void update();
     abstract public void setRoomSize();
     public void setNameAvailable(boolean nameAvailable) {
