@@ -10,41 +10,43 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 import static View.TextualUI.*;
+import static util.AnsiColor.*;
 
 public class ClientApp {
     public static void main(String[] args) {
 
-        System.out.println("\n" +
-
+        System.out.println(                                                                "\n" +
                 "███╗   ███╗██╗   ██╗    ███████╗██╗  ██╗███████╗██╗     ███████╗██╗███████╗\n" +
                 "████╗ ████║╚██╗ ██╔╝    ██╔════╝██║  ██║██╔════╝██║     ██╔════╝██║██╔════╝\n" +
                 "██╔████╔██║ ╚████╔╝     ███████╗███████║█████╗  ██║     █████╗  ██║█████╗  \n" +
                 "██║╚██╔╝██║  ╚██╔╝      ╚════██║██╔══██║██╔══╝  ██║     ██╔══╝  ██║██╔══╝  \n" +
                 "██║ ╚═╝ ██║   ██║       ███████║██║  ██║███████╗███████╗██║     ██║███████╗\n" +
-                "╚═╝     ╚═╝   ╚═╝       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝\n"
-        + ANSI_RESET);
+                "╚═╝     ╚═╝   ╚═╝       ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝\n" );
 
 
+        System.out.println("Choose the protocol you want to use whit command " + ANSI_GREEN + "RMI" + ANSI_RESET +
+                " or " + ANSI_GREEN + "socket" + ANSI_RESET + ". If you want to exit use "+ ANSI_GREEN + "exit" + ANSI_RESET + ".");
         while (true) {
-            System.out.println("Chose a protocol RMI or Socket. Use x to exit");
-            String choice = (new Scanner(System.in)).nextLine();
+            String choice = ((new Scanner(System.in)).nextLine()).toLowerCase();
             switch (choice) {
-                case "RMI" -> {
+                case "rmi" -> {
                     try {
                         runRMI(args[0]);
                     } catch (RemoteException e) {
-                        System.out.println("RMI might not be available, can still retry");
+                        System.out.println("RMI might not be available, you can still retry with " + ANSI_GREEN + "RMI" + ANSI_RESET +
+                                           " or change to " + ANSI_GREEN + "socket" + ANSI_RESET + ".");
                     }
                 }
-                case "Socket" ->{
+                case "socket" ->{
                     try {
                         runSocket(args[0]);
                     }
                     catch (RemoteException e) {
-                        System.out.println("Socket might not be available, can still retry");
+                        System.out.println("Socket might not be available, you can still retry with " + ANSI_GREEN + "socket" + ANSI_RESET +
+                                " or change to " + ANSI_GREEN + "RMI" + ANSI_RESET + ".");
                     }
                 }
-                case "x" -> {
+                case "exit" -> {
                     return;
                 }
             }

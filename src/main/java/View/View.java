@@ -14,16 +14,29 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
     String name;
     ModelView model;
 
+    public int getCardsNum() {
+        return cardsNum;
+    }
+
+    public void setCardsNum(int cardsNum) {
+        this.cardsNum = cardsNum;
+    }
+
     public enum State{
         SELECTNAME,
         NAMEREQUESTSENT,
         INLOBBY
     }
 
+    private int cardsNum;
     private State state = State.NAMEREQUESTSENT;
 
     public View() {
         name = "";
+    }
+
+    public State getState () {
+        return state;
     }
 
     public String getName() {
@@ -33,7 +46,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
     public void setName() {
         synchronized (state) {
             while (state != State.INLOBBY) {
-                System.out.println("Insert your name:");
+                System.out.println("Write your username and then press enter.");
                 name = new Scanner(System.in).nextLine();
                 state = State.NAMEREQUESTSENT;
                 new Thread(() -> setChangedAndNotifyObservers(new JoinMessage(name))).start();
@@ -69,7 +82,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
             }
             else {
                 state = State.SELECTNAME;
-                System.out.println("Name is not available");
+                System.out.println("The username is already selected, please try with a new one.");
             }
         }
     }
