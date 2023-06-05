@@ -17,7 +17,6 @@ The requirements of the project can be found [here](https://github.com/Chri060/i
 | In-game chat                              |   ✅    |
 | Multiple games                            |   ❌    |
 | Persistence                               |   ❌    |
-| Disconnection resilience                  |   ❌    |
 
 ## Tools and Dependencies
 | Name                                                                                                                                | Usage                 |
