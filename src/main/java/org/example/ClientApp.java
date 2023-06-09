@@ -60,7 +60,7 @@ public class ClientApp {
 
         ClientImpl client = new ClientImpl();
         try {
-            ServerStub serverStub = new ServerStub(ip, 55556);
+            ServerStub serverStub = new ServerStub(ip, 55555);
             Thread receiver = new Thread(() -> serverStub.receive(client));
 
 

@@ -128,24 +128,6 @@ public class Dashboard implements Iterable {
             }
         } catch (InvalidArgumentException e) {/*Never thrown*/}
         return true;
-        /*
-        for (int i = 0; i < this.getRows(); i++) {
-            for (int j = 0; j < this.getColumns(); j++) {
-                if (dashboard[i][j] != null) {
-                    Iterator iterator = new CrossIterator(new PlanarCoordinate(i, j));
-                    while (!iterator.iterationCompleted()) {
-                        PlanarCoordinate next = iterator.getActual();
-                        if (Checker.dashboardCoordinatesAreValid(next)) {
-                            if (dashboard[next.getRow()][next.getColumn()] != null) {
-                                return false;
-                            }
-                        }
-                        iterator.next();
-                    }
-                }
-            }
-        }
-        return true;*/
     }
     public void refill(Bag bag) throws InvalidActionException {
         for (int i = 0; i < this.getRows(); i++) {
@@ -176,7 +158,9 @@ public class Dashboard implements Iterable {
 
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                result[i][j] = this.dashboard[i][j];
+                if (dashboard[i][j] != null) {
+                    result[i][j] = new Card(dashboard[i][j].getType(), dashboard[i][j].getId());
+                }
             }
         }
 

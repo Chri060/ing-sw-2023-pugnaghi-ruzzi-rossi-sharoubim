@@ -49,7 +49,4 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
         view.run();
     }
 
-    private Pinger getPinger(Server server) {
-        return null;
-    }
 }

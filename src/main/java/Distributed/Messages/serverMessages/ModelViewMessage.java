@@ -25,6 +25,5 @@ public class ModelViewMessage extends ServerMessageAbs{
     @Override
     public void execute(View view) {
         view.initialiseModelView(modelView);
-        view.update();
     }
 }

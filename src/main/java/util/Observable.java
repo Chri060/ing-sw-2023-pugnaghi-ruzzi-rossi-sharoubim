@@ -4,7 +4,7 @@ import Distributed.Messages.NetworkMessage;
 
 import java.util.Vector;
 
-public class Observable<Arg extends NetworkMessage> {
+public class Observable<Arg extends Object> {
 
     private boolean changed = false;
     private Vector<Observer<? extends Observable<Arg>, Arg>> obs;

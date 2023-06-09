@@ -20,23 +20,30 @@ public class Controller {
 
     private Model model;
 
-
     public Controller(Model model) {
         this.model = model;
     }
 
-
-    //Prematch stuff
-
+    public void setRoomSize(int size, String playerName) {
+        synchronized (model) {
+            if (!playerName.equals(model.getRoomLeader())) {
+                return;
+            }
+            if (size < 2 || size > 4) {
+                return;
+            }
+            model.setTargetRoomSize(size);
+        }
+    }
     public void join(String playerName) {
         synchronized (model) {
+            if (playerName == null) {
+                //TODO notifies the name is invalid
+                return;
+            }
             if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
                 //TODO notifies the match has already started
                 model.setPlayerOnline(playerName);
-                return;
-            }
-            if (playerName == null) {
-                //TODO notifies the name is invalid
                 return;
             }
             try {
@@ -51,24 +58,20 @@ public class Controller {
             }
         }
     }
-
-    public void setRoomSize(int size, String playerName) {
-        if (!playerName.equals(model.getRoomLeader())) {
-            return;
-        }
-        if (size < 2) {
-            return;
-        }
-        model.setTargetRoomSize(size);
-
-    }
     public void leave(String playerName) {
         synchronized (model) {
             if (playerName == null) {
                 //TODO notifies the name is invalid
                 return;
             }
-            if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
+            if (model.getGameStatus() == Model.GameStatus.PREMATCH) {
+                model.removePlayer(playerName);
+            }
+            else {
+                model.setPlayerOffline(playerName);
+            }
+
+            /*if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
                 model.setPlayerOffline(playerName);
                 if (playerName.equals(model.getCurrentPlayer())) {
                     model.setCurrentPlayer(model.getNextPlayer());
@@ -81,7 +84,7 @@ public class Controller {
                         synchronized (model) {
                             for (int i = 10; i > 0; i--) {
                                 model.setChangedAndNotifyObservers(new TestMessage("" + i, model.getCurrentPlayer()));
-                                if (model.getOnlinePlayersCount() > 1) {
+                                if (model.getOnlinePlayersCount() != 1) {
                                     model.notifyObservers(new TestMessage("New connection game restarting", model.getCurrentPlayer()));
                                     model.setGameStatus(Model.GameStatus.RUNNING);
                                     return;
@@ -100,17 +103,17 @@ public class Controller {
                 return;
             }
             model.removePlayer(playerName);
-            //TODO sends leave ack
+            //TODO sends leave ack*/
         }
     }
-
     public void chatMessage(String playerName, List<String> receivers, String message) {
-        if (playerName == null || receivers == null || message == null) {
-            return;
+        synchronized (model) {
+            if (playerName == null || receivers == null || message == null) {
+                return;
+            }
+            model.sendChatMessage(playerName, receivers, message);
         }
-        model.sendChatMessage(playerName, receivers, message);
     }
-
     private boolean isYourTurn(String playerName) {
         synchronized (model) {
             return (model.getCurrentPlayer().equals(playerName));
@@ -122,9 +125,6 @@ public class Controller {
             model.setGameStatus(gameStatus);
         }
     }
-
-
-    //Operation from clients
     public void withdraw(String playerName, List<PlanarCoordinate> planarCoordinateList) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
@@ -154,19 +154,19 @@ public class Controller {
                 //TODO sends a message error -> InvalidAction: can't withdraw those cards
                 return;
             }
+            System.out.println("Withdrawing");
             model.withdraw(planarCoordinateList);
             updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
         }
     }
-
     public void changeOrderOfCards(List<Integer> orderList) {
-        if (model.getTurnStatus() != Model.TurnStatus.INSERTING) {
-            //TOOD
-            return;
+        synchronized (model) {
+            if (model.getTurnStatus() != Model.TurnStatus.INSERTING) {
+                return;
+            }
+            model.sortWithdrawnCards(orderList);
         }
-        model.sortWithdrawnCards(orderList);
     }
-
     public void insert(String playerName, int column) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
@@ -192,37 +192,37 @@ public class Controller {
             } catch (InvalidArgumentException e) {/*Never thrown if it's player turn*/}
         }
     }
-
-    //End of turn stuff
     private void endTurn(String playerName) throws InvalidArgumentException {
-        //Checks for common objectives
-        List<Integer> IDs = model.getCommonObjectivesID();
-        List<Boolean> verified = model.verifyCommonObj(playerName);
-        for (int i = 0; i < IDs.size(); i++) {
-            if (verified.get(i)) {
-                Point point = model.getCommonObjMaxPoints(IDs.get(i));
-                model.givePoint(playerName, point);
+        synchronized (model) {
+            List<Integer> IDs = model.getCommonObjectivesID();
+            List<Boolean> verified = model.verifyCommonObj(playerName);
+            for (int i = 0; i < IDs.size(); i++) {
+                if (verified.get(i)) {
+                    Point point = model.getCommonObjMaxPoints(IDs.get(i));
+                    model.givePoint(playerName, point);
+                }
             }
-        }
 
-        if (model.endGame()) {
-            updateStates(Model.TurnStatus.ENDED, Model.GameStatus.ENDED);
-            endgame();
-        } else {
-            updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
-            model.setCurrentPlayer(model.getNextPlayer());
-            if (model.needsRefill()) {
-                try {
-                    model.refill();
-                } catch (InvalidActionException e) {}
+            if (model.endGame()) {
+                updateStates(Model.TurnStatus.ENDED, Model.GameStatus.ENDED);
+                endgame();
+            } else {
+                updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
+                model.setCurrentPlayer(model.getNextPlayer());
+                if (model.needsRefill()) {
+                    try {
+                        model.refill();
+                    } catch (InvalidActionException e) {
+                    }
+                }
             }
         }
     }
     public void endgame() {
-        //TODO foreach player gives shelfPoints
-        model.giveShelfPoints();
-        //TODO foreach player gives privateObjectivePoints: fatto
-        model.givePrivatePoints();
-        model.sortWinners();
+        synchronized (model) {
+            model.giveShelfPoints();
+            model.givePrivatePoints();
+            model.sortWinners();
+        }
     }
 }

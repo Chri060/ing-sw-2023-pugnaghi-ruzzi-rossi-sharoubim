@@ -8,36 +8,36 @@ import java.util.List;
 
 public class PlayerView implements Serializable {
     private String name;
-    private Point point;
-    private Card[][] shelf;
-    private List<Card.Type[][]> privateObjectivePattern;
+    private List<Point> pointList;
+    private ShelfView shelf;
 
-    //TODO aggiungere obiettivi privati
 
     public void setName(String name) {
         this.name = name;
     }
-    public void setPoint(Point point) {
-        this.point = point;
+    public void setPoint(List<Point> point) {
+        this.pointList = point;
     }
     public void setShelf(Card[][] shelf) {
-        this.shelf = shelf;
+        this.shelf = new ShelfView(shelf);
     }
-    public void setPrivateObjectivePattern(List<Card.Type[][]> privateObjectivePattern) {
-        this.privateObjectivePattern = privateObjectivePattern;
-    }
+
 
     public String getName() {
         return name;
     }
-    public Point getPoint() {
-        return point;
+    public List<Point> getPoint() {
+        return pointList;
+    }
+    public Point getTotalPoint() {
+        return new Point(pointList.stream().mapToInt(x -> x.getValue()).sum(), name + "' total points");
     }
     public Card[][] getShelf() {
-        return shelf;
+        return shelf.getShelf();
     }
-    public List<Card.Type[][]> getPrivateObjectivePattern() {
-        return privateObjectivePattern;
+
+    public int getMaxSpace() {
+        return shelf.maxFreeSpace();
     }
 }
 

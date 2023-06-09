@@ -44,7 +44,9 @@ public class Shelf implements Iterable {
         Card[][] result = new Card[this.getRows()][this.getColumns()];
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
-                result[i][j] = this.shelf[i][j];
+                if (shelf[i][j] != null) {
+                    result[i][j] = new Card(shelf[i][j].getType(), shelf[i][j].getId());
+                }
             }
         }
         return result;

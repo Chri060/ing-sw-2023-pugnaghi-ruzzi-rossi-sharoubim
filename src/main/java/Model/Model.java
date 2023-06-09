@@ -26,7 +26,6 @@ public class Model extends Observable<ServerMessage> {
 
     public enum TurnStatus {
         DRAWING,
-        ORDERING,
         INSERTING,
         ENDED
     }
@@ -51,6 +50,7 @@ public class Model extends Observable<ServerMessage> {
     public Model() {
         this.gameStatus = GameStatus.PREMATCH;
         this.playerNames = new ArrayList<>();
+        this.playerList = new ArrayList<>();
         this.roomSize = - 1;
     }
 
@@ -61,9 +61,7 @@ public class Model extends Observable<ServerMessage> {
         }
         this.roomSize = roomSize;
         setChangedAndNotifyObservers(new TestMessage("Room size set to " + roomSize));
-        if (roomSize == getRoomSize()) {
-            start();
-        }
+        setChangedAndNotifyObservers(new RoomSizeSettedMessage(roomSize));
     }
     public int getTargetRoomSize() {
         return roomSize;
@@ -80,25 +78,42 @@ public class Model extends Observable<ServerMessage> {
     public void joinPlayer(String playerName) throws InvalidActionException {
         this.playerNames.add(playerName);
         System.out.println(playerName + " joined the match");
-        setChangedAndNotifyObservers(new TestMessage(playerName + " joined the room "));
         if (playerNames.size() == 1) {
+            setChangedAndNotifyObservers(new JoinRequestAcceptedMessage(new ArrayList<>(playerNames), ModelView.State.SETTINGSIZE));
             roomLeader = playerName;
-            //TODO notifyObservers -> send set room size message
-            setChangedAndNotifyObservers(new setRoomSizeMessage(roomLeader));
-            //setChangedAndNotifyObservers(new TestMessage( "You're the first player, use size command to set room size "));
+            System.out.println(roomLeader + " is the new roomLeader");
+            setChangedAndNotifyObservers(new SetRoomSizeMessage(roomLeader));
         }
-        //TODO notifyObservers
+        else {
+            setChangedAndNotifyObservers(new JoinRequestAcceptedMessage(new ArrayList<>(playerNames), ModelView.State.INLOBBY));
+        }
+    }
+    public boolean canJoin(String name) {
+        if (roomLeader == null) {
+            return true;
+        }
+        if (roomSize != - 1) {
+            if (gameStatus == GameStatus.PREMATCH) {
+                return true;
+            }
+            if (isInGame(name)) {
+                return true;
+            }
+        }
+        return false;
     }
     public void removePlayer(String playerName) {
-        this.playerNames.remove(playerName);
-        if (playerNames.size() != 0) {
+        boolean changed = this.playerNames.remove(playerName);
+        if (playerNames.size() > 0) {
             roomLeader = playerNames.get(0);
         }
         else {
             roomLeader = null;
             roomSize = - 1;
         }
-        setChangedAndNotifyObservers(new LeaveAck(playerName));
+        if (changed) {
+            setChangedAndNotifyObservers(new LeaveLobbyMessage(new ArrayList<>(playerNames)));
+        }
     }
     public GameStatus getGameStatus() {
         return gameStatus;
@@ -122,33 +137,63 @@ public class Model extends Observable<ServerMessage> {
         } while (!getPlayer(nextPlayer).isConnected());
         return nextPlayer;
     }
-    public void setPlayerOffline(String playerName) {
+    public synchronized void setPlayerOffline(String playerName) {
         Player player = getPlayer(playerName);
         if (player != null) {
             player.setOffline();
             setChangedAndNotifyObservers(new TestMessage(playerName + " disconnected"));
             setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
+
+            if (playerName.equals(currentPlayer) && getOnlinePlayersCount() > 0) {
+                currentPlayer = getNextPlayer();
+                setChangedAndNotifyObservers(new TurnUpdateMessage(currentPlayer, turnStatus));
+            }
+
+            if (getOnlinePlayersCount() == 1) {
+                Timer timer = new Timer();
+                setGameStatus(GameStatus.PAUSED);
+                setChangedAndNotifyObservers(new GamePausedMessage());
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        forfeit();
+                    }
+                }, 20000);
+            }
         }
     }
-    public void setPlayerOnline(String playerName) {
+    public synchronized void setPlayerOnline(String playerName) {
         Player player = getPlayer(playerName);
         if (player != null) {
             player.setOnline();
             setChangedAndNotifyObservers(new TestMessage(playerName + " connected"));
             setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
+            ModelViewData modelViewData = getModelviewData(playerName);
+            setChangedAndNotifyObservers(new ModelViewMessage(modelViewData, playerName));
         }
     }
-    public int getOnlinePlayersCount() {
+    public synchronized int getOnlinePlayersCount() {
         return (int) playerList.stream().filter(x -> x.isConnected()).count();
+    }
+    public void forfeit() {
+        int onlinePlayers = getOnlinePlayersCount();
+        if (onlinePlayers > 1) {
+            gameStatus = GameStatus.RUNNING;
+            return;
+        }
+        if (onlinePlayers == 0) {
+            return;
+        }
+
+        //TODO notifies macth ended
     }
     public void setCurrentPlayer(String playerName) {
         this.currentPlayer = playerName;
-        setChangedAndNotifyObservers(new TestMessage(getCurrentPlayer() + "'s turn"));
+        setChangedAndNotifyObservers(new TurnUpdateMessage(currentPlayer, turnStatus));
     }
     public String getChairPlayer() {return chairPlayer;}
-
     //Initialises the game
-    public synchronized void start() {
+    public void start() {
         synchronized (Config.class) {
             Config.initialise(this.playerNames.size());
             this.gameStatus = GameStatus.STARTING;
@@ -156,7 +201,6 @@ public class Model extends Observable<ServerMessage> {
             int availableCommonObjectives = CommonObjective.getNumberOfAvailableObjectives();
             int numberOfPrivateObjectives = Config.getNumberOfPrivateObjectives();
             int availablePrivateObjectives = Config.getAvailablePrivateObjectives();
-            playerList = new ArrayList<>();
             Collections.shuffle(playerNames);
             for (String name : playerNames) {
                 List<PrivateObjective> privateObjectiveList = Generator.
@@ -174,12 +218,9 @@ public class Model extends Observable<ServerMessage> {
             currentPlayer = chairPlayer;
             gameStatus = GameStatus.RUNNING;
             turnStatus = TurnStatus.DRAWING;
-            setChangedAndNotifyObservers(new TestMessage("Match started"));
-            setChangedAndNotifyObservers(new TestMessage(getCurrentPlayer() + "'s turn"));
         }
         sendModelViewData();
     }
-
     private Player getPlayer(String playerName) {
         Optional<Player> player = playerList.stream().filter(x -> x.equals(playerName)).findAny();
         if (player.isPresent()) {
@@ -206,6 +247,7 @@ public class Model extends Observable<ServerMessage> {
                 return;
             }
             player.getShelf().insert(withdrawnCards, column);
+            setChangedAndNotifyObservers(new ShelfUpdateMessage(new String(player.getName()), player.getShelf().asMatrix()));
             withdrawnCards.clear();
         }
         else {
@@ -221,14 +263,12 @@ public class Model extends Observable<ServerMessage> {
             throw new InvalidArgumentException(playerName + " not found in this lobby");
         }
     }
-
     public boolean isLastTurn() {
         return playerList.stream().anyMatch(x -> x.getShelf().isFull());
     }
     public boolean endGame() {
         return isLastTurn() && playerList.stream().reduce((a, b) -> b).get().equals(currentPlayer);
     }
-
     public List<Integer> getCommonObjectivesID() {
         return commonObjectiveList.stream().map(x -> x.getID()).toList();
     }
@@ -247,14 +287,12 @@ public class Model extends Observable<ServerMessage> {
                 throw new InvalidArgumentException(playerName + " not found in this lobby");
         }
     }
-
     public void givePrivatePoints() {
         playerList.stream().forEach(x -> {
             Point point = x.getTotalPrivatePoints();
             x.givePoint(point);
         });
     }
-
     public void giveShelfPoints() {
         int[] points = Config.getCustomShelfPoints();
         playerList.stream().forEach(x -> {
@@ -269,7 +307,6 @@ public class Model extends Observable<ServerMessage> {
         });
         });
     }
-
     public List<Boolean> verifyCommonObj(String playerName) throws InvalidArgumentException {
         List<Boolean> result = new ArrayList<>();
         List<Integer> IDList = this.getCommonObjectivesID();
@@ -278,7 +315,6 @@ public class Model extends Observable<ServerMessage> {
         }
         return result;
     }
-
     public Point getCommonObjMaxPoints(int ID) throws InvalidArgumentException {
         Optional<CommonObjective> commonObjective = commonObjectiveList.stream().filter(x -> x.getID() == ID).findAny();
         if (commonObjective.isPresent()) {
@@ -288,14 +324,12 @@ public class Model extends Observable<ServerMessage> {
             throw new InvalidArgumentException("None Common Objective whit ID = " + ID + " found");
         }
     }
-
     public void givePoint(String playerName, Point point) {
         getPlayer(playerName).givePoint(point);
     }
     public List<Point> getPlayerPoints(String playerName) {
         return this.getPlayer(playerName).getPoints();
     }
-
     public boolean needsRefill() {
         return dashboard.needsRefill();
     }
@@ -311,24 +345,19 @@ public class Model extends Observable<ServerMessage> {
             return;
         }
         withdrawnCards = dashboard.withdraw(coordinateList);
-        setChangedAndNotifyObservers(new TestMessage( currentPlayer + " drew Cards " + withdrawnCards.stream().map(x -> x.getType()).toList()));
-        //TODO setchangedandnotify
+        setChangedAndNotifyObservers(new WithdrawUpdateMessage(dashboard.asMatrix(), withdrawnCards));
     }
     public void sortWithdrawnCards(List<Integer> orderList) {
         if (orderList == null) {
-            //TODO
             return;
         }
         if (orderList.size() != withdrawnCards.size()) {
-            //TODO ordine non valido
             return;
         }//se si lascia = sul maggiore l'ordine va da 0 se lo si mette sul minore va da 1
         if (orderList.stream().anyMatch(x -> x >= withdrawnCards.size() || x < 0)) {
-            //TODO valori non validi
             return;
         }
         if (orderList.stream().distinct().count() < withdrawnCards.size()) {
-            //TODO valori non validi
             return;
         }
         List<Card> newList = new ArrayList<>();
@@ -336,8 +365,8 @@ public class Model extends Observable<ServerMessage> {
             newList.add(withdrawnCards.get(i));
         }
         withdrawnCards = newList;
-    }
 
+    }
     public void sendChatMessage(String playerName, List<String> receivers, String message) {
         ChatMessage chatMessage;
         if (receivers.contains("")) {
@@ -349,7 +378,6 @@ public class Model extends Observable<ServerMessage> {
         setChangedAndNotifyObservers(chatMessage);
 
     }
-
     public void sortWinners() {
         playerList.sort((p1, p2) -> {
             if (p1.getTotalPoints().getValue() < p2.getTotalPoints().getValue()) {
@@ -362,48 +390,53 @@ public class Model extends Observable<ServerMessage> {
         });
         sendRank();
     }
-
     public void sendRank() {
         List<PlayerView> ranking = new ArrayList<>();
         for (int i = playerList.size() - 1; i >= 0; i--) {
             Player player = playerList.get(i);
             PlayerView p = new PlayerView();
             p.setName(player.getName());
-            p.setPoint(player.getTotalPoints());
+            p.setPoint(player.getPoints());
             ranking.add(p);
         }
         setChangedAndNotifyObservers(new RankingMessage(ranking));
     }
+    public synchronized void sendModelViewData() {
+        playerList.stream().filter(p -> p.isConnected()).
+                forEach(p -> setChangedAndNotifyObservers(new ModelViewMessage(getModelviewData(p.getName()), p.getName())));
+    }
+    public synchronized ModelViewData getModelviewData(String playerName) {
+        ModelViewData modelViewData = new ModelViewData();
+        modelViewData.setDashboard(dashboard.asMatrix());
 
-
-    public void sendModelViewData() {
-
-        for(Player p : playerList.stream().filter(x -> x.isConnected()).toList()) {
-            ModelViewData modelViewData = new ModelViewData();
-            modelViewData.setDashboard(dashboard.asMatrix());
-            List<PlayerView> playerViewList = new ArrayList<>();
-            for (Player player : playerList) {
-                PlayerView playerView = new PlayerView();
-                playerView.setName(player.getName());
-                playerView.setShelf(player.getShelf().asMatrix());
-                playerView.setPoint(player.getTotalPoints());
-                playerViewList.add(playerView);
-                if (p.equals(player)) {
-                    playerView.setPrivateObjectivePattern(player.getPrivateObjectivePattern());
-                }
-                //TODO aggiungere obiettivi privati
-            }
-            modelViewData.setPlayerViews(playerViewList);
-            List<CommonObjectiveView> commonObjectiveViewList = new ArrayList<>();
-            for (CommonObjective commonObjective : commonObjectiveList) {
-                CommonObjectiveView commonObjectiveView = new CommonObjectiveView();
-                commonObjectiveView.setID(commonObjective.getID());
-                commonObjectiveView.setMaxPoint(commonObjective.checkMaxPoints());
-                commonObjectiveViewList.add(commonObjectiveView);
-            }
-            modelViewData.setCommonObjectiveViews(commonObjectiveViewList);
-            modelViewData.setChairPlayer(chairPlayer);
-            setChangedAndNotifyObservers(new ModelViewMessage(modelViewData, p.getName()));
+        List<CommonObjectiveView> commonObjectiveViewList = new ArrayList<>();
+        for (CommonObjective commonObjective : commonObjectiveList) {
+            CommonObjectiveView commonObjectiveView = new CommonObjectiveView();
+            commonObjectiveView.setID(commonObjective.getID());
+            commonObjectiveView.setMaxPoint(new Point(commonObjective.checkMaxPoints().getValue(), commonObjective.checkMaxPoints().getOrigin()));
+            commonObjectiveViewList.add(commonObjectiveView);
         }
+        modelViewData.setCommonObjectiveViews(commonObjectiveViewList);
+        modelViewData.setCurrentPlayer(new String(currentPlayer));
+        modelViewData.setChairPlayer(new String(chairPlayer));
+
+        List<PlayerView> playerViewList = new ArrayList<>();
+
+        for (Player p : playerList.stream().filter(p -> !p.equals(playerName)).toList()) {
+            PlayerView playerView = new PlayerView();
+            playerView.setName(new String(p.getName()));
+            playerView.setShelf(p.getShelf().asMatrix());
+            playerView.setPoint(new ArrayList<>(p.getPoints()));
+            playerViewList.add(playerView);
+        }
+
+        modelViewData.setPlayerViewList(playerViewList);
+
+        Player player = getPlayer(new String(playerName));
+        modelViewData.setMyShelf(player.getShelf().asMatrix());
+        modelViewData.setMyPoints(new ArrayList<>(player.getPoints()));
+        modelViewData.setMyPrivateObjectivePatterns(new ArrayList<>(player.getPrivateObjectivePattern()));
+
+        return modelViewData;
     }
 }

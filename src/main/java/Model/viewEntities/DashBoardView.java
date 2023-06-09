@@ -19,10 +19,6 @@ public class DashBoardView {
             return false;
         }
 
-        if (!Checker.dashboardCoordinatesAreValid(coordinateList)) {
-            return false;
-        }
-
         if (!areAlignedAndNear(coordinateList)) {
             return false;
         }

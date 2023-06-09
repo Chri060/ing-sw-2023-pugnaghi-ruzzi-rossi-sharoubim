@@ -7,14 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Associator {
-    private List<Boolean> isSpectator;
     private List<String> nameList;
     private List<Client> clientList;
     private List<Observer> observerList;
-    private List<Pinger> threadList;
+    private List<Thread> threadList;
 
     public Associator() {
-        isSpectator = new ArrayList<>();
         nameList = new ArrayList<>();
         clientList = new ArrayList<>();
         observerList = new ArrayList<>();
@@ -22,14 +20,13 @@ public class Associator {
 
     }
 
-    public void add(boolean isSpectator, String name, Client client, Observer observer, Pinger thread) throws InvalidArgumentException, NullPointerException {
+    public void add(String name, Client client, Observer observer, Thread thread) throws InvalidArgumentException, NullPointerException {
         if (name == null || client == null || observer == null) {
             throw new NullPointerException();
         }
         if (nameList.contains(name)) {
             throw new InvalidArgumentException("Name already taken");
         }
-        this.isSpectator.add(isSpectator);
         this.nameList.add(name);
         this.clientList.add(client);
         this.observerList.add(observer);
@@ -51,14 +48,6 @@ public class Associator {
             return null;
         }
         return observerList.get(index);
-    }
-
-    public boolean isSpectator(Client client) {
-        int index = clientList.indexOf(client);
-        if (index == - 1) {
-            return true;
-        }
-        return isSpectator.get(index);
     }
 
     public boolean contains(Client client) {
@@ -83,14 +72,10 @@ public class Associator {
     public void delete(Client client) {
         int index = clientList.indexOf(client);
         if (index != - 1) {
-            isSpectator.remove(index);
             nameList.remove(index);
             clientList.remove(index);
             observerList.remove(index);
-            Pinger thread = threadList.remove(index);
-            if (thread != null) {
-                thread.stop2();
-            }
+            threadList.remove(index);
         }
     }
 }
