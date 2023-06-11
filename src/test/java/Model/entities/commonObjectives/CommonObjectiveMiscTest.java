@@ -3,6 +3,7 @@ package Model.entities.commonObjectives;
 import Model.entities.Point;
 import Model.entities.Card;
 import Model.entities.Shelf;
+import Model.entities.commonObjectives.CommonObjective1;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.Config;

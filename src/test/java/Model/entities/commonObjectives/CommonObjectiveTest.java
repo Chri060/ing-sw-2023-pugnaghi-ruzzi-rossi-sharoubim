@@ -2,6 +2,7 @@ package Model.entities.commonObjectives;
 
 import Model.entities.Card;
 import Model.entities.Shelf;
+import Model.entities.commonObjectives.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

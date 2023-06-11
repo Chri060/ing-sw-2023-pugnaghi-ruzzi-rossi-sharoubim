@@ -2,20 +2,36 @@ package Model.entities;
 
 import java.io.Serializable;
 
+/**
+ * Class that implements the representation of the points
+ * (every point indicates where it came from)
+ */
 public class Point implements Serializable {
-        private int value;
-        private String origin;
+    private int value;
+    private String origin;
 
-        public Point(int value, String origin) {
+    /**
+     * Construct the actual point
+     *
+     * @param value is the number of points to give
+     * @param origin is the string that indicates from where the points were generated
+     */
+    public Point(int value, String origin) {
             this.value = value;
             this.origin = origin;
-        }
+    }
 
-        public int getValue() {
-            return value;
-        }
-        public String getOrigin() {
-            return origin;
-        }
+    /**
+     * @return the points in this
+     */
+    public int getValue() {
+        return value;
+    }
 
+    /**
+     * @return the origin of this.points
+     */
+    public String getOrigin() {
+        return origin;
+    }
 }
