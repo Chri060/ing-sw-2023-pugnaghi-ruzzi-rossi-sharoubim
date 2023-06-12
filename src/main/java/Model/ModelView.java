@@ -15,7 +15,6 @@ import java.util.Optional;
 
 public class ModelView extends Observable<Event> {
 
-
     public enum RequestStatus {
         SENT,
         WAITINGEVENT,
@@ -34,7 +33,6 @@ public class ModelView extends Observable<Event> {
         ENDED
     }
 
-
     private State state;
     private RequestStatus requestStatus;
     private Model.TurnStatus turnState;
@@ -42,6 +40,15 @@ public class ModelView extends Observable<Event> {
     private DashBoardView dashboard;
     private String roomLeader;
     private ShelfView myShelf;
+    private List<Point> myPoints;
+    private List<Card.Type[][]> myPrivateObjectives;
+    private List<PlayerView> playerViews;
+    private List<CommonObjectiveView> commonObjectiveViews;
+    private List<Card> withdrawnCards;
+    private String currentPlayer;
+    private String chairPlayer;
+    private List<String> playerNames;
+    private int targetRoomSize;
 
     public String getName() {
         return name;
@@ -79,15 +86,6 @@ public class ModelView extends Observable<Event> {
         this.myPrivateObjectives = myPrivateObjectives;
     }
 
-    private List<Point> myPoints;
-    private List<Card.Type[][]> myPrivateObjectives;
-    private List<PlayerView> playerViews;
-    private List<CommonObjectiveView> commonObjectiveViews;
-    private List<Card> withdrawnCards;
-    private String currentPlayer;
-    private String chairPlayer;
-    private List<String> playerNames;
-    private int targetRoomSize;
     public ModelView() {
         this.state = State.SELECTNAME;
         this.requestStatus = RequestStatus.RECIVED;
@@ -211,5 +209,4 @@ public class ModelView extends Observable<Event> {
         this.requestStatus = RequestStatus.WAITINGEVENT;
         setChangedAndNotifyObservers(new WaitEventEvent());
     }
-
 }

@@ -4,22 +4,35 @@ import Model.entities.Card;
 import Model.entities.Shelf;
 import Model.entities.commonObjectives.GroupCommonObjective.GroupCommonObjective;
 
+/**
+ * Class that implements the common objective one
+ */
 public class CommonObjective1 extends GroupCommonObjective {
 
+    /**
+     * Construct the common objective one
+     *
+     * @param ID is the ID of the common objective created
+     */
     public CommonObjective1(int ID) {
         super(ID, 2);
     }
 
+    /**
+     * Verifies if the common objective is achieved or not
+     *
+     * @param shelf is the shelf that is going to be checked
+     *
+     * @return true if the common objective is verified, false otherwise
+     */
     @Override
     public boolean verify(Shelf shelf) {
-
         Card[][] libraryCopy = shelf.asMatrix();
         int row = libraryCopy.length;;
         int col = libraryCopy[0].length;
         int[][] groups = new int[row][col];
         int count = 0;
         int max, min;
-
         for (int k = 0; k < 4; k++) {
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {

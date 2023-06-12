@@ -105,7 +105,9 @@ class ShelfTest {
         assert(shelf.getGroupSize(shelf.asMatrix(), new PlanarCoordinate(0,0), shelf.asMatrix()[0][0].getType()) == 30);
     }
 
-
+    /**
+     * Test for the free space methods
+     */
     @Test
     void freeSpaceTest() {
         List<Card> cardList = new ArrayList<>();

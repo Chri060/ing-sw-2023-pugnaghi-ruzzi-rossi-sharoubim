@@ -74,7 +74,6 @@ class PlayerTest {
         playerOne.givePoint(new Point(6, "Common Objective 10"));
         playerOne.givePoint(new Point(1, "final point"));
 
-        //TODO: problemi con le due funzioni
         assert (playerOne.getPrivatePoint().size() == 1);
         assert (playerOne.getTotalPrivatePoints().getValue() == 0);
 
