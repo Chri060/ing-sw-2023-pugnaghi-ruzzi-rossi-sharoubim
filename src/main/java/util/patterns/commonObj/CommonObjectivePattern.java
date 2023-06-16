@@ -8,9 +8,10 @@ import util.PlanarCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
- * Abstract Class to implement a common objective pattern
- * Includes many methods that can be overridden if needed*/
+ * Abstract class to implement a common objective pattern
+ */
 public abstract class CommonObjectivePattern implements Iterable {
 
     protected boolean[][] pattern;
@@ -18,28 +19,38 @@ public abstract class CommonObjectivePattern implements Iterable {
     protected int patternLength;
 
     /**
-     * Returns a PatternIterator to iterate on the pattern*/
+     * @return a PatternIterator for the pattern
+     */
     public Iterator getIterator() {
         return new PatternIterator(pattern);
     }
+
     /**
-     * Returns the row size of the pattern*/
+     * @return the row size of the pattern
+     */
     protected int getRowLength() {
         return pattern.length;
     }
+
     /**
-     * Returns the column size of the pattern*/
+     * Returns the column size of the pattern
+     */
     protected int getColumnLength() {
         return pattern[0].length;
     }
 
     /**
-     * Returns how many times the given card matrix satisfies the pattern with at most maxDifferentTypes different types of cards
-     * NOTE: each time the pattern can be completed by different types of cards but everytime they need to be less than
-     * maxDifferentTypes different types of cards
-     * NOTE: if the pattern is bigger than the shelf it will always return 0.
-     * NOTE: if the pattern is not complete (in at least one of the pattern's cell there's no card).
-     * the pattern won't be satisfied*/
+     * Each time the pattern can be completed by different types of cards but everytime they need to be less than
+     * maxDifferentTypes different types of cards.
+     * If the pattern is bigger than the shelf it will always return 0.
+     * If the pattern is not complete (in at least one of the pattern's cell there's no card).
+     * the pattern won't be satisfied.
+     *
+     * @param shelfMatrix is the shelf as array of Card
+     * @param maxDifferentTypes is the maximum number of different types
+     *
+     * @return how many times the given card matrix satisfies the pattern with at most maxDifferentTypes different types of cards
+     */
     public int verifyWithSameType(Card[][] shelfMatrix, int maxDifferentTypes) {
         List<Card.Type> typeList = new ArrayList<>();
         Card.Type type;
@@ -74,15 +85,25 @@ public abstract class CommonObjectivePattern implements Iterable {
     /**
      * Checks that the given type and the types in the list are at most maxDifferentTypes different types.
      * If the type is not found it will be added to the list.
-     * NOTE the list can't contain the same type twice*/
+     *
+     * @param typeList is the list of types
+     * @param type is the type of the card
+     * @param maxDifferentTypes is the maximum number of different type
+     *
+     * @return true if the number of different type is smaller or equal to the types in the list
+     */
     private boolean verifyListMaxTypes(List<Card.Type> typeList, Card.Type type, int maxDifferentTypes) {
         if (!typeList.contains(type)) {
             typeList.add(type);
         }
         return typeList.size() <= maxDifferentTypes;
     }
+
     /**
      * Removes completely the tiles from shelfMatrix following the pattern starting fromm offset coordinates
+     *
+     * @param shelfMatrix is the matrix as an array of Card
+     * @param offset is the PlanarCoordinate offset
      */
     private void removeFoundPattern(Card[][] shelfMatrix, PlanarCoordinate offset) {
         int rowOffset = offset.getRow();
@@ -95,8 +116,14 @@ public abstract class CommonObjectivePattern implements Iterable {
             patternIterator.next();
         }
     }
+
     /**
-    * Does verifyWithSameType but with the pattern mirrored vertically
+     * Does verifyWithSameType but with the pattern mirrored vertically
+     *
+     * @param shelfMatrix is the array of Cards that represents the shelf
+     * @param maxDifferentTypes is the number of maximum different types
+     *
+     * @return the number of maximum different types
     */
     public int verifyWithSameTypeMirrored(Card[][] shelfMatrix, int maxDifferentTypes) {
         this.mirrorPatternVertically();
@@ -104,10 +131,10 @@ public abstract class CommonObjectivePattern implements Iterable {
         this.mirrorPatternVertically();
         return result;
     }
+
     /**
      * Mirrors the pattern vertically
-     * NOTE: in order to not mess up the pattern remember to use this function always an even number times in your methods
-     * */
+     */
     private void mirrorPatternVertically() {
         boolean temp;
         int rows = this.getRowLength();
@@ -154,9 +181,17 @@ public abstract class CommonObjectivePattern implements Iterable {
         }
         return hits;
     }
-    //Checks that the given type and the types in the list are at least minDifferentTypes different types
-    //If the type is not found it will be added to the list
-    //NOTE the list can't contain the same type twice
+
+    /**
+     * Checks that the given type and the types in the list are at least minDifferentTypes different types
+     * If the type is not found it will be added to the list
+     *
+     * @param typeList is a list of Card
+     * @param type is a type of the card
+     * @param minDifferentTypes is the number of different type
+     *
+     * @return true if the number of types are greater or equal to maxDifferentTypes
+     */
     protected boolean verifyListMinTypes(List<Card.Type> typeList, Card.Type type, int minDifferentTypes) {
         if (type != null && !typeList.contains(type)) {
             typeList.add(type);
@@ -164,6 +199,9 @@ public abstract class CommonObjectivePattern implements Iterable {
         return typeList.size() >= minDifferentTypes;
     }
 
+    /**
+     * Inverts the pattern
+     */
     protected void invertPattern() {
         for (int i = 0; i < this.getRowLength(); i++) {
             for (int j = 0; j < this.getColumnLength(); j++) {
@@ -174,9 +212,11 @@ public abstract class CommonObjectivePattern implements Iterable {
     }
 
     /**
-     * Returns true if the given matrix contains cards of any type only in the pattern
-     * For example if the pattern is a stair pattern checks that cards form the stair and all other spaces are empty
-     * NOTE this method will also check for the pattern mirrored vertically. If you don't want that you can use the Core version
+     * Checks if the pattern selected and the mirrored pattern is verified
+     *
+     * @param shelfMatrix is an array of Card representing the shelf
+     *
+     * @return true if the given matrix contains cards of any type only in the pattern, false otherwise
      */
     public boolean verifyPatternAndAntiPattern(Card[][] shelfMatrix) {
         boolean result;
@@ -188,16 +228,17 @@ public abstract class CommonObjectivePattern implements Iterable {
     }
 
     /**
-     * Returns true if the given matrix contains cards of any type only in the pattern
-     * For example if the pattern is a stair pattern checks that cards form the stair and all other spaces are empty
-     * NOTE this method won't check for the pattern mirrored vertically. If you do want that you can use the not Core version
+     * Checks if the pattern selected is
+     *
+     * @param shelfMatrix is an array of Card representing the shelf
+     *
+     * @return true if the given matrix contains cards of any type only in the pattern, false otherwise
      */
     public boolean verifyPatternAndAntiPatternCore(Card[][] shelfMatrix) {
         Iterator patternIterator = this.getIterator();
         invertPattern();
         Iterator antiPatternIterator = this.getIterator();
         invertPattern();
-
         for (int i = 0; i + this.getRowLength() <= shelfMatrix.length; i++) {
             for (int j = 0; j + this.getColumnLength() <= shelfMatrix[0].length; j++) {
                 patternIterator.reset();
@@ -242,10 +283,13 @@ public abstract class CommonObjectivePattern implements Iterable {
     }
 
     /**
-     * Returns the maximum amount of times a pattern can be completed with the same type of card
      * Only use this method for patterns that can't be rotated such as columns and rows.
      * For symmetric patterns such as squares or Xes use the not Core version as this method might not find the maximum appearance value
-     * */
+     *
+     * @param shelfMatrix is an array of Card representing the shelf
+     *
+     * @return the maximum amount of times a pattern can be completed with the same type of card
+     */
     public int verifyPatternWithOneCardCore(Card[][] shelfMatrix) {
         int hits;
         int maxHits = 0;
@@ -279,7 +323,11 @@ public abstract class CommonObjectivePattern implements Iterable {
      * might not find the max amount of appearance of that pattern.
      * To fix this method rotate the matrix 4 times to explore all the possible combinations
      * NOTE for patterns that are not symmetric by 90° rotations such as columns and rows do not use this method
-     * */
+     *
+     * @param shelfMatrix is an array of Card representing the shelf
+     *
+     * @return the occurrences of the pattern in the shelf
+     */
     public int verifyPatternWithOneCard(Card[][] shelfMatrix) {
         //Will be rotated
         Card[][] temp;
@@ -292,22 +340,26 @@ public abstract class CommonObjectivePattern implements Iterable {
         }
         return max;
     }
+
+    /**
+     * Rotates the given array
+     *
+     * @param matrix is the matrix to rotate
+     *
+     * @return the rotated matrix
+     */
     private Card[][] rotateMatrix(Card[][] matrix) {
         //rows and columns are the number of columns and rows of matrix (notice they're swapped)
         int rows = matrix[0].length;
         int columns = matrix.length;
-
         Card[][] result = new Card[rows][columns];
-
         //Transposed matrix
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 result[i][j] = matrix[j][i];
             }
         }
-
         //Swaps columns
-
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns / 2; j++) {
                 Card temp = result[i][j];
@@ -315,9 +367,16 @@ public abstract class CommonObjectivePattern implements Iterable {
                 result[i][columns - 1 - j] = temp;
             }
         }
-
         return result;
     }
+
+    /**
+     * Clones the given array
+     *
+     * @param matrix is the matrix to clone
+     *
+     * @return the clonated matrix
+     */
     private Card[][] cloneMatrix(Card[][] matrix) {
         int rows = matrix.length;
         int columns = matrix[0].length;

@@ -311,7 +311,7 @@ public class Model extends Observable<ServerMessage> {
                 playerList.add(new Player(name, privateObjectiveList));
             }
             Generator.clearCommonList();
-            commonObjectiveList = Generator.getCommonObjectives(numberOfCommonObjectives, availableCommonObjectives);
+            commonObjectiveList = Generator.getCommonObjectives();
             dashboard = new Dashboard();
             bag = new Bag();
             try {

@@ -8,10 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Class used to generate random elements like integer
+ */
 public class Generator {
     private static Random random = new Random();
     private static List<Integer> commonList = new ArrayList<>();
 
+    /**
+     * Creates a list of random number all unique
+     *
+     * @param size is the size of the list
+     * @param bound is the maximum value in the list
+     *
+     * @return a list of numbers
+     */
     public static List<Integer> getRandomUniqueIntList(int size, int bound) {
         List<Integer> IDList = new ArrayList<>();
         while (IDList.size() < size) {
@@ -23,10 +34,22 @@ public class Generator {
         }
         return IDList;
     }
+
+    /**
+     * Clears the list created by the method getRandomUniqueIntList
+     */
     public static void clearCommonList() {
         commonList.clear();
     }
 
+    /**
+     * Creates a list of random number
+     *
+     * @param size is the size of the list
+     * @param bound is the maximum value in the list
+     *
+     * @return a list of numbers
+     */
     public static List<Integer> getRandomIntList(int size, int bound) {
         List<Integer> intList = new ArrayList<>();
         while (intList.size() < size) {
@@ -38,9 +61,15 @@ public class Generator {
         return intList;
     }
 
-
-    //Returns a list of className objects, those objects need to implement a constructor with only an int parameter (ID)
-    //size and bound specify how many object are in the list and the ranges of the IDs (0 to #IDs - 1)
+    /**
+     * Creates a className object with only an int parameter (ID)
+     *
+     * @param size is the size of the list
+     * @param bound is the maximum value in the list
+     * @param className is a className object
+     *
+     * @return a list of className objects
+     */
     public static <T extends Object> List<T> getUniqueInstances(int size, int bound, Class<T> className) {
         List<T> result = new ArrayList<>();
         List<Integer> IDList = getRandomUniqueIntList(size, bound);
@@ -50,7 +79,14 @@ public class Generator {
         return result;
     }
 
-    //Returns an Instance of className objects, that object needs to implement a constructor wiht only and int parameter (ID)
+    /**
+     * Construct a className object
+     *
+     * @param className is a className object
+     * @param ID is the D of the className object
+     *
+     * @return an instance of className object
+     */
     public static <T extends Object> T getInstance(Class<T> className, int ID) {
         T result = null;
         try {
@@ -62,7 +98,10 @@ public class Generator {
         return result;
     }
 
-    public static List<CommonObjective> getCommonObjectives(int size, int bound){
+    /**
+     * @return a list of CommonObjective
+     */
+    public static List<CommonObjective> getCommonObjectives(){
         List<CommonObjective> result = new ArrayList<>();
         List<Integer> IDList =
                 getRandomUniqueIntList(Config.getNumberOfCommonObjectives(), CommonObjective.getNumberOfAvailableObjectives());
@@ -73,9 +112,10 @@ public class Generator {
                 CommonObjective obj = (CommonObjective) getInstance(className, i + 1);
                 result.add(obj);
             }
-        } catch (ClassNotFoundException e) {}
+        } catch (ClassNotFoundException e) {
+            /*do nothing*/
+        }
         clearCommonList();
         return result;
     }
-
 }

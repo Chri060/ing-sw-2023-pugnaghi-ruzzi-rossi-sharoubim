@@ -9,6 +9,11 @@ public class PatternIterator implements Iterator{
     private int status;
     private int patternLength;
 
+    /**
+     * Construct the patter iterator
+     *
+     * @param pattern is the pattern to start from
+     */
     public PatternIterator(boolean[][] pattern) {
         int rows = pattern.length;
         int columns = pattern[0].length;
@@ -23,6 +28,10 @@ public class PatternIterator implements Iterator{
         }
         reset();
     }
+
+    /**
+     * Resets the pattern iterator
+     */
     @Override
     public void reset() {
         for (int i = 0; i < pattern.length; i++) {
@@ -36,11 +45,17 @@ public class PatternIterator implements Iterator{
         }
     }
 
+    /**
+     * @return the actual value of the iterator
+     */
     @Override
     public PlanarCoordinate getActual() {
         return actual;
     }
 
+    /**
+     * Switches the iterator to the next value
+     */
     @Override
     public void next() {
         status++;
@@ -62,6 +77,9 @@ public class PatternIterator implements Iterator{
         }
     }
 
+    /**
+     * @return true if the iteration is completed
+     */
     @Override
     public boolean iterationCompleted() {
         return status == patternLength;
