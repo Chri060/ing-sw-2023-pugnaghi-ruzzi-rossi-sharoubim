@@ -10,9 +10,17 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * Class that starts a server application, where the user can select between CLI or GUI and Socket or RMI
+ */
 public class ServerApp {
+    /**
+     * Starts the server with both RMI and socket connection
+     * If no registry is found only socket is started
+     *
+     * @throws RemoteException on connection problems
+     */
     public static void main(String[] args) throws RemoteException {
-
         Server server = new ServerImpl();
         Registry registry;
         try {
@@ -25,12 +33,14 @@ public class ServerApp {
         } catch (RemoteException e) {
             System.err.println("RMI KO");
         }
-
         new Thread(() -> runSocket(server)).start();
-
-
    }
 
+    /**
+     * Starts the socket connections on the client
+     *
+     * @param server is the server selected
+     */
    public static void runSocket(Server server) {
        try {
            ServerSocket serverSocket = new ServerSocket(55555);

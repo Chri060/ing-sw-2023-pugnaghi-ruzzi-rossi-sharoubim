@@ -1,21 +1,16 @@
 package Controller;
 
-import Distributed.Messages.serverMessages.ServerMessage;
-import Distributed.Messages.serverMessages.TestMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.Model;
-import Model.entities.Player;
 import Model.entities.Point;
-import util.Observable;
-import util.Observer;
 import util.PlanarCoordinate;
 
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Class that implements the controller for the actions of the players
+ */
 public class Controller {
 
     private Model model;
@@ -24,6 +19,12 @@ public class Controller {
         this.model = model;
     }
 
+    /**
+     * Sets the room size only if the player that is trying to change it is the room leader
+     *
+     * @param size is the size to set
+     * @param playerName is the name of the player that is trying to change the room size
+     */
     public void setRoomSize(int size, String playerName) {
         synchronized (model) {
             if (!playerName.equals(model.getRoomLeader())) {
@@ -35,6 +36,12 @@ public class Controller {
             model.setTargetRoomSize(size);
         }
     }
+
+    /**
+     * Let a player join the room after checking if it is possible
+     *
+     * @param playerName is the name of the player to add
+     */
     public void join(String playerName) {
         synchronized (model) {
             if (playerName == null) {
@@ -58,6 +65,12 @@ public class Controller {
             }
         }
     }
+
+    /**
+     * Let a player leave the mach
+     *
+     * @param playerName is the name of the player who requested to leave
+     */
     public void leave(String playerName) {
         synchronized (model) {
             if (playerName == null) {
@@ -106,6 +119,14 @@ public class Controller {
             //TODO sends leave ack*/
         }
     }
+
+    /**
+     * Sends a chat message to the player selected in the list
+     *
+     * @param playerName is the name of the player who is sending the message
+     * @param receivers is the list of receivers
+     * @param message is the message that has been sent
+     */
     public void chatMessage(String playerName, List<String> receivers, String message) {
         synchronized (model) {
             if (playerName == null || receivers == null || message == null) {
@@ -114,17 +135,39 @@ public class Controller {
             model.sendChatMessage(playerName, receivers, message);
         }
     }
+
+    /**
+     * Check if the player who is doing the action is the right one or not
+     *
+     * @param playerName is the name of the player who is trying to do the action
+     *
+     * @return true if the player is correct, false otherwise
+     */
     private boolean isYourTurn(String playerName) {
         synchronized (model) {
             return (model.getCurrentPlayer().equals(playerName));
         }
     }
+
+    /**
+     * Updates the state of the game and of the turn
+     *
+     * @param turnStatus is the new state of the turn
+     * @param gameStatus is the new state of the game
+     */
     private void updateStates(Model.TurnStatus turnStatus, Model.GameStatus gameStatus) {
         synchronized (model) {
             model.setTurnStatus(turnStatus);
             model.setGameStatus(gameStatus);
         }
     }
+
+    /**
+     * Checks all that is needed to withdraw and then does the action if it is possible
+     *
+     * @param playerName is the name of the player that is trying to withdraw
+     * @param planarCoordinateList is a list of coordinates selected by the player
+     */
     public void withdraw(String playerName, List<PlanarCoordinate> planarCoordinateList) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
@@ -159,6 +202,12 @@ public class Controller {
             updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
         }
     }
+
+    /**
+     * Let the player change the order of cards if it's his turn
+     *
+     * @param orderList is a list of integer that represent the new order of the withdrawn cards
+     */
     public void changeOrderOfCards(List<Integer> orderList) {
         synchronized (model) {
             if (model.getTurnStatus() != Model.TurnStatus.INSERTING) {
@@ -167,6 +216,13 @@ public class Controller {
             model.sortWithdrawnCards(orderList);
         }
     }
+
+    /**
+     * Let the player insert the cards in the shelf if it's his turn
+     *
+     * @param playerName is the name of the player that is trying to insert the cards
+     * @param column is the column selected to insert the cards
+     */
     public void insert(String playerName, int column) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
@@ -192,6 +248,14 @@ public class Controller {
             } catch (InvalidArgumentException e) {/*Never thrown if it's player turn*/}
         }
     }
+
+    /**
+     * Do all the needed checks for the end of the turn of one player like the common objective completion
+     *
+     * @param playerName is the name of the player that is ending his turn
+     *
+     * @throws InvalidArgumentException on invalid argument
+     */
     private void endTurn(String playerName) throws InvalidArgumentException {
         synchronized (model) {
             List<Integer> IDs = model.getCommonObjectivesID();
@@ -202,7 +266,6 @@ public class Controller {
                     model.givePoint(playerName, point);
                 }
             }
-
             if (model.endGame()) {
                 updateStates(Model.TurnStatus.ENDED, Model.GameStatus.ENDED);
                 endgame();
@@ -218,6 +281,10 @@ public class Controller {
             }
         }
     }
+
+    /**
+     * Does all the action needed in the final phase of the match
+     */
     public void endgame() {
         synchronized (model) {
             model.giveShelfPoints();

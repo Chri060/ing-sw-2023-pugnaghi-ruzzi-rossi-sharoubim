@@ -1,4 +1,4 @@
-package Model.viewEntities.Events;
+package Distributed.Events;
 
 import View.View;
 

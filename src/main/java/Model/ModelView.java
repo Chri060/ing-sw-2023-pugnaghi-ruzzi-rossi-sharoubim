@@ -1,10 +1,10 @@
 package Model;
 
+import Distributed.Events.*;
 import Model.entities.Card;
 import Model.entities.Point;
 import Model.viewEntities.CommonObjectiveView;
 import Model.viewEntities.DashBoardView;
-import Model.viewEntities.Events.*;
 import Model.viewEntities.PlayerView;
 import Model.viewEntities.ShelfView;
 import util.Observable;

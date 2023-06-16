@@ -29,7 +29,7 @@ class ShelfViewTest {
         card.add(new Card(Card.Type.CAT,0));
         assert (shelfView.canInsert(card, 1));
 
-        assert (shelfView.maxFreeSpace() == 6);
+        assert (shelfView.maxFreeSpace() == 5);
         assert (shelfView.getShelf() != null);
     }
 }

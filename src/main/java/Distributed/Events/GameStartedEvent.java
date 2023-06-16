@@ -1,6 +1,5 @@
-package Model.viewEntities.Events;
+package Distributed.Events;
 
-import Model.ModelView;
 import View.View;
 
 public class GameStartedEvent implements Event{

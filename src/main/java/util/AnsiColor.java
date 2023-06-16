@@ -1,5 +1,8 @@
 package util;
 
+/**
+ * Class used to simplify color handling for the textual user interface
+ */
 public class AnsiColor {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\033[1;91m";
