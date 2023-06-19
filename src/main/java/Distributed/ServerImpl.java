@@ -15,21 +15,32 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 
+/**
+ * Class that implements the server
+ */
 public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private Controller controller;
     private Model model;
-
     Associator associator;
     Map<String, Client> clientNames;
     Map<String, Observer<Observable<ServerMessage>, ServerMessage>> observers;
 
+    /**
+     * resets the server linked Objects
+     *
+     * @param server is the Server to reset
+     */
     public static void reset(ServerImpl server) {
         server.model = new Model();
         server.controller = new Controller(server.model);
-
     }
 
+    /**
+     * Construct a new Server with Model, View and Associator
+     *
+     * @throws RemoteException on connection problems
+     */
     public ServerImpl() throws RemoteException {
         super();
         this.model = new Model();
@@ -37,14 +48,38 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         associator = new Associator();
     }
 
+    /**
+     * Sets a port to connect to
+     *
+     * @param port is the port to use
+     *
+     * @throws RemoteException on connection problems
+     */
     protected ServerImpl(int port) throws RemoteException {
         super(port);
     }
 
+    /**
+     * Sets a port to connect to and socket and RMi
+     *
+     * @param port is the port to use
+     * @param csf is the RMIClientSocketFactory
+     * @param ssf is the RMIServerSocketFactory
+     *
+     * @throws RemoteException on connection problems
+     */
     protected ServerImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
     }
 
+    /**
+     * Register a client to the serve r
+     *
+     * @param client is the Client to register
+     * @param name is the name of the player
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void register(Client client, String name) throws RemoteException {
         synchronized (model) {
@@ -86,6 +121,15 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Removes a Client connection from the server
+     *
+     * @param client is the Client to remove
+     * @param name is the name of the player to remove
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void leave(Client client, String name) throws RemoteException {
         synchronized (model) {
@@ -101,6 +145,14 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         }
     }
 
+    /**
+     * Sends an update to the client selected
+     *
+     * @param client is the Client supposed to receive the update
+     * @param message is the message to send
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
         System.out.println("Received a new message: " + message.getClass());
@@ -110,6 +162,14 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         message.execute(this, client);
     }
 
+    /**
+     * Return the observer linked to a Client
+     *
+     * @param client is the Client to check
+     * @param name is the name of the player to check
+     *
+     * @return an Observer
+     */
     private Observer<Observable<ServerMessage>, ServerMessage> getObserver(Client client, String name) {
         return (o, message) -> {
             if (message.isBroadcast() || message.getReceiver().contains(name)) {
@@ -121,6 +181,14 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 }
             };
     }
+
+    /**
+     * Checks the Pinger linked to a Client
+     *
+     * @param client is the Client to check
+     *
+     * @return a Thread
+     */
     private Thread getPinger(Client client) {
         return new Thread() {
             @Override
@@ -145,6 +213,4 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
             }
         };
     }
-
-
 }

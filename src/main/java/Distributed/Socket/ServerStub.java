@@ -13,11 +13,22 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
+/**
+ * Class used to implement the server stub
+ */
 public class ServerStub implements Server {
 
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
+    /**
+     * Construct a server stub
+     *
+     * @param ip is the IP of the server
+     * @param port is the port used by the server
+     *
+     * @throws RemoteException on connection problems
+     */
     public ServerStub(String ip, int port) throws RemoteException{
         try {
             Socket socket = new Socket(ip, port);
@@ -32,6 +43,14 @@ public class ServerStub implements Server {
         }
     }
 
+    /**
+     * Register a Client to the Server
+     *
+     * @param client is the Client to register
+     * @param name is the name of the player
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void register(Client client, String name) throws RemoteException {
         try {
@@ -41,6 +60,14 @@ public class ServerStub implements Server {
         }
     }
 
+    /**
+     * Removes a Client from the server
+     *
+     * @param client is the Client to remove
+     * @param name is the name of the player to remove
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void leave(Client client, String name) throws RemoteException {
         try {
@@ -50,6 +77,14 @@ public class ServerStub implements Server {
         }
     }
 
+    /**
+     * Updates a client with a message
+     *
+     * @param client is the Client supposed to receive the update
+     * @param message is the message to send
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
         try {
@@ -59,6 +94,11 @@ public class ServerStub implements Server {
         }
     }
 
+    /**
+     * Receives a message from the server
+     *
+     * @param client is the Client that needs to receive the message
+     */
     public void receive(Client client) {
         new Thread(() -> {
             while (true) {
@@ -76,4 +116,3 @@ public class ServerStub implements Server {
         }).start();
     }
 }
-

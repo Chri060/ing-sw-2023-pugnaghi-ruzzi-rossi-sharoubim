@@ -2,7 +2,6 @@ package Distributed.Socket;
 
 import Distributed.Client;
 import Distributed.Messages.clientMessages.ClientMessage;
-import Distributed.Messages.clientMessages.LeaveMessage;
 import Distributed.Messages.serverMessages.ServerMessage;
 import Distributed.Server;
 
@@ -12,11 +11,21 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
+/**
+ * Class used to implement the client stub
+ */
 public class ClientStub implements Client {
 
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
+    /**
+     * Construct a new client stub
+     *
+     * @param socket is the Socket selected
+     *
+     * @throws RemoteException on connection problems
+     */
     public ClientStub(Socket socket) throws RemoteException{
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -26,6 +35,13 @@ public class ClientStub implements Client {
         }
     }
 
+    /**
+     * Sends a server message
+     *
+     * @param message is the ServerMessage to send
+     *
+     * @throws RemoteException on connection problems
+     */
     @Override
     public void update(ServerMessage message) throws RemoteException {
         try {
@@ -36,6 +52,11 @@ public class ClientStub implements Client {
         }
     }
 
+    /**
+     * Let the server receive a ClientMessage
+     *
+     * @param server is the Server to send the message to
+     */
     public void receive(Server server) {
         new Thread(() -> {
             while (true) {
