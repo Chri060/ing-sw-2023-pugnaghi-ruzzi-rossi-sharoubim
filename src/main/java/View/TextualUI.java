@@ -11,9 +11,15 @@ import java.util.*;
 
 import static util.AnsiColor.*;
 
+/**
+ * Class that implements the textual user interface
+ */
 public class TextualUI extends View {
 
-
+    /**
+     * Requests the name and let the player insert the name.
+     * If the name is valid it will be set in the Model
+     */
     @Override
     protected void readName() {
         System.out.println("Insert your name");
@@ -21,6 +27,9 @@ public class TextualUI extends View {
         model.setName(name);
     }
 
+    /**
+     * Request the first player to join to set the room size
+     */
     public void roomLeader() {
         int roomSize;
         do {
@@ -37,6 +46,9 @@ public class TextualUI extends View {
         model.requestSent();
     }
 
+    /**
+     * Reads the input from the player and chooses the corresponding message
+     */
     @Override
     public void readCommand() {
         try {
@@ -94,6 +106,11 @@ public class TextualUI extends View {
         }
     }
 
+    /**
+     * Checks if the player that is doing the action is the right one
+     *
+     * @return true if the player is correct, false otherwise
+     */
     private boolean isYourTurn() {
         if (model.getCurrentPlayer().equals(model.getName())) {
             return true;
@@ -102,6 +119,9 @@ public class TextualUI extends View {
         return false;
     }
 
+    /**
+     * When the game ends it prints the rankings and notifies the end
+     */
     @Override
     public void endGame() {
         System.out.print("The final rank is the following:\n");
@@ -114,11 +134,17 @@ public class TextualUI extends View {
         System.out.println("The game has ended");
     }
 
+    /**
+     * Prints the dashboard
+     */
     public void printDashboard() {
         Card[][] dashboard = this.model.getDashboard().dashboard;
         printMatrix(dashboard);
     }
 
+    /**
+     * Prints the personal shelf
+     */
     public void printMyShelf() {
         System.out.println("My Shelf Points " + model.getMyPoints().stream().mapToInt(x -> x.getValue()).sum());
         printMatrix(model.getMyShelf().shelf);
@@ -126,6 +152,9 @@ public class TextualUI extends View {
         model.getMyPrivateObjectives().stream().forEach(o -> printMatrix(o));
     }
 
+    /**
+     * Prints all the shelves from other players
+     */
     public void printAllShelves() {
         List<PlayerView> playerViewList = model.getPlayerViews();
         playerViewList.stream().filter(x -> !x.getName().equals(model.getName())).forEach(x -> {
@@ -134,6 +163,9 @@ public class TextualUI extends View {
         });
     }
 
+    /**
+     * Prints the CommonObjectives that are active in the actual match
+     */
     public void printCommonObjectives() {
         List<CommonObjectiveView> objectiveViewList = model.getCommonObjectiveViews();
         objectiveViewList.forEach(x -> {
@@ -142,6 +174,9 @@ public class TextualUI extends View {
         });
     }
 
+    /**
+     * The server sets the State of the model after a request to set the name
+     */
     @Override
     public void setNameOutcome() {
         if (model.getState() == ModelView.State.WAITINGLEADER){
@@ -163,12 +198,18 @@ public class TextualUI extends View {
         }
     }
 
+    /**
+     * Prints all the players that are in the lobby when called
+     */
     @Override
     public void showLobby() {
         System.out.println("Players in lobby:");
         model.getPlayerNames().stream().forEach(System.out:: println);
     }
 
+    /**
+     * Updates the player view with all the updated components
+     */
     @Override
     public void update() {
         printDashboard();
@@ -178,21 +219,34 @@ public class TextualUI extends View {
         System.out.println("It's " + model.getCurrentPlayer() + "'s turn");
     }
 
+    /**
+     * Asks for the room leader
+     */
     @Override
     public void roomLeaderEvent() {
         System.out.println("You are the first to join: set the room size (2 up to 4).");
         roomLeader();
     }
 
+    /**
+     * Prints a ChatMessage
+     *
+     * @param sender is the person who sent the message
+     * @param message is the actual message
+     */
     @Override
     public void showChatMessage(String sender, String message) {
         System.out.println("[" + sender + "]:" + message);
     }
 
+    /**
+     * Prints a generic array of Cards
+     *
+     * @param matrix is the bi-dimensional array to print
+     */
     private void printMatrix(Card[][] matrix) {
         int rows = matrix.length;
         int columns = matrix[0].length;
-
         System.out.print(" ");
         for (int i = 0; i < columns; i++) {
             System.out.print(" " + i + "");
@@ -212,10 +266,15 @@ public class TextualUI extends View {
             System.out.println("|");
         }
     }
+
+    /**
+     * Prints a generic array of Card.Type
+     *
+     * @param matrix is the bi-dimensional array to print
+     */
     private void printMatrix(Card.Type[][] matrix) {
         int rows = matrix.length;
         int columns = matrix[0].length;
-
         System.out.print(" ");
         for (int i = 0; i < columns; i++) {
             System.out.print(" " + i + "");
@@ -231,6 +290,13 @@ public class TextualUI extends View {
         }
     }
 
+    /**
+     * Reds a list of integer
+     *
+     * @param cardsNum is the number of integers to read
+     *
+     * @return the list of integer that has been read
+     */
     private List<Integer> readIntList(int cardsNum) {
         List<Integer> result = new ArrayList<>();
         System.out.println("Write the card number in the order that you want 1 -> " + cardsNum);
@@ -254,6 +320,11 @@ public class TextualUI extends View {
         return result;
     }
 
+    /**
+     * Reads the integers in couple and creates a PlanarCoordinate for each couple
+     *
+     * @return a list of PlanarCoordinate
+     */
     private List<PlanarCoordinate> readCords() {
         List<PlanarCoordinate> result;
         do {
@@ -278,6 +349,11 @@ public class TextualUI extends View {
         return result;
     }
 
+    /**
+     * Checks if the list of Card can be inserted in a given column
+     *
+     * @return the column where to insert the Cards
+     */
     private int readColumn() {
         System.out.println("Select the column where you want to insert the cards");
         int column;
@@ -293,6 +369,11 @@ public class TextualUI extends View {
         return column;
     }
 
+    /**
+     * Print a single Card
+     *
+     * @param type is the Type of the Card
+     */
     void printCard(Card.Type type) {
         if (type == null) {
             System.out.print(" ");
@@ -308,6 +389,11 @@ public class TextualUI extends View {
         }
     }
 
+    /**
+     * Reads the message from the user interface
+     *
+     * @return a ChatMessage
+     */
     ChatMessage getMessage() {
         System.out.println("Write the username of the receiver and then press enter.");
         String receiver = (scanner.nextLine()).toLowerCase();
@@ -317,6 +403,4 @@ public class TextualUI extends View {
         receivers.add(receiver);
         return new ChatMessage(model.getName(), receivers, message);
     }
-
-
 }
