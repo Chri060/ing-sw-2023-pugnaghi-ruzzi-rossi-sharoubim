@@ -12,10 +12,22 @@ public class JoinRequestRefusedMessage extends ServerMessageAbs{
         this.state = state;
     }
 
+    /**
+     * Executes the message on the client
+     *
+     * @param client is the Client used to execute the message
+     */
     @Override
     public void execute(Client client) {
+
     }
 
+    /**
+     * Executes the message on the view.
+     * It calls the methods used to show the join request on the View
+     *
+     * @param view is the View used to execute the message
+     */
     @Override
     public void execute(View view) {
         view.model.setState(state);

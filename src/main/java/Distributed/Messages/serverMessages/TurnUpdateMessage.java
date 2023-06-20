@@ -2,7 +2,6 @@ package Distributed.Messages.serverMessages;
 
 import Distributed.Client;
 import Model.Model;
-import Model.ModelView;
 import View.View;
 
 public class TurnUpdateMessage extends ServerMessageAbs{
@@ -15,9 +14,22 @@ public class TurnUpdateMessage extends ServerMessageAbs{
         this.state = state;
     }
 
+    /**
+     * Executes the message on the client
+     *
+     * @param client is the Client used to execute the message
+     */
     @Override
     public void execute(Client client) {
+
     }
+
+    /**
+     * Executes the message on the view.
+     * It calls the methods used to update the state of the turn on the View
+     *
+     * @param view is the View used to execute the message
+     */
     @Override
     public void execute(View view) {
         view.model.setCurrentPlayer(playerName);

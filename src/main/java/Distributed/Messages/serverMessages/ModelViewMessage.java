@@ -1,12 +1,9 @@
 package Distributed.Messages.serverMessages;
 
 import Distributed.Client;
-import Model.ModelView;
+
 import Model.ModelViewData;
 import View.View;
-
-import java.rmi.RemoteException;
-import java.util.List;
 
 public class ModelViewMessage extends ServerMessageAbs{
 
@@ -17,11 +14,22 @@ public class ModelViewMessage extends ServerMessageAbs{
         this.modelView = modelView;
     }
 
-
+    /**
+     * Executes the message on the client
+     *
+     * @param client is the Client used to execute the message
+     */
     @Override
     public void execute(Client client) {
+
     }
 
+    /**
+     * Executes the message on the view.
+     * It calls the method used to initialize a modelView on the View
+     *
+     * @param view is the View used to execute the message
+     */
     @Override
     public void execute(View view) {
         view.initialiseModelView(modelView);
