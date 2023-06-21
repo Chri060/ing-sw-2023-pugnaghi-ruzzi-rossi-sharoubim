@@ -6,11 +6,20 @@ import View.View;
 
 import java.util.List;
 
-public class WithdrawUpdateMessage extends ServerMessageAbs{
+/**
+ * Class that implements a WithdrawUpdateMessage
+ */
+public class WithdrawUpdateMessage extends ServerMessageAbs {
 
     private Card[][] dashBoard;
     private List<Card> withdrawnCards;
 
+    /**
+     * Construct a message for a withdrawal
+     *
+     * @param dashBoard is the new dashboard
+     * @param withdrawnCards is the list of cards that had been withdrawn
+     */
     public WithdrawUpdateMessage(Card[][] dashBoard, List<Card> withdrawnCards) {
         super();
         this.dashBoard = dashBoard;

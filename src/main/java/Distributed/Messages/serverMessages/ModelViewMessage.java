@@ -5,10 +5,19 @@ import Distributed.Client;
 import Model.ModelViewData;
 import View.View;
 
-public class ModelViewMessage extends ServerMessageAbs{
+/**
+ * Class that implements a ModelViewMessage
+ */
+public class ModelViewMessage extends ServerMessageAbs {
 
     ModelViewData modelView;
 
+    /**
+     * Construct a message for the ModelView
+     *
+     * @param modelView is the modelView to update
+     * @param player is the name of the player that sent the request
+     */
     public ModelViewMessage(ModelViewData modelView, String player) {
         super(player);
         this.modelView = modelView;

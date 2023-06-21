@@ -3,10 +3,18 @@ package Distributed.Messages.serverMessages;
 import Distributed.Client;
 import View.View;
 
-public class SetRoomSizeMessage extends ServerMessageAbs{
+/**
+ * Class that implements a SetRoomSizeMessage
+ */
+public class SetRoomSizeMessage extends ServerMessageAbs {
 
     String roomLeader;
 
+    /**
+     * Construct a message that set the room size
+     *
+     * @param roomLeader is the player that needs to set the dimension of the lobby
+     */
     public SetRoomSizeMessage(String roomLeader) {
         super(roomLeader);
         this.roomLeader = roomLeader;

@@ -4,10 +4,18 @@ import Distributed.Client;
 import Model.ModelView;
 import View.View;
 
-public class JoinRequestRefusedMessage extends ServerMessageAbs{
+/**
+ * Class that implements a JoinRequestRefusedMessage
+ */
+public class JoinRequestRefusedMessage extends ServerMessageAbs {
 
     ModelView.State state;
 
+    /**
+     * Construct a message of join request refused
+     *
+     * @param state is the new state to set
+     */
     public JoinRequestRefusedMessage(ModelView.State state) {
         this.state = state;
     }

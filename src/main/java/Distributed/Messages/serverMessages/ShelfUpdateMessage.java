@@ -4,11 +4,20 @@ import Distributed.Client;
 import Model.entities.Card;
 import View.View;
 
-public class ShelfUpdateMessage extends  ServerMessageAbs{
+/**
+ * Class that implements a ShelfUpdateMessage
+ */
+public class ShelfUpdateMessage extends  ServerMessageAbs {
 
     String playerName;
     Card[][] shelf;
 
+    /**
+     * Construct a message that updates the shelf
+     *
+     * @param playerName is the name of the player's shelf to update
+     * @param shelf is the new shelf
+     */
     public ShelfUpdateMessage(String playerName, Card[][] shelf) {
         super();
         this.shelf = shelf;

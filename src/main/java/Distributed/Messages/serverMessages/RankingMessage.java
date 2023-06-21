@@ -6,10 +6,18 @@ import View.View;
 
 import java.util.List;
 
-public class RankingMessage extends ServerMessageAbs{
+/**
+ * Class that implements a RankingMessage
+ */
+public class RankingMessage extends ServerMessageAbs {
 
     List<PlayerView> playerViewList;
 
+    /**
+     * Construct a message used to send the final rankings
+     *
+     * @param playerViewList is the list of PlayerView
+     */
     public RankingMessage(List<PlayerView> playerViewList) {
         super();
         this.playerViewList = playerViewList;

@@ -3,7 +3,10 @@ package Distributed.Messages.serverMessages;
 import Distributed.Client;
 import View.View;
 
-public class PingClientMessage extends ServerMessageAbs{
+/**
+ * Class that implements a PingClientMessage
+ */
+public class PingClientMessage extends ServerMessageAbs {
 
     /**
      * Executes the message on the client

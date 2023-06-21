@@ -4,11 +4,20 @@ import Distributed.Client;
 import Model.Model;
 import View.View;
 
-public class TurnUpdateMessage extends ServerMessageAbs{
+/**
+ * Class that implements a TurnUpdateMessage
+ */
+public class TurnUpdateMessage extends ServerMessageAbs {
 
     private String playerName;
     private Model.TurnStatus state;
 
+    /**
+     * Construct a message that updates the status of the turn
+     *
+     * @param playerName is the name of the player's client to update
+     * @param state is the new state to set
+     */
     public TurnUpdateMessage(String playerName, Model.TurnStatus state) {
         this.playerName = new String(playerName);
         this.state = state;

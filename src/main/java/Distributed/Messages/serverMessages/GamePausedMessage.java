@@ -4,8 +4,14 @@ import Distributed.Client;
 import Model.ModelView;
 import View.View;
 
-public class GamePausedMessage extends ServerMessageAbs{
+/**
+ * Class that implements a GamePausedMessage
+ */
+public class GamePausedMessage extends ServerMessageAbs {
 
+    /**
+     * Construct a GamePausedMessage
+     */
     public GamePausedMessage() {
         super();
     }

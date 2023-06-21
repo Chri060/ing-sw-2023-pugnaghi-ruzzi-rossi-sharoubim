@@ -5,12 +5,22 @@ import View.View;
 
 import java.util.List;
 
-public class ChatMessage extends ServerMessageAbs{
+/**
+ * Class that implements a ChatMessage
+ */
+public class ChatMessage extends ServerMessageAbs {
 
     private String sender;
     private List<String> receivers;
     private String message;
 
+    /**
+     * Construct a ChatMessage with sender and receivers
+     *
+     * @param sender is the name of the person who sent the message
+     * @param receivers is the list of people that will receive the message
+     * @param message is the message sent
+     */
     public ChatMessage(String sender, List<String> receivers, String message) {
         super(receivers);
         this.sender = sender;
@@ -18,6 +28,12 @@ public class ChatMessage extends ServerMessageAbs{
         this.message = message;
     }
 
+    /**
+     * Construct a ChatMessage with only sender
+     *
+     * @param sender is the name of the person who sent the message
+     * @param message is the message to send
+     */
     public ChatMessage(String sender, String message) {
         super();
         this.sender = sender;

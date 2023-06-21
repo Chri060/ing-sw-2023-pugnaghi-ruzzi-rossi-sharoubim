@@ -3,10 +3,18 @@ package Distributed.Messages.serverMessages;
 import Distributed.Client;
 import View.View;
 
-public class RoomSizeSettedMessage extends ServerMessageAbs{
+/**
+ * Class that implements a RoomSizeSettedMessage
+ */
+public class RoomSizeSettedMessage extends ServerMessageAbs {
 
     private int roomSize;
 
+    /**
+     * Construct a message that indicates that the room size had been set
+     *
+     * @param roomSize is the room size
+     */
     public RoomSizeSettedMessage(int roomSize) {
         super();
         this.roomSize = roomSize;

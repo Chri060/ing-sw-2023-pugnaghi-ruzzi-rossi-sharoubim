@@ -5,18 +5,40 @@ import View.View;
 
 import java.util.List;
 
-public class TestMessage extends ServerMessageAbs{
+/**
+ * Class that implements a TestMessage
+ */
+public class TestMessage extends ServerMessageAbs {
 
     private String s;
 
+    /**
+     * Construct a test message with a String
+     *
+     * @param s is the String sent in the message
+     */
     public TestMessage(String s) {
         super();
         this.s = s;
     }
+
+    /**
+     * Construct a test message with a String and a receiver
+     *
+     * @param s is the String sent in the message
+     * @param receiver is the player who is going to receive the message
+     */
     public TestMessage(String s, String receiver) {
         super(receiver);
         this.s = s;
     }
+
+    /**
+     * Construct a test message with a String and a list of receivers
+     *
+     * @param s is the String sent in the message
+     * @param receivers is a list the players who are going to receive the message
+     */
     public TestMessage(String s, List<String> receivers) {
         super(receivers);
         this.s = s;

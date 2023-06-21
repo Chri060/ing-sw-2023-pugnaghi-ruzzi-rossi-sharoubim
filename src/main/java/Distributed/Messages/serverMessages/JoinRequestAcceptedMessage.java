@@ -6,10 +6,19 @@ import View.View;
 
 import java.util.List;
 
-public class JoinRequestAcceptedMessage extends ServerMessageAbs{
+/**
+ * Class that implements a JoinRequestAcceptedMessage
+ */
+public class JoinRequestAcceptedMessage extends ServerMessageAbs {
     private List<String> playerNames;
     private ModelView.State state;
 
+    /**
+     * Construct a message of join request
+     *
+     * @param playerNames is the list of player that are requesting to join
+     * @param state is the state of the game
+     */
     public JoinRequestAcceptedMessage(List<String> playerNames, ModelView.State state) {
         this.playerNames = playerNames;
         this.state = state;

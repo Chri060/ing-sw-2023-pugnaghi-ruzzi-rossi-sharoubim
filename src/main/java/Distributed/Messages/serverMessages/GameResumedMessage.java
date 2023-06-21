@@ -4,8 +4,14 @@ import Distributed.Client;
 import Model.ModelView;
 import View.View;
 
-public class GameResumedMessage extends ServerMessageAbs{
+/**
+ * Class that implements a GameResumedMessage
+ */
+public class GameResumedMessage extends ServerMessageAbs {
 
+    /**
+     * Construct a GameResumedMessage
+     */
     public GameResumedMessage() {
         super();
     }

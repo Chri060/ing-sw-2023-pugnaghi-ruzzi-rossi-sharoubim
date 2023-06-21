@@ -5,9 +5,18 @@ import View.View;
 
 import java.util.List;
 
-public class LeaveLobbyMessage extends ServerMessageAbs{
+/**
+ * Class that implements a LeaveLobbyMessage
+ */
+public class LeaveLobbyMessage extends ServerMessageAbs {
 
     List<String> playerNames;
+
+    /**
+     * Construct a leave lobby message
+     *
+     * @param playerNames is the list of player that are leaving the match
+     */
     public LeaveLobbyMessage(List<String> playerNames) {
         this.playerNames = playerNames;
     }
