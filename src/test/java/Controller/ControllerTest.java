@@ -1,6 +1,8 @@
 package Controller;
 
 import Model.Model;
+import Model.entities.Card;
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.Config;
@@ -27,15 +29,15 @@ class ControllerTest {
     }
 
     @Test
-    void general () {
+    void general() {
 
         controller.join("playerOne");
         controller.join("playerTwo");
         controller.join(null);
         controller.leave(null);
-        controller.setRoomSize(5,"playerOne");
+        controller.setRoomSize(5, "playerOne");
         controller.setRoomSize(1, "playerTwo");
-        controller.setRoomSize(2,"playerOne");
+        controller.setRoomSize(2, "playerOne");
         controller.leave("playerTwo");
         controller.join("playerTwo");
         model.setGameStatus(Model.GameStatus.RUNNING);
@@ -51,23 +53,36 @@ class ControllerTest {
 
         List<PlanarCoordinate> coordinates = new ArrayList<>();
         model.setGameStatus(Model.GameStatus.PAUSED);
-        controller.withdraw("playerOne",coordinates);
+        controller.withdraw("playerOne", coordinates);
         model.setGameStatus(Model.GameStatus.RUNNING);
-        controller.withdraw("playerOne",coordinates);
-        controller.withdraw("playerTwo",coordinates);
+        controller.withdraw("playerOne", coordinates);
+        controller.withdraw("playerTwo", coordinates);
 
-        PlanarCoordinate coordPlan=new PlanarCoordinate(1,3);
-        coordinates.add(0,coordPlan);
-        controller.withdraw("playerOne",coordinates);
+        PlanarCoordinate coordPlan = new PlanarCoordinate(1, 3);
+        coordinates.add(0, coordPlan);
+        controller.withdraw("playerOne", coordinates);
+        coordinates.add(1, coordPlan);
+        coordinates.add(2, coordPlan);
+        coordinates.add(3, coordPlan);
+        controller.withdraw("playerTwo", coordinates);
 
         List<Integer> order = new ArrayList<>();
         controller.changeOrderOfCards(order);
         controller.insert("playerOne", 0);
 
         model.setTurnStatus(Model.TurnStatus.INSERTING);
-        controller.insert("playerTwo",1);
-        controller.insert("playerOne",1);
-        
+        controller.insert("playerTwo", 1);
+        controller.insert("playerOne", 1);
+        controller.withdraw("playerOne", coordinates);
+
+        model.setGameStatus(Model.GameStatus.PAUSED);
+        controller.insert("playerTwo", 1);
+        model.setGameStatus(Model.GameStatus.RUNNING);
+        model.setTurnStatus(Model.TurnStatus.DRAWING);
+        controller.insert("playerTwo", 1);
+
         controller.endgame();
     }
+
 }
+

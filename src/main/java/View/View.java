@@ -15,7 +15,7 @@ import java.util.Scanner;
 public abstract class View extends Observable<ClientMessage> implements Runnable {
 
     public ModelView model;
-    Scanner scanner;
+    protected Scanner scanner;
 
     /**
      * Construct the view with a ModelView, an observer and a scanner
@@ -34,6 +34,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
     public void run() {
         try {
             setName();
+
             while (model.getState() != ModelView.State.STARTED) {
                 model.waitEvent();
                 if (model.getState() == ModelView.State.SETTINGSIZE) {

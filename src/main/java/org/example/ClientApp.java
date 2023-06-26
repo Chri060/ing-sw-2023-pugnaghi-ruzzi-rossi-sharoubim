@@ -1,8 +1,13 @@
 package org.example;
 
 import Distributed.ClientImpl;
+import Distributed.ClientImplTUI;
 import Distributed.Server;
 import Distributed.Socket.ServerStub;
+import View.GUI.Test;
+import View.GUI.TestRMI;
+import View.GUI.TestSocket;
+import javafx.application.Application;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -76,7 +81,10 @@ public class ClientApp {
      * @throws RemoteException on connection problems
      */
     public static void runSocket(String ip) throws RemoteException {
-        ClientImpl client = new ClientImpl();
+        Application.launch(TestSocket.class, ip);
+
+      /*  ClientImpl client = new ClientImplTUI();
+
         try {
             ServerStub serverStub = new ServerStub(ip, 55555);
             Thread receiver = new Thread(() -> serverStub.receive(client));
@@ -91,7 +99,7 @@ public class ClientApp {
             }
         } catch (RemoteException e) {
             throw new RemoteException("Server Socket KO");
-        }
+        }*/
     }
 
     /**
@@ -102,7 +110,11 @@ public class ClientApp {
      * @throws RemoteException on connection problems
      */
     public static void runRMI(String ip) throws RemoteException {
-        ClientImpl client = new ClientImpl();
+        Application.launch(TestRMI.class, ip);
+
+
+        /*ClientImpl client = new ClientImplTUI();
+
         try {
             Registry registry = LocateRegistry.getRegistry(ip, 44444);
             Server server = (Server) registry.lookup("server");
@@ -116,6 +128,6 @@ public class ClientApp {
             }
         } catch (RemoteException | NotBoundException e) {
             throw new RemoteException("Server RMI KO");
-        }
+        }*/
     }
 }

@@ -1,11 +1,16 @@
 package util;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.Vector;
 
 /**
  * Class used to extend other classes and make them observable
  */
-public class Observable<Arg extends Object> {
+public class Observable<Arg extends Object>  {
+
 
     private boolean changed = false;
     private Vector<Observer<? extends Observable<Arg>, Arg>> obs;

@@ -2,6 +2,9 @@ package Distributed;
 
 import Distributed.Messages.serverMessages.ServerMessage;
 import View.*;
+import View.GUI.GraphicalUI;
+import View.GUI.Test;
+import javafx.application.Application;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -11,18 +14,18 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * Class used to implement the client
  */
-public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
+public abstract class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
 
     public View view;
 
-    /**
-     * Creates a Textual UI Client
-     *
-     * @throws RemoteException on connection problems
-     */
     public ClientImpl() throws RemoteException {
         super();
-        view = new TextualUI();
+    }
+
+    public ClientImpl(View view) throws RemoteException {
+        super();
+
+        this.view = view;
     }
 
     /**
