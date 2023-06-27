@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="404.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="404.0" fitWidth="725.0" pickOnBounds="true" preserveRatio="true">
@@ -26,12 +25,12 @@
             <Font name="System Bold" size="21.0" />
          </font>
       </Label>
-      <TextField layoutX="296.0" layoutY="214.0" prefHeight="27.0" prefWidth="125.0" promptText="enter the size here">
+      <TextField fx:id="NumPlayer" layoutX="296.0" layoutY="214.0" prefHeight="27.0" prefWidth="125.0" promptText="enter the size here">
          <font>
             <Font size="13.0" />
          </font>
       </TextField>
-      <Button layoutX="310.0" layoutY="319.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="98.0" text="CONFIRM">
+      <Button fx:id="NumConfirm" layoutX="310.0" layoutY="319.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="98.0" text="CONFIRM">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

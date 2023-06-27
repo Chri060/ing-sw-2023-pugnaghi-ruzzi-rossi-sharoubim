@@ -12,17 +12,17 @@
     <children>
         <ImageView fitHeight="540.0" fitWidth="960.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../../resources/Images/background.jpg" />
+                <Image url="@../Images/background.jpg" />
             </image>
         </ImageView>
       <ImageView fitHeight="288.0" fitWidth="960.0" layoutY="263.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../resources/Images/banner.png" />
+            <Image url="@../Images/banner.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="131.0" fitWidth="381.0" layoutX="288.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../resources/Images/title.png" />
+            <Image url="@../Images/title.png" />
          </image>
       </ImageView>
       <Label layoutX="11.0" layoutY="173.0" text="Username:">
@@ -30,8 +30,8 @@
             <Font name="System Bold" size="21.0" />
          </font>+
       </Label>
-      <TextField layoutX="14.0" layoutY="209.0" prefHeight="26.0" prefWidth="335.0" />
-      <Button layoutX="424.0" layoutY="443.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="106.0" text="JOIN">
+      <TextField fx:id="UsernameField" layoutX="14.0" layoutY="209.0" prefHeight="26.0" prefWidth="335.0" />
+      <Button fx:id="ButtonJoin" layoutX="424.0" layoutY="443.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="106.0" text="JOIN">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
