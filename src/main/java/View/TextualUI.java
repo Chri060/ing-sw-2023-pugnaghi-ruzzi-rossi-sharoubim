@@ -70,7 +70,7 @@ public class TextualUI extends View {
                                 List<PlanarCoordinate> cords;
                                 do {
                                     cords = readCords();
-                                    if (model.getDashboard().canWithdraw(cords)) {
+                                    if (model.getDashboard().canWithdraw(cords) && cords.size() <= model.getMyShelf().maxFreeSpace()) {
                                         break;
                                     }
                                     System.out.println("you can't withdraw those cards");
@@ -98,7 +98,15 @@ public class TextualUI extends View {
                         }
                         case ("insert") -> {
                             if (isYourTurn() && isCurrentAction(Model.TurnStatus.INSERTING)) {
-                                final int column = readColumn();
+                                int column;
+                                boolean ok;
+                                do {
+                                    column = readColumn();
+                                    ok = model.getMyShelf().canInsert(model.getWithdrawnCards(), column);
+                                    if (!ok) {
+                                        System.out.println("There's not enough space in that column");
+                                    }
+                                } while(!ok);
                                 setChangedAndNotifyObservers(new InsertMessage(model.getName(), column));
                                 //model.requestSent();
                             }

@@ -196,8 +196,7 @@ public class Controller {
                 //TODO sends a message error -> InvalidAction: can't withdraw those cards
                 return;
             }
-            System.out.println("Withdrawing");
-            model.withdraw(planarCoordinateList);
+             model.withdraw(planarCoordinateList);
             updateStates(Model.TurnStatus.INSERTING, Model.GameStatus.RUNNING);
         }
     }

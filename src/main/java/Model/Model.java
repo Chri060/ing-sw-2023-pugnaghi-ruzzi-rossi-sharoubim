@@ -159,6 +159,7 @@ public class Model extends Observable<ServerMessage> {
         }
         if (changed) {
             setChangedAndNotifyObservers(new LeaveLobbyMessage(new ArrayList<>(playerNames)));
+            System.out.println(playerName + " left the lobby");
         }
     }
 
@@ -192,6 +193,7 @@ public class Model extends Observable<ServerMessage> {
     public void setTurnStatus(TurnStatus turnStatus) {
         this.turnStatus = turnStatus;
         setChangedAndNotifyObservers(new ModelViewUpdateMessage(getModelViewDataUpdate()));
+        System.out.println("Update Sent");
     }
 
     /**
@@ -221,6 +223,7 @@ public class Model extends Observable<ServerMessage> {
         Player player = getPlayer(playerName);
         if (player != null) {
             player.setOffline();
+            System.out.println(playerName + " disconnected");
             setChangedAndNotifyObservers(new TestMessage(playerName + " disconnected"));
             setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
             if (playerName.equals(currentPlayer) && getOnlinePlayersCount() > 0) {
@@ -229,13 +232,14 @@ public class Model extends Observable<ServerMessage> {
             if (getOnlinePlayersCount() == 1) {
                 Timer timer = new Timer();
                 setGameStatus(GameStatus.PAUSED);
+                System.out.println("Game Paused");
                 setChangedAndNotifyObservers(new GamePausedMessage());
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         forfeit();
                     }
-                }, 20000);
+                }, 10000);
             }
         }
     }
@@ -249,6 +253,7 @@ public class Model extends Observable<ServerMessage> {
         Player player = getPlayer(playerName);
         if (player != null) {
             player.setOnline();
+            System.out.println(playerName + " connected");
             setChangedAndNotifyObservers(new TestMessage(playerName + " connected"));
             setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
             ModelViewData modelViewData = getModelviewData(playerName);
@@ -286,6 +291,7 @@ public class Model extends Observable<ServerMessage> {
      */
     public void setCurrentPlayer(String playerName) {
         this.currentPlayer = playerName;
+        System.out.println("It's " + currentPlayer + "'s turn");
     }
 
     /**
@@ -322,6 +328,7 @@ public class Model extends Observable<ServerMessage> {
             gameStatus = GameStatus.RUNNING;
             turnStatus = TurnStatus.DRAWING;
         }
+        System.out.println("Game started: it's " + currentPlayer + "'s turn");
         sendModelViewData();
     }
 
@@ -373,11 +380,14 @@ public class Model extends Observable<ServerMessage> {
     public void insert(String playerName, int column) throws InvalidArgumentException {
         Player player = getPlayer(playerName);
         if (player != null) {
+            System.out.println(playerName + " wants to insert " + withdrawnCards + "in the " + column + "° column");
             if (!player.getShelf().canInsert(withdrawnCards, column)) {
+                System.out.println("Action Denied");
                 return;
             }
             player.getShelf().insert(withdrawnCards, column);
             withdrawnCards.clear();
+            System.out.println("Done!");
         }
         else {
             throw new InvalidArgumentException(playerName + " not found in this lobby");
@@ -409,14 +419,24 @@ public class Model extends Observable<ServerMessage> {
      * @return true if it is the last turn, false otherwise
      */
     public boolean isLastTurn() {
-        return playerList.stream().anyMatch(x -> x.getShelf().isFull());
+        boolean isLastTurn = playerList.stream().anyMatch(x -> x.getShelf().isFull());
+        if (isLastTurn) {
+            System.out.println("Last turn!");
+            System.out.println(currentPlayer + " will get an extra point");
+            givePoint(currentPlayer, new Point(1, "First to fill the shelf"));
+        }
+        return isLastTurn;
     }
 
     /**
      * @return true if the game is ended, false otherwise
      */
     public boolean endGame() {
-        return isLastTurn() && playerList.stream().reduce((a, b) -> b).get().equals(currentPlayer);
+        boolean endGame = isLastTurn() && playerList.stream().reduce((a, b) -> b).get().equals(currentPlayer);
+        if (endGame) {
+            System.out.println("This was the last turn");
+        }
+        return endGame;
     }
 
     /**
@@ -456,6 +476,7 @@ public class Model extends Observable<ServerMessage> {
      * Gives the point for a private objective completion
      */
     public void givePrivatePoints() {
+        System.out.println("Giving private objective Points");
         playerList.stream().forEach(x -> {
             Point point = x.getTotalPrivatePoints();
             x.givePoint(point);
@@ -466,6 +487,7 @@ public class Model extends Observable<ServerMessage> {
      * Give points for the groups found in the shelf
      */
     public void giveShelfPoints() {
+        System.out.println("Giving Shelf Points");
         int[] points = Config.getCustomShelfPoints();
         playerList.stream().forEach(x -> {
         List<Integer> groupsSizes = x.getShelfGroups();
@@ -523,6 +545,7 @@ public class Model extends Observable<ServerMessage> {
      */
     public void givePoint(String playerName, Point point) {
         getPlayer(playerName).givePoint(point);
+        System.out.println("Gave " + playerName + " " + point.getValue() + " points: " + point.getOrigin());
     }
 
     /**
@@ -550,6 +573,7 @@ public class Model extends Observable<ServerMessage> {
      */
     public void refill() throws InvalidActionException {
         dashboard.refill(bag);
+        System.out.println("Dashboard refilled");
     }
 
     /**
@@ -569,11 +593,13 @@ public class Model extends Observable<ServerMessage> {
      * @param coordinateList is a list of coordinate
      */
     public void withdraw(List<PlanarCoordinate> coordinateList) {
+        System.out.println(currentPlayer + " wants to withdraw: " + coordinateList);
         if (!canWithdraw(coordinateList)) {
-            //TODO setchangedandnotify
+            System.out.println("Action denied");
             return;
         }
         withdrawnCards = dashboard.withdraw(coordinateList);
+        System.out.println("Done!");
     }
 
     /**
@@ -632,22 +658,9 @@ public class Model extends Observable<ServerMessage> {
             }
             return 0;
         });
+        Collections.reverse(playerList);
     }
 
-    /**
-     * Send ranks to the clients
-     */
-    public void sendRank() {
-        List<PlayerView> ranking = new ArrayList<>();
-        for (int i = playerList.size() - 1; i >= 0; i--) {
-            Player player = playerList.get(i);
-            PlayerView p = new PlayerView();
-            p.setName(player.getName());
-            p.setPoint(player.getPoints());
-            ranking.add(p);
-        }
-        setChangedAndNotifyObservers(new RankingMessage(ranking));
-    }
 
     /**
      * Send the modelViewData
