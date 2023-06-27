@@ -1,6 +1,7 @@
 package View;
 
 import Distributed.Messages.clientMessages.*;
+import Model.Model;
 import Model.ModelView;
 import Model.entities.Card;
 import Model.viewEntities.CommonObjectiveView;
@@ -65,7 +66,7 @@ public class TextualUI extends View {
                         }
                         case ("message") -> setChangedAndNotifyObservers(getMessage());
                         case ("withdraw") -> {
-                            if (isYourTurn()) {
+                            if (isYourTurn() && isCurrentAction(Model.TurnStatus.DRAWING)) {
                                 List<PlanarCoordinate> cords;
                                 do {
                                     cords = readCords();
@@ -81,14 +82,22 @@ public class TextualUI extends View {
                             }
                         }
                         case ("order") -> {
-                            if (isYourTurn()) {
+                            if (drawnCards == 1) {
+                                System.out.println("You can't order a single card");
+                                break;
+                            }
+                            if (isYourTurn() && isCurrentAction(Model.TurnStatus.INSERTING)) {
                                 final List<Integer> cordsList = readIntList(drawnCards);
                                 new Thread(() -> setChangedAndNotifyObservers(new OrderMessage(model.getName(), cordsList))).start();
                                 //model.requestSent();
+                                List<Card> newCards = new ArrayList<>();
+                                cordsList.forEach(x -> newCards.add(model.getWithdrawnCards().get(x)));
+                                model.setWithdrawnCards(newCards);
+                                printWithdrawnCards();
                             }
                         }
                         case ("insert") -> {
-                            if (isYourTurn()) {
+                            if (isYourTurn() && isCurrentAction(Model.TurnStatus.INSERTING)) {
                                 final int column = readColumn();
                                 setChangedAndNotifyObservers(new InsertMessage(model.getName(), column));
                                 //model.requestSent();
@@ -102,7 +111,8 @@ public class TextualUI extends View {
                 }
             }
         } catch (Exception e) {
-            setChangedAndNotifyObservers(new LeaveMessage(model.getName()));
+            System.out.println(ANSI_RED + "Crash detected");
+            System.exit(-10);
         }
     }
 
@@ -120,6 +130,20 @@ public class TextualUI extends View {
     }
 
     /**
+     * Checks that the current action is what the playr is supposed to do*/
+
+    private boolean isCurrentAction(Model.TurnStatus action) {
+        if (action != model.getTurnState()) {
+            switch (action) {
+                case DRAWING -> System.out.println("You already withdraw, order or insert");
+                case INSERTING -> System.out.println("You need to withdraw first");
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * When the game ends it prints the rankings and notifies the end
      */
     @Override
@@ -129,7 +153,7 @@ public class TextualUI extends View {
         for (int i = 0; i < 4; i++) {
             if (i == 0) { System.out.print(ANSI_YELLOW + "1. " + ANSI_RESET); }
             else { System.out.print((i + 1) + ". "); }
-            System.out.print("name");
+            System.out.println(model.getPlayerViews().get(i).getName());
         }
         System.out.println("The game has ended");
     }
@@ -141,6 +165,20 @@ public class TextualUI extends View {
         Card[][] dashboard = this.model.getDashboard().dashboard;
         printMatrix(dashboard);
     }
+
+    /**
+     * Prints the withdrawn cards
+     */
+
+    public void printWithdrawnCards() {
+        System.out.print("Cards: ");
+        model.getWithdrawnCards().forEach(x -> {
+            printCard(x.getType());
+            System.out.print(" ");
+        });
+        System.out.println();
+    }
+
 
     /**
      * Prints the personal shelf
@@ -216,6 +254,10 @@ public class TextualUI extends View {
         printCommonObjectives();
         printMyShelf();
         printAllShelves();
+        if (model.getTurnState() == Model.TurnStatus.INSERTING) {
+            printWithdrawnCards();
+        }
+
         System.out.println("It's " + model.getCurrentPlayer() + "'s turn");
     }
 
@@ -303,7 +345,7 @@ public class TextualUI extends View {
         for (int i = 0; i < cardsNum; i++) {
             try {
                 int x = scanner.nextInt();
-                if (result.contains(x) || x < 1 || x > cardsNum) {
+                if (result.contains(x - 1) || x < 1 || x > cardsNum) {
                     System.out.println("Wrong input, insert the numbers again.");
                     result.clear();;
                     i = 0;

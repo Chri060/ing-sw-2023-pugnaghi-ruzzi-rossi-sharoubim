@@ -191,6 +191,7 @@ public class Model extends Observable<ServerMessage> {
      */
     public void setTurnStatus(TurnStatus turnStatus) {
         this.turnStatus = turnStatus;
+        setChangedAndNotifyObservers(new ModelViewUpdateMessage(getModelViewDataUpdate()));
     }
 
     /**
@@ -224,7 +225,6 @@ public class Model extends Observable<ServerMessage> {
             setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
             if (playerName.equals(currentPlayer) && getOnlinePlayersCount() > 0) {
                 currentPlayer = getNextPlayer();
-                setChangedAndNotifyObservers(new TurnUpdateMessage(currentPlayer, turnStatus));
             }
             if (getOnlinePlayersCount() == 1) {
                 Timer timer = new Timer();
@@ -270,6 +270,7 @@ public class Model extends Observable<ServerMessage> {
         int onlinePlayers = getOnlinePlayersCount();
         if (onlinePlayers > 1) {
             gameStatus = GameStatus.RUNNING;
+            setChangedAndNotifyObservers(new GameResumedMessage());
             return;
         }
         if (onlinePlayers == 0) {
@@ -285,7 +286,6 @@ public class Model extends Observable<ServerMessage> {
      */
     public void setCurrentPlayer(String playerName) {
         this.currentPlayer = playerName;
-        setChangedAndNotifyObservers(new TurnUpdateMessage(currentPlayer, turnStatus));
     }
 
     /**
@@ -374,11 +374,9 @@ public class Model extends Observable<ServerMessage> {
         Player player = getPlayer(playerName);
         if (player != null) {
             if (!player.getShelf().canInsert(withdrawnCards, column)) {
-                //TODO setchangedandnotify
                 return;
             }
             player.getShelf().insert(withdrawnCards, column);
-            setChangedAndNotifyObservers(new ShelfUpdateMessage(new String(player.getName()), player.getShelf().asMatrix()));
             withdrawnCards.clear();
         }
         else {
@@ -576,7 +574,6 @@ public class Model extends Observable<ServerMessage> {
             return;
         }
         withdrawnCards = dashboard.withdraw(coordinateList);
-        setChangedAndNotifyObservers(new WithdrawUpdateMessage(dashboard.asMatrix(), withdrawnCards));
     }
 
     /**
@@ -635,7 +632,6 @@ public class Model extends Observable<ServerMessage> {
             }
             return 0;
         });
-        sendRank();
     }
 
     /**
@@ -696,4 +692,57 @@ public class Model extends Observable<ServerMessage> {
         modelViewData.setMyPrivateObjectivePatterns(new ArrayList<>(player.getPrivateObjectivePattern()));
         return modelViewData;
     }
+
+    /**
+     * Creates and returns modelViewDataUpdate based on the current state of the game: this object doesn't contain private info
+     * so it's the same for all players
+     *
+     * @return  modelViewDataUpdate describing the model
+     */
+
+    public synchronized ModelViewDataUpdate getModelViewDataUpdate() {
+        ModelViewDataUpdate modelViewDataUpdate = new ModelViewDataUpdate();
+        modelViewDataUpdate.setDashboard(dashboard.asMatrix());
+        List<CommonObjectiveView> commonObjectiveViewList = new ArrayList<>();
+        for (CommonObjective commonObjective : commonObjectiveList) {
+            CommonObjectiveView commonObjectiveView = new CommonObjectiveView();
+            commonObjectiveView.setID(commonObjective.getID());
+            commonObjectiveView.setMaxPoint(new Point(commonObjective.checkMaxPoints().getValue(), commonObjective.checkMaxPoints().getOrigin()));
+            commonObjectiveViewList.add(commonObjectiveView);
+        }
+        modelViewDataUpdate.setCommonObjectiveViews(commonObjectiveViewList);
+        modelViewDataUpdate.setCurrentPlayer(new String(currentPlayer));
+        List<PlayerView> playerViewList = new ArrayList<>();
+        for (Player p : playerList) {
+            PlayerView playerView = new PlayerView();
+            playerView.setName(new String(p.getName()));
+            playerView.setShelf(p.getShelf().asMatrix());
+            playerView.setPoint(new ArrayList<>(p.getPoints()));
+            playerViewList.add(playerView);
+        }
+        modelViewDataUpdate.setPlayerViewList(playerViewList);
+        modelViewDataUpdate.setWithdrawnCards(withdrawnCards);
+        modelViewDataUpdate.setTurnState(getTurnStatus());
+        modelViewDataUpdate.setState(getModelViewState(getGameStatus()));
+        return modelViewDataUpdate;
+    }
+
+
+    /**
+     * Returns the corresponding ModelView state from the actual state of the model
+     *
+     * @param status the actual state of the model
+     *
+     * @return corresponding state of the modelView
+     */
+
+    private ModelView.State getModelViewState(GameStatus status) {
+        switch (status) {
+            case RUNNING : return ModelView.State.RUNNING;
+            case PAUSED : return ModelView.State.PAUSED;
+            case ENDED : return ModelView.State.ENDED;
+        }
+        return null;
+    }
+
 }

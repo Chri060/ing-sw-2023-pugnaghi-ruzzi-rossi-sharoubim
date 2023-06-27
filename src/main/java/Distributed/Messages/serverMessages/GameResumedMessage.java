@@ -35,5 +35,6 @@ public class GameResumedMessage extends ServerMessageAbs {
     @Override
     public void execute(View view) {
         view.model.setState(ModelView.State.RUNNING);
+        view.model.setReceived();
     }
 }

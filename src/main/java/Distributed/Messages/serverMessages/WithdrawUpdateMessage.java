@@ -46,7 +46,6 @@ public class WithdrawUpdateMessage extends ServerMessageAbs {
     public void execute(View view) {
         view.model.setWithdrawnCards(withdrawnCards);
         view.model.setDashboard(dashBoard);
-        view.update();
         view.model.setReceived();
     }
 }

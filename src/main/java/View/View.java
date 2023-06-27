@@ -42,7 +42,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
             }
             System.out.println("Game Started");
             readCommand();
-            if (/*la partita è finita*/ true) {
+            if (model.getState() == ModelView.State.ENDED) {
                 endGame();
             }
         } catch (Exception e) {

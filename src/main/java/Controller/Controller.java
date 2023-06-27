@@ -57,7 +57,6 @@ public class Controller {
                 model.joinPlayer(playerName);
                 if (model.getRoomSize() == model.getTargetRoomSize() && model.getRoomSize() > 1) {
                     model.start();
-                    updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
                 }
                 //TODO Sends JoinAck
             } catch (InvalidActionException e) {
@@ -157,8 +156,8 @@ public class Controller {
      */
     private void updateStates(Model.TurnStatus turnStatus, Model.GameStatus gameStatus) {
         synchronized (model) {
-            model.setTurnStatus(turnStatus);
             model.setGameStatus(gameStatus);
+            model.setTurnStatus(turnStatus);
         }
     }
 
@@ -243,7 +242,6 @@ public class Controller {
                     return;
                 }
                 model.insert(playerName, column);
-                updateStates(Model.TurnStatus.ENDED, Model.GameStatus.RUNNING);
                 endTurn(playerName);
             } catch (InvalidArgumentException e) {/*Never thrown if it's player turn*/}
         }
@@ -267,10 +265,9 @@ public class Controller {
                 }
             }
             if (model.endGame()) {
-                updateStates(Model.TurnStatus.ENDED, Model.GameStatus.ENDED);
                 endgame();
+                updateStates(Model.TurnStatus.ENDED, Model.GameStatus.ENDED);
             } else {
-                updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
                 model.setCurrentPlayer(model.getNextPlayer());
                 if (model.needsRefill()) {
                     try {
@@ -278,6 +275,7 @@ public class Controller {
                     } catch (InvalidActionException e) {
                     }
                 }
+                updateStates(Model.TurnStatus.DRAWING, Model.GameStatus.RUNNING);
             }
         }
     }

@@ -148,7 +148,22 @@ public class ModelView extends Observable<Event> {
         this.playerViews = modelViewData.getPlayerViewList();
         this.myShelf = new ShelfView(modelViewData.getMyShelf());
         this.myPoints = modelViewData.getMyPoints();
+        this.turnState = Model.TurnStatus.DRAWING;
         setChangedAndNotifyObservers(new GameStartedEvent());
+    }
+
+    public void update(ModelViewDataUpdate modelViewDataUpdate) {
+        this.dashboard = new DashBoardView(modelViewDataUpdate.getDashboard());
+        this.currentPlayer = modelViewDataUpdate.getCurrentPlayer();
+        this.commonObjectiveViews = modelViewDataUpdate.getCommonObjectiveViews();
+        this.playerViews = modelViewDataUpdate.getPlayerViewList();
+        Optional<PlayerView> me = modelViewDataUpdate.getPlayerViewList().stream().filter(x -> x.getName().equals(this.name)).findFirst();
+        this.myShelf = new ShelfView(me.get().getShelf());
+        this.myPoints = me.get().getPoint();
+        this.withdrawnCards = modelViewDataUpdate.getWithdrawnCards();
+        this.turnState = modelViewDataUpdate.getTurnState();
+        this.state = modelViewDataUpdate.getState();
+        setChangedAndNotifyObservers(new ModelViewUpdateEvent());
     }
 
     /**
@@ -189,6 +204,7 @@ public class ModelView extends Observable<Event> {
      */
     public void setCommonObjectiveViews(List<CommonObjectiveView> commonObjectiveViews) {
         this.commonObjectiveViews = commonObjectiveViews;
+        setChangedAndNotifyObservers(new ModelViewUpdateEvent());
     }
 
     /**
@@ -207,6 +223,7 @@ public class ModelView extends Observable<Event> {
      */
     public void setCurrentPlayer(String currentPlayer) {
         this.currentPlayer = currentPlayer;
+        setChangedAndNotifyObservers(new ModelViewUpdateEvent());
     }
 
     /**
