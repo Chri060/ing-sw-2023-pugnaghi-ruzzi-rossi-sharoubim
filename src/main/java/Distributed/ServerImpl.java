@@ -133,7 +133,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     @Override
     public void leave(Client client, String name) throws RemoteException {
         synchronized (model) {
-            if (name.equals(associator.getName(client))) {
+            if (associator.getName(client).equals(name)) {
                 model.deleteObserver(associator.getObserver(client));
                 controller.leave(name);
                 associator.delete(client);
@@ -155,6 +155,9 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
      */
     @Override
     public void update(Client client, ClientMessage message) throws RemoteException {
+        if (message.getAuth() == null) {
+            return;
+        }
         if (message.getAuth().equals(associator.getName(client))) {
             message.execute(controller);
         }
@@ -200,7 +203,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                         } catch (RemoteException e) {
                             try {
                                 if (associator.getName(client) != null) {
-                                    System.out.println(associator.getName(client) + " disconnected");
                                     leave(client, associator.getName(client));
                                 }
                             } catch (RemoteException remoteException) {}

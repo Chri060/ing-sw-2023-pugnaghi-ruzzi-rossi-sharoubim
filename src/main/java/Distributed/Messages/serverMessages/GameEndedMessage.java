@@ -5,14 +5,14 @@ import Model.ModelView;
 import View.View;
 
 /**
- * Class that implements a GamePausedMessage
+ * Class that implements a GameEndedMessage
  */
-public class GamePausedMessage extends ServerMessageAbs {
+public class GameEndedMessage extends ServerMessageAbs {
 
     /**
-     * Construct a GamePausedMessage
+     * Construct a GameEndedMessage
      */
-    public GamePausedMessage() {
+    public GameEndedMessage() {
         super();
     }
 
@@ -28,12 +28,14 @@ public class GamePausedMessage extends ServerMessageAbs {
 
     /**
      * Executes the message on the view.
-     * It calls the method used set the state of PAUSED on the View
+     * It calls the method used set the state of ENDED on the View
      *
      * @param view is the View used to execute the message
      */
     @Override
     public void execute(View view) {
-        view.model.setState(ModelView.State.PAUSED);
+        view.model.setState(ModelView.State.ENDED);
+        view.model.setWinByForfeit(true);
+        view.model.setReceived();
     }
 }

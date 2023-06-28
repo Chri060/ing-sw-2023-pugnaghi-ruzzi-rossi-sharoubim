@@ -34,7 +34,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
     public void run() {
         try {
             setName();
-            while (model.getState() != ModelView.State.STARTED) {
+            while (model.getState() != ModelView.State.RUNNING) {
                 model.waitEvent();
                 if (model.getState() == ModelView.State.SETTINGSIZE) {
                     roomLeaderEvent();
@@ -60,7 +60,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
                 new Thread(() -> setChangedAndNotifyObservers(new JoinMessage(model.getName()))).start();
                 model.requestSent();
                 setNameOutcome();
-            } while (model.getState() != ModelView.State.INLOBBY && model.getState() != ModelView.State.SETTINGSIZE && model.getState() != ModelView.State.STARTED);
+            } while (model.getState() != ModelView.State.INLOBBY && model.getState() != ModelView.State.SETTINGSIZE && model.getState() != ModelView.State.RUNNING);
         } catch (NoSuchFieldError e) {}
     }
 

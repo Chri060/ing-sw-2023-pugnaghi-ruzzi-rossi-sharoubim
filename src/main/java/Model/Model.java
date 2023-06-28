@@ -233,7 +233,6 @@ public class Model extends Observable<ServerMessage> {
                 Timer timer = new Timer();
                 setGameStatus(GameStatus.PAUSED);
                 System.out.println("Game Paused");
-                setChangedAndNotifyObservers(new GamePausedMessage());
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -241,6 +240,7 @@ public class Model extends Observable<ServerMessage> {
                     }
                 }, 10000);
             }
+            setChangedAndNotifyObservers(new ModelViewUpdateMessage(getModelViewDataUpdate()));
         }
     }
 
@@ -275,13 +275,15 @@ public class Model extends Observable<ServerMessage> {
         int onlinePlayers = getOnlinePlayersCount();
         if (onlinePlayers > 1) {
             gameStatus = GameStatus.RUNNING;
+            System.out.println("Game resumed");
             setChangedAndNotifyObservers(new GameResumedMessage());
             return;
         }
-        if (onlinePlayers == 0) {
-            return;
+        if (onlinePlayers == 1) {
+            gameStatus = GameStatus.ENDED;
+            System.out.println("The game is ended: " + currentPlayer + "won!");
+            setChangedAndNotifyObservers(new GameEndedMessage());
         }
-        //TODO notifies macth ended
     }
 
     /**
@@ -699,6 +701,7 @@ public class Model extends Observable<ServerMessage> {
             playerViewList.add(playerView);
         }
         modelViewData.setPlayerViewList(playerViewList);
+        modelViewData.setState(getModelViewState(getGameStatus()));
         Player player = getPlayer(new String(playerName));
         modelViewData.setMyShelf(player.getShelf().asMatrix());
         modelViewData.setMyPoints(new ArrayList<>(player.getPoints()));

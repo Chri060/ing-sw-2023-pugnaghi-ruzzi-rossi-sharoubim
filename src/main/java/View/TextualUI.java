@@ -66,6 +66,7 @@ public class TextualUI extends View {
                         }
                         case ("message") -> setChangedAndNotifyObservers(getMessage());
                         case ("withdraw") -> {
+                            if (model.getState() != ModelView.State.RUNNING) {break;}
                             if (isYourTurn() && isCurrentAction(Model.TurnStatus.DRAWING)) {
                                 List<PlanarCoordinate> cords;
                                 do {
@@ -82,6 +83,7 @@ public class TextualUI extends View {
                             }
                         }
                         case ("order") -> {
+                            if (model.getState() != ModelView.State.RUNNING) {break;}
                             if (drawnCards == 1) {
                                 System.out.println("You can't order a single card");
                                 break;
@@ -97,6 +99,7 @@ public class TextualUI extends View {
                             }
                         }
                         case ("insert") -> {
+                            if (model.getState() != ModelView.State.RUNNING) {break;}
                             if (isYourTurn() && isCurrentAction(Model.TurnStatus.INSERTING)) {
                                 int column;
                                 boolean ok;
@@ -156,14 +159,23 @@ public class TextualUI extends View {
      */
     @Override
     public void endGame() {
-        System.out.print("The final rank is the following:\n");
-        //TODO: while that prints the players in descendent order
-        for (int i = 0; i < 4; i++) {
-            if (i == 0) { System.out.print(ANSI_YELLOW + "1. " + ANSI_RESET); }
-            else { System.out.print((i + 1) + ". "); }
-            System.out.println(model.getPlayerViews().get(i).getName());
+        if (model.isWinByForfeit()) {
+            System.out.println("You won by forfeit!");
         }
-        System.out.println("The game has ended");
+        else {
+            System.out.print("The final rank is the following:\n");
+            //TODO: while that prints the players in descendent order
+            for (int i = 0; i < 4; i++) {
+                if (i == 0) {
+                    System.out.print(ANSI_YELLOW + "1. " + ANSI_RESET);
+                } else {
+                    System.out.print((i + 1) + ". ");
+                }
+                System.out.println(model.getPlayerViews().get(i).getName());
+            }
+        }
+        System.out.println("Thanks for playing");
+        System.exit(0);
     }
 
     /**

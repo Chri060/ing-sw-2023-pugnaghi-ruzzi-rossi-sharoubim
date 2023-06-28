@@ -51,6 +51,7 @@ public class ModelView extends Observable<Event> {
     private String chairPlayer;
     private List<String> playerNames;
     private int targetRoomSize;
+    private boolean winByForfeit;
 
     /**
      * @return the name of the player
@@ -139,7 +140,7 @@ public class ModelView extends Observable<Event> {
      * @param modelViewData is the modelViewData object
      */
     public void initialise(ModelViewData modelViewData) {
-        this.state = State.STARTED;
+        this.state = State.RUNNING;
         this.dashboard = new DashBoardView(modelViewData.getDashboard());
         this.chairPlayer = modelViewData.getChairPlayer();
         this.currentPlayer = modelViewData.getCurrentPlayer();
@@ -374,6 +375,14 @@ public class ModelView extends Observable<Event> {
         setChangedAndNotifyObservers(new ModelViewUpdateEvent());
     }
 
+    public boolean isWinByForfeit() {
+        return winByForfeit;
+    }
+
+    public void setWinByForfeit(boolean winByForfeit) {
+        this.winByForfeit = winByForfeit;
+    }
+
     /**
      * Sets the request status as SENT
      */
@@ -387,6 +396,7 @@ public class ModelView extends Observable<Event> {
      */
     public synchronized void setReceived() {
         this.requestStatus = RequestStatus.RECIVED;
+        System.out.println("Event received");
         setChangedAndNotifyObservers(new ResponseReceivedEvent());
     }
 
