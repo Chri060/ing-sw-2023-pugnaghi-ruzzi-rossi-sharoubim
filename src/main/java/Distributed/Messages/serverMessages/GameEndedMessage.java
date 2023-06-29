@@ -9,11 +9,14 @@ import View.View;
  */
 public class GameEndedMessage extends ServerMessageAbs {
 
+    boolean forfeit;
+
     /**
      * Construct a GameEndedMessage
      */
-    public GameEndedMessage() {
+    public GameEndedMessage(boolean forfeit) {
         super();
+        this.forfeit = forfeit;
     }
 
     /**
@@ -35,7 +38,7 @@ public class GameEndedMessage extends ServerMessageAbs {
     @Override
     public void execute(View view) {
         view.model.setState(ModelView.State.ENDED);
-        view.model.setWinByForfeit(true);
+        view.model.setWinByForfeit(forfeit);
         view.model.setReceived();
     }
 }

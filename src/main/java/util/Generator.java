@@ -72,9 +72,11 @@ public class Generator {
      */
     public static <T extends Object> List<T> getUniqueInstances(int size, int bound, Class<T> className) {
         List<T> result = new ArrayList<>();
-        List<Integer> IDList = getRandomUniqueIntList(size, bound);
-        for (int i : IDList) {
-            result.add(getInstance(className, i));
+        if (size > 0) {
+            List<Integer> IDList = getRandomUniqueIntList(size, bound);
+            for (int i : IDList) {
+                result.add(getInstance(className, i));
+            }
         }
         return result;
     }

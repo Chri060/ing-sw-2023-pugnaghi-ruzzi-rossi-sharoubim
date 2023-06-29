@@ -15,6 +15,7 @@ import java.util.Arrays;
  */
 public class Config {
 
+
     private static int numberOfCardsOfEachType;
     private static int shelfRows;
     private static int shelfColumns;
@@ -71,7 +72,7 @@ public class Config {
     public static void initialise(int numberOfPlayers) {
         //Parses Shelf size and shelf points
         try {
-            Parser parser = new Parser("src/main/resources/Model/shelfConfig.json");
+            Parser parser = new Parser("./shelfConfig.json");
             shelfRows = parser.getInt("rows");
             shelfColumns = parser.getInt("columns");
             if (shelfColumns <= 0 || shelfRows <= 0) {
@@ -92,7 +93,7 @@ public class Config {
         }
         //Parses dashBoard size and pattern
         try {
-            Parser parser = new Parser("src/main/resources/Model/dashboardConfig.json");
+            Parser parser = new Parser("./dashboardConfig.json");
             dashboardRows = parser.getInt("rows");
             dashboardColumns = parser.getInt("columns");
             customDashboardPattern = parser.getIntArray(numberOfPlayers + "PlayersPattern");
@@ -110,7 +111,7 @@ public class Config {
         }
         //Parses number of cards for each type of cards
         try {
-            Parser parser = new Parser("src/main/resources/Model/bagConfig.json");
+            Parser parser = new Parser("./bagConfig.json");
             numberOfCardsOfEachType = parser.getInt("numberOfCardsOfEachType");
             if (numberOfCardsOfEachType <= 0) {
                 throw new BadJSONFormatException("Number of Cards of each type cannot be negative");
@@ -126,7 +127,7 @@ public class Config {
         }
         //Parses common objectives points
         try {
-            Parser parser = new Parser("src/main/resources/Model/commonObjectiveConfig.json");
+            Parser parser = new Parser("./commonObjectiveConfig.json");
             customCommonPoints = parser.getIntArray(numberOfPlayers + "PlayerPoints");
             if (customCommonPoints.length != numberOfPlayers) {
                 throw new BadJSONFormatException("Players number and points values mismatch");
@@ -139,7 +140,7 @@ public class Config {
         }
         //Parses Private objective patterns
         try {
-            Parser parser = new Parser("src/main/resources/Model/privateObjectiveConfig.json");
+            Parser parser = new Parser("./privateObjectiveConfig.json");
             //Gets patterns array object
             JSONArray JsonPrivateObjectivePatterns = parser.getArray("patterns");
             privateObjectivePoints = parser.getIntArray("points");
@@ -168,7 +169,7 @@ public class Config {
         }
         //Parses number of objectives
         try {
-            Parser parser = new Parser("src/main/resources/Model/gameConfig.json");
+            Parser parser = new Parser("./gameConfig.json");
             numberOfCommonObjectives = parser.getInt("commonObjectives");
             numberOfPrivateObjectives = parser.getInt("privateObjectives");
             if (numberOfCommonObjectives < 0 || numberOfPrivateObjectives < 0) {
@@ -199,7 +200,7 @@ public class Config {
             dashboardColumns = 9;
             numberOfCardsOfEachType = 22;
             numberOfCommonObjectives = 2;
-            numberOfPrivateObjectives = 1;
+            numberOfPrivateObjectives = 0;
             switch (playerNumber) {
                 case 2 -> {
                     customDashboardPattern = twoPlayersDashboardPattern;

@@ -43,6 +43,8 @@ public class Model extends Observable<ServerMessage> {
     private String currentPlayer;
     private List<Card> withdrawnCards;
 
+    private boolean lastTurn;
+
     /**
      * Constructor of the model
      */
@@ -136,7 +138,7 @@ public class Model extends Observable<ServerMessage> {
             if (gameStatus == GameStatus.PREMATCH) {
                 return true;
             }
-            if (isInGame(name)) {
+            if (isInGame(name) && gameStatus != GameStatus.ENDED) {
                 return true;
             }
         }
@@ -226,8 +228,12 @@ public class Model extends Observable<ServerMessage> {
             System.out.println(playerName + " disconnected");
             setChangedAndNotifyObservers(new TestMessage(playerName + " disconnected"));
             setChangedAndNotifyObservers(new TestMessage("Connected players " + getOnlinePlayersCount()));
+            if (gameStatus == GameStatus.ENDED) {
+                return;
+            }
             if (playerName.equals(currentPlayer) && getOnlinePlayersCount() > 0) {
                 currentPlayer = getNextPlayer();
+                setChanged();
             }
             if (getOnlinePlayersCount() == 1) {
                 Timer timer = new Timer();
@@ -240,7 +246,7 @@ public class Model extends Observable<ServerMessage> {
                     }
                 }, 10000);
             }
-            setChangedAndNotifyObservers(new ModelViewUpdateMessage(getModelViewDataUpdate()));
+            notifyObservers(new ModelViewUpdateMessage(getModelViewDataUpdate()));
         }
     }
 
@@ -282,7 +288,7 @@ public class Model extends Observable<ServerMessage> {
         if (onlinePlayers == 1) {
             gameStatus = GameStatus.ENDED;
             System.out.println("The game is ended: " + currentPlayer + "won!");
-            setChangedAndNotifyObservers(new GameEndedMessage());
+            setChangedAndNotifyObservers(new GameEndedMessage(true));
         }
     }
 
@@ -421,13 +427,16 @@ public class Model extends Observable<ServerMessage> {
      * @return true if it is the last turn, false otherwise
      */
     public boolean isLastTurn() {
-        boolean isLastTurn = playerList.stream().anyMatch(x -> x.getShelf().isFull());
-        if (isLastTurn) {
+        if (lastTurn) {
+            return true;
+        }
+        lastTurn = playerList.stream().anyMatch(x -> x.getShelf().isFull());
+        if (lastTurn) {
             System.out.println("Last turn!");
             System.out.println(currentPlayer + " will get an extra point");
             givePoint(currentPlayer, new Point(1, "First to fill the shelf"));
         }
-        return isLastTurn;
+        return lastTurn;
     }
 
     /**
@@ -494,11 +503,15 @@ public class Model extends Observable<ServerMessage> {
         playerList.stream().forEach(x -> {
         List<Integer> groupsSizes = x.getShelfGroups();
         groupsSizes.stream().forEach(y -> {
+            int pointValue;
             if (y >= points.length) {
-                x.givePoint(new Point(points[points.length - 1], "Shelf Point"));
+                pointValue = points[points.length - 1];
             }
             else {
-                x.givePoint(new Point(points[y - 1], "Shelf Point"));
+                pointValue = points[y - 1];
+            }
+            if (pointValue > 0) {
+                x.givePoint(new Point(pointValue, "Adjacent group of cards of" + y + ", points"));
             }
         });
         });

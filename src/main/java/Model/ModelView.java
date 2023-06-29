@@ -35,6 +35,21 @@ public class ModelView extends Observable<Event> {
         ENDED
     }
 
+    private String[] descriptions = {
+            "Six groups each containing at least 2 tiles of the same type. The tiles of one group can be different from those of another group.",
+            "Five tiles of the same type forming a diagonal.",
+            "Four groups each containing at least 4 tiles of the same type. The tiles of one group can be different from those of another group.",
+            "Four lines each formed by 5 tiles of maximum three different types. One line can show the same or a different combination of another line.",
+            "Four tiles of the same type in the four corners of the bookshelf.",
+            "Two columns each formed by 6 different types of tiles.",
+            "Two groups each containing 4 tiles of the same type in a 2x2 square. The tiles of one square must be the same of those of the other square.",
+            "Two lines each formed by 5 different types of tiles. One line can show the same or a different combination of the other line.",
+            "Three columns each formed by 6 tiles of maximum three different types. One column can show the same or a different combination of another column.",
+            "Five tiles of the same type forming an X.",
+            "Eight tiles of the same type. There’s no restriction about the position of these tiles.",
+            "Five columns of increasing or decreasing height. Starting from the first column on the left or on the right, each next column must be made of exactly one more tile. Tiles can be of any type."
+    };
+
     private State state;
     private RequestStatus requestStatus;
     private Model.TurnStatus turnState;
@@ -396,7 +411,6 @@ public class ModelView extends Observable<Event> {
      */
     public synchronized void setReceived() {
         this.requestStatus = RequestStatus.RECIVED;
-        System.out.println("Event received");
         setChangedAndNotifyObservers(new ResponseReceivedEvent());
     }
 
@@ -407,4 +421,13 @@ public class ModelView extends Observable<Event> {
         this.requestStatus = RequestStatus.WAITINGEVENT;
         setChangedAndNotifyObservers(new WaitEventEvent());
     }
+
+    public String getDescriptionByID(int ID) {
+        try {
+            return descriptions[ID - 1];
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
 }

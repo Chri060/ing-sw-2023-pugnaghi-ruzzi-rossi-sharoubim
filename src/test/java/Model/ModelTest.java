@@ -109,7 +109,6 @@ class ModelTest {
         model.sortWithdrawnCards(order);
         model.sendChatMessage("playerOne",receivers,"hello");
         model.sortWinners();
-        model.sendRank();
         model.sendModelViewData();
         assert (model.getModelviewData("playerOne") != null);
     }

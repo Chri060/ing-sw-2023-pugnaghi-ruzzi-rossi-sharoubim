@@ -4,6 +4,7 @@ import Distributed.Messages.clientMessages.*;
 import Model.Model;
 import Model.ModelView;
 import Model.entities.Card;
+import Model.entities.Point;
 import Model.viewEntities.CommonObjectiveView;
 import Model.viewEntities.PlayerView;
 import util.PlanarCoordinate;
@@ -164,14 +165,21 @@ public class TextualUI extends View {
         }
         else {
             System.out.print("The final rank is the following:\n");
-            //TODO: while that prints the players in descendent order
-            for (int i = 0; i < 4; i++) {
+            int playerNum = model.getPlayerViews().size();
+            for (int i = 0; i < playerNum; i++) {
                 if (i == 0) {
                     System.out.print(ANSI_YELLOW + "1. " + ANSI_RESET);
                 } else {
                     System.out.print((i + 1) + ". ");
                 }
-                System.out.println(model.getPlayerViews().get(i).getName());
+                PlayerView player = model.getPlayerViews().get(i);
+                System.out.println(player.getName() + " Points " + player.getTotalPoint().getValue());
+            }
+            for (PlayerView player : model.getPlayerViews()) {
+                System.out.println(player.getName());
+                for (Point point : player.getPoint()) {
+                    System.out.println(point.getOrigin() + " : " + point.getValue());
+                }
             }
         }
         System.out.println("Thanks for playing");
@@ -227,7 +235,7 @@ public class TextualUI extends View {
     public void printCommonObjectives() {
         List<CommonObjectiveView> objectiveViewList = model.getCommonObjectiveViews();
         objectiveViewList.forEach(x -> {
-            System.out.println("Objective " + x.getID() + ": ");
+            System.out.println("Objective " + x.getID() + ": " + model.getDescriptionByID(x.getID()));
             System.out.println("Points available: " + x.getMaxPoint().getValue());
         });
     }
@@ -458,9 +466,12 @@ public class TextualUI extends View {
      */
     ChatMessage getMessage() {
         System.out.println("Write the username of the receiver and then press enter.");
-        String receiver = (scanner.nextLine()).toLowerCase();
-        System.out.println("Write the message that you want to send and then press enter.");
-        String message = (scanner.nextLine()).toLowerCase();
+        String receiver = (scanner.nextLine());
+        if (!model.getPlayerViews().stream().map(x -> x.getName()).anyMatch(x -> x.equals(receiver))) {
+            System.out.println("No players found with this name, no one will receive this message");
+        }
+        System.out.println("Write the message that you want to send and then press enterwithdra.");
+        String message = (scanner.nextLine());
         List<String> receivers = new ArrayList<>();
         receivers.add(receiver);
         return new ChatMessage(model.getName(), receivers, message);

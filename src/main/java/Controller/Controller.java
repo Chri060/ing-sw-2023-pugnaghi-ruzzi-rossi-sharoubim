@@ -1,5 +1,6 @@
 package Controller;
 
+import Distributed.Messages.serverMessages.GameEndedMessage;
 import Exceptions.InvalidActionException;
 import Exceptions.InvalidArgumentException;
 import Model.Model;
@@ -266,6 +267,7 @@ public class Controller {
             if (model.endGame()) {
                 endgame();
                 updateStates(Model.TurnStatus.ENDED, Model.GameStatus.ENDED);
+                model.setChangedAndNotifyObservers(new GameEndedMessage(false));
             } else {
                 model.setCurrentPlayer(model.getNextPlayer());
                 if (model.needsRefill()) {

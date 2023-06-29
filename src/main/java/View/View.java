@@ -41,10 +41,11 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
                 }
             }
             System.out.println("Game Started");
-            readCommand();
-            if (model.getState() == ModelView.State.ENDED) {
-                endGame();
+            new Thread(() -> readCommand()).start();
+            while (model.getState() != ModelView.State.ENDED) {
+                waitEvent();
             }
+            endGame();
         } catch (Exception e) {
             setChangedAndNotifyObservers(new LeaveMessage(model.getName()));
         }
@@ -126,7 +127,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
      */
     public void giveResponse() {
         synchronized (model) {
-            model.notify();
+            model.notifyAll();
         }
     }
 
