@@ -34,8 +34,13 @@ The test coverage documentation files can be found [here](). <br>
 All the peer rewiew deliverables can be found [here](https://github.com/Chri060/ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim/tree/main/deliverables/peer%20review). <br>
 Javadocs can be found [here](). <br>
 
-# Building and Running
-*We have to write the instruction needed to download and install a client/server (WIP)*
+## Building and Running
+Make sure you have the latest [**Java 19**](https://jdk.java.net/19/) jdk installed before you attempt to run this project.
+You can download the latest release from the [here]().
+Assuming the release package is named `project.jar` and the server ip is `customIP`, run the following command in the root directory of the project to start the application:
+```
+java -jar .\project.jar customIP
+```
 
 # Authors
 * [Kirolos Sharoubim](https://github.com/kirolosharoubim)
