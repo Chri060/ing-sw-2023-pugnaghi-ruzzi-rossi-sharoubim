@@ -6,7 +6,7 @@ package Exceptions;
 public class InvalidActionException extends Throwable{
 
     /**
-     * Exception thrown if  someone does a wrong action
+     * Exception thrown if someone does an invalid action
      *
      * @param action is the action that the player tried
      * @param motivation is the motivation why the action is invalid

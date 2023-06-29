@@ -244,7 +244,7 @@ public class Model extends Observable<ServerMessage> {
                     public void run() {
                         forfeit();
                     }
-                }, 10000);
+                }, 20000);
             }
             notifyObservers(new ModelViewUpdateMessage(getModelViewDataUpdate()));
         }
@@ -287,7 +287,7 @@ public class Model extends Observable<ServerMessage> {
         }
         if (onlinePlayers == 1) {
             gameStatus = GameStatus.ENDED;
-            System.out.println("The game is ended: " + currentPlayer + "won!");
+            System.out.println("The game is ended: " + currentPlayer + " won!");
             setChangedAndNotifyObservers(new GameEndedMessage(true));
         }
     }

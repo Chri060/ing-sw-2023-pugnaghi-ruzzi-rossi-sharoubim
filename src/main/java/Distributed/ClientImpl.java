@@ -1,5 +1,6 @@
 package Distributed;
 
+import Distributed.Messages.clientMessages.PingServerMessage;
 import Distributed.Messages.serverMessages.ServerMessage;
 import View.*;
 
@@ -50,7 +51,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
     }
 
     /**
-     * Tries to add an observer and send a message to the server
+     * Adds an observer to notify the server and starts a thread to ping the server
      *
      * @param server is the Server to connect to
      *
@@ -64,11 +65,26 @@ public class ClientImpl extends UnicastRemoteObject implements Client, Runnable{
                 System.err.println("Error while notify Server");
             }
         });
-        //server.register(this, view.getName());
+
+        new Thread(() -> {
+            while (true) {
+                synchronized (this) {
+                    try {
+                        server.update(this, new PingServerMessage(""));
+                        wait(1000);
+                    } catch (RemoteException e) {
+                        System.err.println("Server unreachable");
+                        System.out.println("Restart the client to rejoin the game");
+                        System.exit(-1);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }).start();
     }
 
     /**
-     * Updates the View linked to the Client
+     * Executes the message from the server on the view
      *
      * @param message is the ServerMessage to send
      *

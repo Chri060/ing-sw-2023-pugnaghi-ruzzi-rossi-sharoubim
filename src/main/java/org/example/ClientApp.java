@@ -18,7 +18,7 @@ import static util.AnsiColor.*;
 public class ClientApp {
 
     /**
-     * Is the main method that is used to select the user interface and connection technologies
+     * Is the main method that is used to select the connection protocol
      */
     public static void main(String[] args) {
         System.out.println();

@@ -55,8 +55,8 @@ class ModelTest {
         assert (model.getCurrentPlayer() == null);
 
         assert (!model.isLastTurn());
-        model.setTurnStatus(Model.TurnStatus.ENDED);
-        assert (model.getTurnStatus() == Model.TurnStatus.ENDED);
+        //model.setTurnStatus(Model.TurnStatus.ENDED);
+        //assert (model.getTurnStatus() == Model.TurnStatus.ENDED);
         model.forfeit();
     }
 

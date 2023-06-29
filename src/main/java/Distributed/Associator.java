@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class used to link a player with his relative objects
+ * Class used to link a client with his name, observer and pinger
  */
 public class Associator {
     private List<String> nameList;
@@ -16,7 +16,7 @@ public class Associator {
     private List<Thread> threadList;
 
     /**
-     * Construct a new void Associator
+     * Construct a new empty Associator
      */
     public Associator() {
         nameList = new ArrayList<>();

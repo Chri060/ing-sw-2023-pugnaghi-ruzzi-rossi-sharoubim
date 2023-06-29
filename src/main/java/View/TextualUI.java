@@ -123,7 +123,7 @@ public class TextualUI extends View {
                 }
             }
         } catch (Exception e) {
-            System.out.println(ANSI_RED + "Crash detected");
+            System.out.println(ANSI_RED + "Crash detected" + ANSI_RESET);
             System.exit(-10);
         }
     }
@@ -161,7 +161,7 @@ public class TextualUI extends View {
     @Override
     public void endGame() {
         if (model.isWinByForfeit()) {
-            System.out.println("You won by forfeit!");
+            System.out.println(ANSI_YELLOW + "You won by forfeit!"+ ANSI_RESET);
         }
         else {
             System.out.print("The final rank is the following:\n");
@@ -176,6 +176,7 @@ public class TextualUI extends View {
                 System.out.println(player.getName() + " Points " + player.getTotalPoint().getValue());
             }
             for (PlayerView player : model.getPlayerViews()) {
+                System.out.println(". _ . _ . _ . _ . _ . _ . _ . _ . _ . _ . _ . _ . _ . _ . _ .");
                 System.out.println(player.getName());
                 for (Point point : player.getPoint()) {
                     System.out.println(point.getOrigin() + " : " + point.getValue());
@@ -467,7 +468,7 @@ public class TextualUI extends View {
     ChatMessage getMessage() {
         System.out.println("Write the username of the receiver and then press enter.");
         String receiver = (scanner.nextLine());
-        if (!model.getPlayerViews().stream().map(x -> x.getName()).anyMatch(x -> x.equals(receiver))) {
+        if (!model.getPlayerViews().stream().map(x -> x.getName()).anyMatch(x -> x.equals(receiver)) || "".equals(receiver)) {
             System.out.println("No players found with this name, no one will receive this message");
         }
         System.out.println("Write the message that you want to send and then press enterwithdra.");
@@ -475,5 +476,15 @@ public class TextualUI extends View {
         List<String> receivers = new ArrayList<>();
         receivers.add(receiver);
         return new ChatMessage(model.getName(), receivers, message);
+    }
+
+
+    /**
+     * Prints on the output the given string
+     * @param s is the string to print
+     */
+    @Override
+    public void print(String s) {
+        System.out.println(s);
     }
 }

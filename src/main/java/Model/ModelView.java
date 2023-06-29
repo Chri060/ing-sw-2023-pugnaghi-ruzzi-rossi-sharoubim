@@ -150,9 +150,9 @@ public class ModelView extends Observable<Event> {
     }
 
     /**
-     * Initializes the values of the ModelView
+     * Initializes the values of the ModelView using the modelViewData object values
      *
-     * @param modelViewData is the modelViewData object
+     * @param modelViewData is the modelViewData object containing the game infos
      */
     public void initialise(ModelViewData modelViewData) {
         this.state = State.RUNNING;
@@ -168,6 +168,12 @@ public class ModelView extends Observable<Event> {
         setChangedAndNotifyObservers(new GameStartedEvent());
     }
 
+
+    /**
+     * Updates the values of the ModelView using the modelViewDataUpdate object values
+     *
+     * @param modelViewDataUpdate is the modelViewDataUpdate object containing the updated infos
+     */
     public void update(ModelViewDataUpdate modelViewDataUpdate) {
         this.dashboard = new DashBoardView(modelViewDataUpdate.getDashboard());
         this.currentPlayer = modelViewDataUpdate.getCurrentPlayer();
@@ -399,7 +405,8 @@ public class ModelView extends Observable<Event> {
     }
 
     /**
-     * Sets the request status as SENT
+     * Sets the request status as SENT and interrupts the caller for a fixed amount of time or until a response is received.
+     * If no response is received the exit method is called
      */
     public synchronized void requestSent() {
         this.requestStatus = RequestStatus.SENT;
@@ -407,7 +414,7 @@ public class ModelView extends Observable<Event> {
     }
 
     /**
-     * Sets the request status as RECEIVED
+     * Sets the request status as RECEIVED and awakes all the threads that called a waitEvent or a requestSent
      */
     public synchronized void setReceived() {
         this.requestStatus = RequestStatus.RECIVED;
@@ -415,12 +422,18 @@ public class ModelView extends Observable<Event> {
     }
 
     /**
-     * Sets the request status as WAIT
+     * Sets the request status as WAIT interrupts the caller until a response is received
      */
     public synchronized void waitEvent() {
         this.requestStatus = RequestStatus.WAITINGEVENT;
         setChangedAndNotifyObservers(new WaitEventEvent());
     }
+
+    /**
+     * Returns a common objective description given it's ID
+     * @param ID is the object id
+     * @return the description of the common objective
+     */
 
     public String getDescriptionByID(int ID) {
         try {

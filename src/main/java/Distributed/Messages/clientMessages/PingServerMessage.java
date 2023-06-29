@@ -4,24 +4,15 @@ import Controller.Controller;
 import Distributed.Client;
 import Distributed.Server;
 
-import java.util.List;
-
-/**
- * Class that implements a OrderMessage
- */
-public class OrderMessage extends ClientMessageAbs {
-
-    List<Integer> orderList;
+public class PingServerMessage extends ClientMessageAbs{
 
     /**
-     * Construct a message for ordering the Cards
+     * Sets the name of the client who sent the message
      *
-     * @param name is the player who is trying to order the Cards
-     * @param orderList is the new desired order
+     * @param name is the name of the player who sent the request
      */
-    public OrderMessage(String name, List<Integer> orderList) {
+    public PingServerMessage(String name) {
         super(name);
-        this.orderList = orderList;
     }
 
     /**
@@ -32,16 +23,16 @@ public class OrderMessage extends ClientMessageAbs {
      */
     @Override
     public void execute(Server server, Client client) {
+
     }
 
     /**
      * Executes the request from the server on the controller.
-     * It calls the function to change the order of cards on the controller.
      *
      * @param controller is the Controller linked to the Model that is going to execute the action
      */
     @Override
     public void execute(Controller controller) {
-        controller.changeOrderOfCards(name, orderList);
+
     }
 }

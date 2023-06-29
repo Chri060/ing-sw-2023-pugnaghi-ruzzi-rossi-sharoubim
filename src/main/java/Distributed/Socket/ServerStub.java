@@ -44,7 +44,7 @@ public class ServerStub implements Server {
     }
 
     /**
-     * Register a Client to the Server
+     * Emulates the register method of the actual Server
      *
      * @param client is the Client to register
      * @param name is the name of the player
@@ -61,7 +61,7 @@ public class ServerStub implements Server {
     }
 
     /**
-     * Removes a Client from the server
+     * Emulates the leave method of the actual Server
      *
      * @param client is the Client to remove
      * @param name is the name of the player to remove
@@ -78,10 +78,10 @@ public class ServerStub implements Server {
     }
 
     /**
-     * Updates a client with a message
+     * Sends a message to the server
      *
-     * @param client is the Client supposed to receive the update
-     * @param message is the message to send
+     * @param client is the Client that sent the update
+     * @param message is the message to sent
      *
      * @throws RemoteException on connection problems
      */
@@ -95,7 +95,7 @@ public class ServerStub implements Server {
     }
 
     /**
-     * Receives a message from the server
+     * Starts a new thread listening on the inputStream and calls the update when a message is received
      *
      * @param client is the Client that needs to receive the message
      */
@@ -106,8 +106,6 @@ public class ServerStub implements Server {
                     ServerMessage serverMessage = (ServerMessage) inputStream.readObject();
                     client.update(serverMessage);
                 } catch (IOException e) {
-                    System.err.println("Error while receiving");
-                    System.out.println(e.getMessage());
                     return;
                 } catch (ClassNotFoundException e) {
                     System.err.println("Error while receiving: not a message");

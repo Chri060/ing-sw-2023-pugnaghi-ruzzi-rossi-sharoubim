@@ -16,7 +16,6 @@ import java.rmi.registry.Registry;
 public class ServerApp {
     /**
      * Starts the server with both RMI and socket connection
-     * If no registry is found only socket is started
      *
      * @throws RemoteException on connection problems
      */

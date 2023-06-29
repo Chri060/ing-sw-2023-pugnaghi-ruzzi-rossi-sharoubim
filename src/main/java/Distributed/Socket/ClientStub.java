@@ -22,7 +22,7 @@ public class ClientStub implements Client {
     /**
      * Construct a new client stub
      *
-     * @param socket is the Socket selected
+     * @param socket is the Socket given
      *
      * @throws RemoteException on connection problems
      */
@@ -36,7 +36,7 @@ public class ClientStub implements Client {
     }
 
     /**
-     * Sends a server message
+     * Sends a server message by writing on the output stream
      *
      * @param message is the ServerMessage to send
      *
@@ -47,13 +47,12 @@ public class ClientStub implements Client {
         try {
             outputStream.writeObject(message);
         } catch (IOException e) {
-            //System.out.println("Unable to update a client");
             throw new RemoteException("Unable to update a client");
         }
     }
 
     /**
-     * Let the server receive a ClientMessage
+     * Starts a new thread listening on the inputStream and calls the update when a message is received
      *
      * @param server is the Server to send the message to
      */
@@ -65,7 +64,6 @@ public class ClientStub implements Client {
                     server.update(this, clientMessage);
                 }
                 catch (IOException e) {
-                    //System.err.println("Client disconnected");
                     return;
                 }
                 catch (ClassNotFoundException e) {

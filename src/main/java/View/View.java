@@ -136,9 +136,7 @@ public abstract class View extends Observable<ClientMessage> implements Runnable
      *
      * @param s is the string to print
      */
-    public void print(String s) {
-        System.out.println(s);
-    }
+    abstract public void print(String s);
 
     /**
      * Used to initialize the ModelView

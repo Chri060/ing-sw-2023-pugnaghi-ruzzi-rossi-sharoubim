@@ -16,7 +16,9 @@ public class Generator {
     private static List<Integer> commonList = new ArrayList<>();
 
     /**
-     * Creates a list of random number all unique
+     * Creates a list of random number all unique.
+     * Calling this method more than once will always give lists with no elements in common
+     * until the clearCommonList methos is called
      *
      * @param size is the size of the list
      * @param bound is the maximum value in the list
@@ -62,11 +64,12 @@ public class Generator {
     }
 
     /**
-     * Creates a className object with only an int parameter (ID)
+     * Creates a List of objects that must have a constructor that has only an integer as parameter such as classes created by giving
+     * the constructor an ID
      *
      * @param size is the size of the list
      * @param bound is the maximum value in the list
-     * @param className is a className object
+     * @param className is a className object that will be contained in the result
      *
      * @return a list of className objects
      */
@@ -82,10 +85,11 @@ public class Generator {
     }
 
     /**
-     * Construct a className object
+     * Construct an object given its className. This object must implement a constructor with only an integer as parameter
+     * such as in ID
      *
      * @param className is a className object
-     * @param ID is the D of the className object
+     * @param ID is the ID given to the constructor
      *
      * @return an instance of className object
      */
@@ -101,7 +105,7 @@ public class Generator {
     }
 
     /**
-     * @return a list of CommonObjective
+     * @return a list of CommonObjective of size according to the Config class
      */
     public static List<CommonObjective> getCommonObjectives(){
         List<CommonObjective> result = new ArrayList<>();

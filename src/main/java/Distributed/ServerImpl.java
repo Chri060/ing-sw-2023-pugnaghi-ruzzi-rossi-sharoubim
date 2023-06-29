@@ -23,8 +23,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     private Controller controller;
     private Model model;
     Associator associator;
-    Map<String, Client> clientNames;
-    Map<String, Observer<Observable<ServerMessage>, ServerMessage>> observers;
 
     /**
      * resets the server linked Objects
@@ -34,6 +32,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public static void reset(ServerImpl server) {
         server.model = new Model();
         server.controller = new Controller(server.model);
+        server.associator = new Associator();
     }
 
     /**
@@ -73,7 +72,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     /**
-     * Register a client to the serve r
+     * Register a client to the server: registration implies joining the room
      *
      * @param client is the Client to register
      * @param name is the name of the player
@@ -123,7 +122,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     /**
-     * Removes a Client connection from the server
+     * Removes a Client connection from the server. Leaving implies living the game
      *
      * @param client is the Client to remove
      * @param name is the name of the player to remove
@@ -146,10 +145,10 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     /**
-     * Sends an update to the client selected
+     * Updates the server with the given message from the given client
      *
-     * @param client is the Client supposed to receive the update
-     * @param message is the message to send
+     * @param client is the Client that sent the update
+     * @param message is the message sent
      *
      * @throws RemoteException on connection problems
      */
@@ -165,7 +164,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     /**
-     * Return the observer linked to a Client
+     * Return the model observer that notifies the client
      *
      * @param client is the Client to check
      * @param name is the name of the player to check
@@ -185,7 +184,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     /**
-     * Checks the Pinger linked to a Client
+     * Creates the Pinger linked to a Client.
+     * This thread will call leave if the client is disconnected
      *
      * @param client is the Client to check
      *

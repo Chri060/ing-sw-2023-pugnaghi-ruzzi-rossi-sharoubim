@@ -2,6 +2,10 @@ package util.Iterators;
 
 import util.PlanarCoordinate;
 
+/**
+ * Implementation of iterator to iterate on a pattern
+ */
+
 public class PatternIterator implements Iterator{
 
     private boolean[][] pattern;

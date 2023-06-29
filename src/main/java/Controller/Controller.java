@@ -16,6 +16,11 @@ public class Controller {
 
     private Model model;
 
+    /**
+     * Constructs a Controller object to operate on the given model
+     *
+     * @param model is the Model controlled by the Controller
+     */
     public Controller(Model model) {
         this.model = model;
     }
@@ -39,18 +44,17 @@ public class Controller {
     }
 
     /**
-     * Let a player join the room after checking if it is possible
+     * Let a player join the room after checking if it is possible.
+     * Starts the match if the number of player in the room equals the number set by the room leader
      *
      * @param playerName is the name of the player to add
      */
     public void join(String playerName) {
         synchronized (model) {
             if (playerName == null) {
-                //TODO notifies the name is invalid
                 return;
             }
             if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
-                //TODO notifies the match has already started
                 model.setPlayerOnline(playerName);
                 return;
             }
@@ -59,9 +63,7 @@ public class Controller {
                 if (model.getRoomSize() == model.getTargetRoomSize() && model.getRoomSize() > 1) {
                     model.start();
                 }
-                //TODO Sends JoinAck
             } catch (InvalidActionException e) {
-                //TODO notifies the name is already taken
             }
         }
     }
@@ -74,7 +76,6 @@ public class Controller {
     public void leave(String playerName) {
         synchronized (model) {
             if (playerName == null) {
-                //TODO notifies the name is invalid
                 return;
             }
             if (model.getGameStatus() == Model.GameStatus.PREMATCH) {
@@ -83,40 +84,6 @@ public class Controller {
             else {
                 model.setPlayerOffline(playerName);
             }
-
-            /*if (model.getGameStatus() != Model.GameStatus.PREMATCH) {
-                model.setPlayerOffline(playerName);
-                if (playerName.equals(model.getCurrentPlayer())) {
-                    model.setCurrentPlayer(model.getNextPlayer());
-                    model.setTurnStatus(Model.TurnStatus.DRAWING);
-                }
-                if (model.getOnlinePlayersCount() == 1) {
-                    model.setGameStatus(Model.GameStatus.PAUSED);
-                    model.setChangedAndNotifyObservers(new TestMessage("Only you left, automatic win in:", model.getCurrentPlayer()));
-                    new Thread(() -> {
-                        synchronized (model) {
-                            for (int i = 10; i > 0; i--) {
-                                model.setChangedAndNotifyObservers(new TestMessage("" + i, model.getCurrentPlayer()));
-                                if (model.getOnlinePlayersCount() != 1) {
-                                    model.notifyObservers(new TestMessage("New connection game restarting", model.getCurrentPlayer()));
-                                    model.setGameStatus(Model.GameStatus.RUNNING);
-                                    return;
-                                }
-                                try {
-                                    model.wait(1000);
-                                } catch (InterruptedException e) {
-                                }
-                            }
-                            model.setChangedAndNotifyObservers(new TestMessage("Only you left, congrats stinky butt you won!"));
-                            model.setGameStatus(Model.GameStatus.ENDED);
-                        }
-                    }).start();
-                    //TODO timer decreta vittoria
-                }
-                return;
-            }
-            model.removePlayer(playerName);
-            //TODO sends leave ack*/
         }
     }
 
@@ -171,30 +138,24 @@ public class Controller {
     public void withdraw(String playerName, List<PlanarCoordinate> planarCoordinateList) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
-                //TODO sends a message error -> Game ended
                 return;
             }
             if (model.getTurnStatus() != Model.TurnStatus.DRAWING) {
-                //TODO sends a message error -> InvalidAction: current action is drawing
                 return;
             }
             if (!isYourTurn(playerName)) {
-                //TODO sends a message error -> InvalidAction
                 return;
             }
             if (planarCoordinateList == null || planarCoordinateList.size() > 3) {
-                //TODO sends a message error
                 //Null list or too many cads to withdraw: NOTE the model doesn't check for the list's size
                 return;
             }
             try {
                 if (model.getPlayerMaxFreeSpace(playerName) < planarCoordinateList.size()) {
-                    //TODO sends a message error -> Can't withdraw more cards than the space in the shelf
                     return;
                 }
             } catch (InvalidArgumentException e) {/*Never thrown if it's player turn*/}
             if (!model.canWithdraw(planarCoordinateList)) {
-                //TODO sends a message error -> InvalidAction: can't withdraw those cards
                 return;
             }
              model.withdraw(planarCoordinateList);
@@ -207,9 +168,12 @@ public class Controller {
      *
      * @param orderList is a list of integer that represent the new order of the withdrawn cards
      */
-    public void changeOrderOfCards(List<Integer> orderList) {
+    public void changeOrderOfCards(String playerName, List<Integer> orderList) {
         synchronized (model) {
             if (model.getTurnStatus() != Model.TurnStatus.INSERTING) {
+                return;
+            }
+            if (!isYourTurn(playerName)) {
                 return;
             }
             model.sortWithdrawnCards(orderList);
@@ -225,20 +189,16 @@ public class Controller {
     public void insert(String playerName, int column) {
         synchronized (model) {
             if (model.getGameStatus() != Model.GameStatus.RUNNING) {
-                //TODO sends a message error -> Game ended
                 return;
             }
             if (model.getTurnStatus() != Model.TurnStatus.INSERTING) {
-                //TODO sends a message error -> InvalidAction: current action is not inserting
                 return;
             }
             if (!isYourTurn(playerName)) {
-                //TODO sends a message error -> InvalidAction: Not Your Turn
                 return;
             }
             try {
                 if (!model.canInsert(playerName, column)) {
-                    //TODO sends a message error -> InvalidAction: Column can't contain or is out of bounds
                     return;
                 }
                 model.insert(playerName, column);
@@ -252,7 +212,7 @@ public class Controller {
      *
      * @param playerName is the name of the player that is ending his turn
      *
-     * @throws InvalidArgumentException on invalid argument
+     * @throws InvalidArgumentException if playerName is not found in the lobby
      */
     private void endTurn(String playerName) throws InvalidArgumentException {
         synchronized (model) {

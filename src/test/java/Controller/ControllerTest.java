@@ -61,7 +61,7 @@ class ControllerTest {
         controller.withdraw("playerOne",coordinates);
 
         List<Integer> order = new ArrayList<>();
-        controller.changeOrderOfCards(order);
+        controller.changeOrderOfCards("playerOne", order);
         controller.insert("playerOne", 0);
 
         model.setTurnStatus(Model.TurnStatus.INSERTING);
