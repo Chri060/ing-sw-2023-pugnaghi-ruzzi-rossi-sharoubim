@@ -12,7 +12,7 @@ The requirements of the project can be found [here](https://github.com/Chri060/i
 | Socket                                    |   ✅    |
 | Remote Method Invocation                  |   ✅    |
 | Command Line Interface                    |   ✅    |
-| Graphic User Interface                    |   ✅    |
+| Graphic User Interface                    |   ❌    |
 | Disconnection resilience                  |   ✅    |
 | In-game chat                              |   ✅    |
 | Multiple games                            |   ❌    |
@@ -30,12 +30,17 @@ The requirements of the project can be found [here](https://github.com/Chri060/i
 
 ## Deliverables
 The diagrams used to build the application can be found [here](https://github.com/Chri060/ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim/tree/main/deliverables/diagrams). <br>
-The test coverage documentation files can be found [here](). <br>
+The test coverage documentation files can be found [here](https://github.com/Chri060/ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim/tree/main/deliverables/test%20coverage%20screenshots). <br>
 All the peer rewiew deliverables can be found [here](https://github.com/Chri060/ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim/tree/main/deliverables/peer%20review). <br>
-Javadocs can be found [here](). <br>
+Javadocs can be found [here](https://chri060.github.io/ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim/javadocs/). <br>
 
-# Building and Running
-*We have to write the instruction needed to download and install a client/server (WIP)*
+## Building and Running
+Make sure you have the latest [**Java 19**](https://jdk.java.net/19/) jdk installed before you attempt to run this project.
+You can download the latest release from the [here]().
+Assuming the release package is named `project.jar` and the server ip is `customIP`, run the following command in the root directory of the project to start the application:
+```
+java -jar .\project.jar customIP
+```
 
 # Authors
 * [Kirolos Sharoubim](https://github.com/kirolosharoubim)
