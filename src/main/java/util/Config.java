@@ -60,174 +60,9 @@ public class Config {
     private static int[] customShelfPoints;
     private static int numberOfCommonObjectives;
     private static int numberOfPrivateObjectives;
-    private static int[] privateObjectivePoints = {0, 1, 2, 4, 6, 9, 12};
-
-    private static PlanarCoordinate[] coordinates1 = {
-            new PlanarCoordinate(0, 0),
-            new PlanarCoordinate(0, 2),
-            new PlanarCoordinate(1, 4),
-            new PlanarCoordinate(2, 3),
-            new PlanarCoordinate(3, 1),
-            new PlanarCoordinate(5, 5)
-    };
-    private static Card.Type[] objects1 = {
-            Card.Type.PLANT, Card.Type.FRAME, Card.Type.CAT, Card.Type.BOOK, Card.Type.GAME, Card.Type.TROPHY
-    };
-
-    private static PlanarCoordinate[] coordinates2 = {
-            new PlanarCoordinate(1, 1),
-            new PlanarCoordinate(2, 0),
-            new PlanarCoordinate(2, 2),
-            new PlanarCoordinate(3, 4),
-            new PlanarCoordinate(4, 3),
-            new PlanarCoordinate(5, 4)
-    };
-    private static Card.Type[] objects2 = {
-            Card.Type.PLANT, Card.Type.CAT, Card.Type.GAME, Card.Type.BOOK, Card.Type.TROPHY, Card.Type.FRAME
-    };
-
-    private static PlanarCoordinate[] coordinates3 = {
-            new PlanarCoordinate(1, 0),
-            new PlanarCoordinate(1, 3),
-            new PlanarCoordinate(2, 2),
-            new PlanarCoordinate(3, 1),
-            new PlanarCoordinate(3, 4),
-            new PlanarCoordinate(5, 0)
-    };
-    private static Card.Type[] objects3 = {
-            Card.Type.FRAME, Card.Type.GAME, Card.Type.PLANT, Card.Type.CAT, Card.Type.TROPHY, Card.Type.BOOK
-    };
-
-    private static PlanarCoordinate[] coordinates4 = {
-            new PlanarCoordinate(0, 4),
-            new PlanarCoordinate(2, 0),
-            new PlanarCoordinate(2, 2),
-            new PlanarCoordinate(3, 3),
-            new PlanarCoordinate(4, 1),
-            new PlanarCoordinate(4, 2)
-    };
-    private static Card.Type[] objects4 = {
-            Card.Type.GAME, Card.Type.TROPHY, Card.Type.FRAME, Card.Type.PLANT, Card.Type.BOOK, Card.Type.CAT
-    };
-
-    private static PlanarCoordinate[] coordinates5 = {
-            new PlanarCoordinate(1, 1),
-            new PlanarCoordinate(3, 1),
-            new PlanarCoordinate(3, 2),
-            new PlanarCoordinate(4, 4),
-            new PlanarCoordinate(5, 0),
-            new PlanarCoordinate(5, 3)
-    };
-    private static Card.Type[] objects5 = {
-            Card.Type.TROPHY, Card.Type.FRAME, Card.Type.BOOK, Card.Type.PLANT, Card.Type.GAME, Card.Type.CAT
-    };
-
-
-    private static PlanarCoordinate[] coordinates6 = {
-            new PlanarCoordinate(0, 2),
-            new PlanarCoordinate(0, 4),
-            new PlanarCoordinate(2, 3),
-            new PlanarCoordinate(4, 1),
-            new PlanarCoordinate(4, 3),
-            new PlanarCoordinate(5, 0)
-    };
-    private static Card.Type[] objects6 = {
-            Card.Type.TROPHY, Card.Type.CAT, Card.Type.BOOK, Card.Type.GAME, Card.Type.FRAME, Card.Type.PLANT
-    };
-
-    private static PlanarCoordinate[] coordinates7 = {
-            new PlanarCoordinate(0, 0),
-            new PlanarCoordinate(1, 3),
-            new PlanarCoordinate(2, 1),
-            new PlanarCoordinate(3, 0),
-            new PlanarCoordinate(4, 4),
-            new PlanarCoordinate(5, 2)
-    };
-    private static Card.Type[] objects7 = {
-            Card.Type.CAT, Card.Type.FRAME, Card.Type.PLANT, Card.Type.TROPHY, Card.Type.GAME, Card.Type.BOOK
-    };
-
-    private static PlanarCoordinate[] coordinates8 = {
-            new PlanarCoordinate(0, 4),
-            new PlanarCoordinate(1, 1),
-            new PlanarCoordinate(2, 2),
-            new PlanarCoordinate(3, 0),
-            new PlanarCoordinate(4, 3),
-            new PlanarCoordinate(5, 3)
-    };
-    private static Card.Type[] objects8 = {
-            Card.Type.FRAME, Card.Type.CAT, Card.Type.TROPHY, Card.Type.PLANT, Card.Type.BOOK, Card.Type.GAME
-    };
-
-    private static PlanarCoordinate[] coordinates9 = {
-            new PlanarCoordinate(0, 2),
-            new PlanarCoordinate(2, 2),
-            new PlanarCoordinate(3, 4),
-            new PlanarCoordinate(4, 1),
-            new PlanarCoordinate(4, 4),
-            new PlanarCoordinate(5, 0)
-    };
-    private static Card.Type[] objects9 = {
-            Card.Type.GAME, Card.Type.CAT, Card.Type.BOOK, Card.Type.TROPHY, Card.Type.PLANT, Card.Type.FRAME
-    };
-
-    private static PlanarCoordinate[] coordinates10 = {
-            new PlanarCoordinate(0, 4),
-            new PlanarCoordinate(1, 1),
-            new PlanarCoordinate(2, 0),
-            new PlanarCoordinate(3, 3),
-            new PlanarCoordinate(4, 1),
-            new PlanarCoordinate(5, 3)
-    };
-    private static Card.Type[] objects10 = {
-            Card.Type.TROPHY, Card.Type.GAME, Card.Type.BOOK, Card.Type.CAT, Card.Type.FRAME, Card.Type.PLANT
-    };
-
-    private static PlanarCoordinate[] coordinates11 = {
-            new PlanarCoordinate(0, 2),
-            new PlanarCoordinate(1, 1),
-            new PlanarCoordinate(2, 0),
-            new PlanarCoordinate(3, 2),
-            new PlanarCoordinate(4, 4),
-            new PlanarCoordinate(5, 3)
-    };
-    private static Card.Type[] objects11 = {
-            Card.Type.PLANT, Card.Type.BOOK, Card.Type.GAME, Card.Type.FRAME, Card.Type.CAT, Card.Type.TROPHY
-    };
-
-    private static PlanarCoordinate[] coordinates12 = {
-            new PlanarCoordinate(0, 2),
-            new PlanarCoordinate(1, 1),
-            new PlanarCoordinate(2, 2),
-            new PlanarCoordinate(3, 3),
-            new PlanarCoordinate(4, 4),
-            new PlanarCoordinate(5, 0)
-    };
-    private static Card.Type[] objects12 = {
-            Card.Type.BOOK, Card.Type.PLANT, Card.Type.FRAME, Card.Type.TROPHY, Card.Type.GAME, Card.Type.CAT
-    };
-
-
-
-    private static PrivateObjectivePattern[] privateObjectivePatterns = {
-            new PrivateObjectivePattern(coordinates1, objects1),
-            new PrivateObjectivePattern(coordinates2, objects2),
-            new PrivateObjectivePattern(coordinates3, objects3),
-            new PrivateObjectivePattern(coordinates4, objects4),
-            new PrivateObjectivePattern(coordinates5, objects5),
-            new PrivateObjectivePattern(coordinates6, objects6),
-            new PrivateObjectivePattern(coordinates7, objects7),
-            new PrivateObjectivePattern(coordinates8, objects8),
-            new PrivateObjectivePattern(coordinates9, objects9),
-            new PrivateObjectivePattern(coordinates10, objects10),
-            new PrivateObjectivePattern(coordinates11, objects11),
-            new PrivateObjectivePattern(coordinates12, objects12),
-    };
-
-
-
-
-    private static int availablePrivateObjectives = 12;
+    private static int[] privateObjectivePoints;
+    private static PrivateObjectivePattern[] privateObjectivePatterns;
+    private static int availablePrivateObjectives;
 
     /**
      * Parser for the variable from the JSON files
@@ -250,7 +85,7 @@ public class Config {
             if (Arrays.stream(customShelfPoints).anyMatch(x -> x < 0)) {
                 throw new BadJSONFormatException("ShelfPoints can't be negative");
             }
-        } catch (IOException | ParseException | BadJSONFormatException  e) {
+        } catch (IOException | ParseException | BadJSONFormatException e) {
             System.err.println("Custom config loading failed while loading shelf config:");
             System.out.println(e.getMessage());
             defaultInitialise(numberOfPlayers);
@@ -268,7 +103,7 @@ public class Config {
             if (customDashboardPattern.length != dashboardRows * dashboardColumns) {
                 throw new BadJSONFormatException("Dashboard pattern length and pattern mismatch");
             }
-        } catch (IOException | ParseException | BadJSONFormatException  e) {
+        } catch (IOException | ParseException | BadJSONFormatException e) {
             System.err.println("Custom config loading failed while loading dashboard config:");
             System.out.println(e.getMessage());
             defaultInitialise(numberOfPlayers);
@@ -284,7 +119,7 @@ public class Config {
             if (numberOfCardsOfEachType * Card.Type.values().length <= ((shelfRows * shelfColumns - 1) * numberOfPlayers) + 1) {
                 throw new BadJSONFormatException("Number of cards doesn't secure the mathematical end of the game");
             }
-        } catch (IOException | ParseException | BadJSONFormatException  e) {
+        } catch (IOException | ParseException | BadJSONFormatException e) {
             System.err.println("Custom config loading failed while loading bag config:");
             System.out.println(e.getMessage());
             defaultInitialise(numberOfPlayers);
@@ -297,7 +132,7 @@ public class Config {
             if (customCommonPoints.length != numberOfPlayers) {
                 throw new BadJSONFormatException("Players number and points values mismatch");
             }
-        } catch (IOException | ParseException | BadJSONFormatException  e) {
+        } catch (IOException | ParseException | BadJSONFormatException e) {
             System.err.println("Custom config loading failed while loading common objective config:");
             System.out.println(e.getMessage());
             defaultInitialise(numberOfPlayers);
@@ -326,7 +161,7 @@ public class Config {
                 //And creates the new corresponding pattern
                 privateObjectivePatterns[i] = new PrivateObjectivePattern(planarCoordinates, types);
             }
-        } catch (IOException | ParseException | BadJSONFormatException  e) {
+        } catch (IOException | ParseException | BadJSONFormatException e) {
             System.err.println("Custom config loading failed while loading private Objective config:");
             System.out.println(e.getMessage());
             defaultInitialise(numberOfPlayers);
@@ -343,7 +178,7 @@ public class Config {
             if (numberOfPrivateObjectives * numberOfPlayers > availablePrivateObjectives) {
                 throw new BadJSONFormatException("Not enough private objectives for everyone");
             }
-        } catch (IOException | ParseException | BadJSONFormatException  e) {
+        } catch (IOException | ParseException | BadJSONFormatException e) {
             System.err.println("Custom config loading failed while loading game objective config:");
             System.out.println(e.getMessage());
             defaultInitialise(numberOfPlayers);
@@ -365,7 +200,7 @@ public class Config {
             dashboardColumns = 9;
             numberOfCardsOfEachType = 22;
             numberOfCommonObjectives = 2;
-            numberOfPrivateObjectives = 1;
+            numberOfPrivateObjectives = 0;
             switch (playerNumber) {
                 case 2 -> {
                     customDashboardPattern = twoPlayersDashboardPattern;
