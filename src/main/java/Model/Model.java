@@ -511,7 +511,7 @@ public class Model extends Observable<ServerMessage> {
                 pointValue = points[y - 1];
             }
             if (pointValue > 0) {
-                x.givePoint(new Point(pointValue, "Adjacent group of cards of" + y + ", points"));
+                x.givePoint(new Point(pointValue, "Adjacent group of cards of " + y + ", points"));
             }
         });
         });

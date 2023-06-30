@@ -213,7 +213,7 @@ public class TextualUI extends View {
      * Prints the personal shelf
      */
     public void printMyShelf() {
-        System.out.println("My Shelf Points " + model.getMyPoints().stream().mapToInt(x -> x.getValue()).sum());
+        System.out.println("My Shelf, Points: " + model.getMyPoints().stream().mapToInt(x -> x.getValue()).sum());
         printMatrix(model.getMyShelf().shelf);
         System.out.println("My Objective");
         model.getMyPrivateObjectives().stream().forEach(o -> printMatrix(o));
@@ -466,12 +466,15 @@ public class TextualUI extends View {
      * @return a ChatMessage
      */
     ChatMessage getMessage() {
-        System.out.println("Write the username of the receiver and then press enter.");
+        System.out.println("Write the username of the receiver and then press enter. (Leave empty for a broadcast message)");
         String receiver = (scanner.nextLine());
-        if (!model.getPlayerViews().stream().map(x -> x.getName()).anyMatch(x -> x.equals(receiver)) || "".equals(receiver)) {
+        if (!model.getPlayerViews().stream().map(x -> x.getName()).anyMatch(x -> x.equals(receiver)) && !"".equals(receiver)) {
             System.out.println("No players found with this name, no one will receive this message");
         }
-        System.out.println("Write the message that you want to send and then press enterwithdra.");
+        if (("".equals(receiver))) {
+            System.out.println("This message will be received by everyone");
+        }
+        System.out.println("Write the message that you want to send and then press enter.");
         String message = (scanner.nextLine());
         List<String> receivers = new ArrayList<>();
         receivers.add(receiver);
