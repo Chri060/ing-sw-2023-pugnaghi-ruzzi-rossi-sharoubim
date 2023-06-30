@@ -36,11 +36,16 @@ Javadocs can be found [here](https://chri060.github.io/ing-sw-2023-pugnaghi-ruzz
 
 ## Building and Running
 Make sure you have the latest [**Java 19**](https://jdk.java.net/19/) jdk installed before you attempt to run this project.
-You can download the latest release from the [here]().
-Assuming the release package is named `project.jar` and the server ip is `customIP`, run the following command in the root directory of the project to start the application:
+You can download the latest release from the [here](https://github.com/Chri060/ing-sw-2023-pugnaghi-ruzzi-rossi-sharoubim/tree/main/deliverables/jar%20files).
+For the client, sssuming the release package is named `ClientApp.jar` and the server ip is `customIP`, run the following command in the root directory of the project to start the application:
 ```
-java -jar .\project.jar customIP
+java -jar .\ClientApp.jar customIP
 ```
+For the server, sssuming the release package is named `ServerApp.jar`, run the following command in the root directory of the project to start the application:
+```
+java -jar .\ServerApp.jar
+```
+NOTE: in the ServerApp folder there are config files. To allow game customization you need to download also the JSON files. Only the private objectives will be unavailable without those files.
 
 # Authors
 * [Kirolos Sharoubim](https://github.com/kirolosharoubim)
