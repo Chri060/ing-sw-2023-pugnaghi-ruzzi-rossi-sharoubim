@@ -45,7 +45,7 @@ For the server, sssuming the release package is named `ServerApp.jar`, run the f
 ```
 java -jar .\ServerApp.jar
 ```
-NOTE: in the ServerApp folder there are config files. To allow game customization you need to download also the JSON files.
+NOTE: in the ServerApp folder there are config files. To allow game customization you need to download also the JSON files. Only the private objectives will be unavailable without those files.
 
 # Authors
 * [Kirolos Sharoubim](https://github.com/kirolosharoubim)
